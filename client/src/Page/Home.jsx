@@ -19,7 +19,7 @@ function HomePage() {
 
   return (
     <Layout>
-      <div className=" text-white  justify-center  flex-col items-center   min-h-[90vh]  relative">
+      <div className=" text-white top-[-64px]  justify-center  flex-col items-center   min-h-[90vh]  relative">
         <div className="w-full carousel">
           {celebrities &&
             celebrities.map((slide, inx) => (

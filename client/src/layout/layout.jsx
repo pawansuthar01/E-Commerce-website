@@ -26,7 +26,7 @@ function Layout({ children }) {
   return (
     <div className="min-h-[90vh]">
       <div className="sm:hidden">
-        <nav className="flex absolute z-50 justify-between h-[36px]  w-[100%] items-center mt-4 mb-4">
+        <nav className="flex z-50 relative justify-between h-[36px]  w-[100%] items-center mt-4 mb-4">
           <label htmlFor="my-drawer" className=" relative cursor-pointer ">
             <FiMenu
               onClick={changeWight}
@@ -57,18 +57,18 @@ function Layout({ children }) {
                   <AiFillCloseCircle size={"20px"} />
                 </button>
               </li>
-              <li className="pt-5">
+              <li onClick={hideSide} className="pt-5">
                 <Link to="/">Home</Link>
               </li>
 
-              <li>
+              <li onClick={hideSide}>
                 <Link to="/Courses">All courses</Link>
               </li>
 
-              <li>
+              <li onClick={hideSide}>
                 <Link to="/Contact">Contact Us</Link>
               </li>
-              <li>
+              <li onClick={hideSide}>
                 <Link to="/About">About Us</Link>
               </li>
               {!isLoggedIn && (
@@ -117,10 +117,18 @@ function Layout({ children }) {
             className="flex    pl-10
            gap-8 text-black font-semibold"
           >
-            <Link className=" hover:text-green-400">Home</Link>
-            <Link className=" hover:text-green-400">Shop</Link>
-            <Link className=" hover:text-green-400">About</Link>
-            <Link className=" hover:text-green-400">Contact</Link>
+            <Link to="/" className=" hover:text-green-400">
+              Home
+            </Link>
+            <Link to="/Shop" className=" hover:text-green-400">
+              Shop
+            </Link>
+            <Link to="/About" className=" hover:text-green-400">
+              About
+            </Link>
+            <Link to="/Contact" className=" hover:text-green-400">
+              Contact
+            </Link>
           </div>
           {!isLoggedIn && (
             <div className=" flex gap-1 mr-1">
