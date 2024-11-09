@@ -31,7 +31,7 @@ function Footer() {
           <ul className="flex flex-col gap-1">
             <h1 className="text-2xl font-semibold">Contact</h1>
             <li>Kgs@gamil.com</li>
-            <li>+91 990352887</li>
+            <li>+91 9950352887</li>
           </ul>
         </div>
       </div>

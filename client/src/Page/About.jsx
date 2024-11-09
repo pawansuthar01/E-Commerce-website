@@ -42,7 +42,18 @@ function About() {
             </div>
           </div>
         </div>
-        <div className="flex gap-5 capitalize mt-28 justify-center flex-wrap m-5 ">
+        <div className="flex   capitalize text-black  sm:text-3xl max-sm:text-2xl  justify-center text-center w-full my-10  max-sm:px-[10%] sm:px-[20%] ">
+          <h1 className="font-medium">
+            {" "}
+            i am passionately dedicated to{" "}
+            <span className="font-bold">crafting timeless</span> elegance and{" "}
+            <span className="font-bold text-yellow-300">
+              capturing the essence of individual
+            </span>{" "}
+            <span> stories our brand is not just about adornment</span>
+          </h1>
+        </div>
+        <div className="flex gap-5 capitalize  justify-center flex-wrap my-5 p-5">
           <div className="flex flex-col justify-center cursor-pointer  p-5 rounded hover:bg-[#f1d6cb] bg-[#fce7de] text-center line-clamp-2 sm:min-w-[200px]">
             <h1 className="text-2xl font-bold">15+</h1>
             <p className="text-xl ">All Over India </p>
@@ -60,32 +71,6 @@ function About() {
             <p className="text-xl  ">happy customers</p>
           </div>
         </div>
-        <div>
-          <h1></h1>
-          <img src="" alt="" />
-        </div>
-        <div>
-          <h1></h1>
-          <button></button>
-        </div>
-        <dir>
-          <h1></h1>
-          <div>
-            <div>
-              <h1></h1>
-            </div>
-            <div>
-              <img src="" alt="" />
-            </div>
-          </div>
-          <div>
-            <div>
-              <h3></h3>
-              <p></p>
-            </div>
-            <div></div>
-          </div>
-        </dir>
       </div>
     </Layout>
   );
