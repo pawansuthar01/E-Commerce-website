@@ -45,12 +45,12 @@ function About() {
         <div className="flex   capitalize text-black  sm:text-3xl max-sm:text-2xl  justify-center text-center w-full my-10  max-sm:px-[10%] sm:px-[20%] ">
           <h1 className="font-medium">
             {" "}
-            i am passionately dedicated to{" "}
-            <span className="font-bold">crafting timeless</span> elegance and{" "}
+            🤩 i am passionately dedicated to 😊
+            <span className="font-bold"> crafting timeless</span>🤪 elegance and{" "}
             <span className="font-bold text-yellow-300">
-              capturing the essence of individual
+              🤘 capturing the essence of individual
             </span>{" "}
-            <span> stories our brand is not just about adornment</span>
+            <span>👌 stories our brand is not just about adornment 💯</span>
           </h1>
         </div>
         <div className="flex gap-5 capitalize  justify-center flex-wrap my-5 p-5">

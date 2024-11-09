@@ -21,11 +21,12 @@ function CarouselSlide({ image, title, slideNumber, description }) {
           {lastWord}
         </span>
         <p className="w-[90%]  line-clamp-1  pt-2 ">{description}</p>
-        <div className="pt-5 pl-6   flex max-sm:flex-col gap-2 sm:gap-10">
-          <button className="  bg-[#9e6748]  hover:border-2 hover:border-[#9e6748] hover:bg-transparent px-1 sm:px-2 py-1 sm:py-2 rounded-sm text-white hover:text-[#9e6748] w-[100px] ">
+        <div className="pt-5 pl-6 flex max-sm:flex-col gap-2 sm:gap-10 group">
+          <button className="bg-[#9e6748] border-2 border-[#9e6748] px-1 sm:px-2 py-1 sm:py-2 rounded-sm text-white w-[100px] group-hover:bg-transparent hover:bg-transparent group-hover:text-[#9e6748] hover:text-[#9e6748]">
             Shop now
           </button>
-          <button className="  hover:bg-[#9e6748] border-2 border-[#9e6748] group-hover:bg-[#9e6748] sm:px-2 px-1 sm:py-2 py-1 rounded-sm hover:text-white text-[#9e6748] w-[100px]">
+
+          <button className="border-2 border-[#9e6748] px-1 sm:px-2 py-1 sm:py-2 rounded-sm text-[#9e6748] w-[100px] hover:bg-[#9e6748] hover:text-white group-hover:bg-[#9e6748] group-hover:text-white">
             Contact
           </button>
         </div>

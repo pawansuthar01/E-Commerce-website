@@ -25,7 +25,7 @@ function Layout({ children }) {
 
   return (
     <div className="min-h-[90vh]">
-      <div className="sm:hidden">
+      <div className="">
         <nav className="flex z-50 relative justify-between h-[36px]  w-[100%] items-center mt-4 mb-4">
           <label htmlFor="my-drawer" className=" relative cursor-pointer ">
             <FiMenu
@@ -34,8 +34,57 @@ function Layout({ children }) {
               className=" font-bold m-4 text-gray-800 "
             />
           </label>
-          <div className="flex gap-5 text-4xl font-bold text-black">
-            <div className=" cursor-pointer ">
+          <div className="max-sm:hidden flex w-full justify-center mt-4 ">
+            <label
+              for="default-search"
+              class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+            >
+              Search
+            </label>
+            <div class="relative w-1/2  ">
+              <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none   ">
+                <svg
+                  class="w-4 h-4 text-gray-500 dark:text-gray-400"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                  />
+                </svg>
+              </div>
+              <input
+                type="search"
+                id="default-search"
+                class="w-full p-4 ps-10 text-sm outline-none text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="Search Mockups, Logos..."
+                required
+              />
+              <button
+                type="submit"
+                class="text-white absolute end-2.5 bottom-2.5 bg-blue-700  border-blue-700 hover:bg-transparent hover:text-blue-700 hover:border-2 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              >
+                Search
+              </button>
+            </div>
+          </div>
+          <div className="flex gap-5 text-4xl font-bold text-black items-center mt-4">
+            <div className="max-sm:hidden flex">
+              {!isLoggedIn && (
+                <Link to="/Login">
+                  <button className=" text-sm  bg-blue-700 border-blue-700  px-8 py-3 font-medium  text-white rounded-md w-full hover:bg-transparent hover:text-blue-700 hover:border-2 ">
+                    Login
+                  </button>
+                </Link>
+              )}
+            </div>
+            <div className=" cursor-pointer sm:hidden ">
               <FaMagnifyingGlass size={"20px"} />
             </div>
             <div className=" cursor-pointer ">
@@ -90,7 +139,7 @@ function Layout({ children }) {
               {isLoggedIn && (
                 <li className="w-[90%] absolute  bottom-4">
                   <div className=" flex items-center justify-center  w-full flex-wrap">
-                    <Link to="/profile">
+                    <Link to="/Profile">
                       <button className="btn btn-primary px-8 py-1  rounded-md font-semibold w-full ">
                         profile
                       </button>
@@ -107,7 +156,7 @@ function Layout({ children }) {
           </div>
         </div>
       </div>
-      <div className="max-sm:hidden flex mt-1 ">
+      {/* <div className="hidden  mt-1 ">
         <nav
           className="flex w-full absolute z-50  justify-between
           items-center"
@@ -159,7 +208,7 @@ function Layout({ children }) {
             </div>
           )}
         </nav>
-      </div>
+      </div> */}
       {children}
       <Footer />
     </div>

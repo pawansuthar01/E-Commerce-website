@@ -8,7 +8,7 @@ function Footer() {
     <footer className=" relative  py-4     bottom-0 left-0 w-full bg-[#FAFAFB]">
       <h1 className="text-center text-3xl font-semibold">KGS DOORS</h1>
 
-      <div className="flex justify-center max-sm:gap-6 gap-36  max-sm:items-center p-5 max-sm:flex-col  max-sm:text-center ">
+      <div className="flex justify-evenly max-sm:gap-6 gap-36  max-sm:items-center p-5 max-sm:flex-col  max-sm:text-center ">
         <div>
           <ul className="flex flex-col gap-1">
             <h1 className="text-2xl font-semibold text-gray-950">About</h1>
@@ -30,8 +30,12 @@ function Footer() {
         <div>
           <ul className="flex flex-col gap-1">
             <h1 className="text-2xl font-semibold">Contact</h1>
-            <li>Kgs@gamil.com</li>
-            <li>+91 9950352887</li>
+            <li className=" cursor-pointer hover:text-blue-800 ">
+              Kgs@gamil.com
+            </li>
+            <li className=" cursor-pointer hover:text-blue-800 ">
+              +91 9950352887
+            </li>
           </ul>
         </div>
       </div>
