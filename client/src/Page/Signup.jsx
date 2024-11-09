@@ -9,8 +9,9 @@ function SignUp() {
   const [previewImage, setPreviewImage] = useState("");
   return (
     <Layout>
+      3
       <div className=" w-full">
-        <div className=" relative  top-[-64px]  justify-center flex items-center">
+        <div className=" relative 2 top-[-64px]  justify-center flex items-center">
           <div className="bg-white max-sm:mt-20 mt-44 mb-10 w-[400px] rounded-lg shadow-[0_0_5px_black] p-8 h-[600px] max-sm:m-9 ">
             <h1 className="text-center text-3xl font-semibold mb-6 text-[#9e6748]">
               Create Your Account

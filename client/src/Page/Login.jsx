@@ -7,7 +7,7 @@ function Login() {
     <Layout>
       <div className=" w-full relative top-[-64px]">
         <div className=" min-h-[70vh] justify-center flex items-center ">
-          <div className="bg-white w-[400px] rounded-lg  p-8 h-[350px] max-sm:m-9 shadow-[0_0_5px_black] mt-10 ">
+          <div className="bg-white w-[400px] rounded-lg  p-8 h-[350px] max-sm:m-9 shadow-[0_0_5px_black] mt-4 ">
             <h1 className="text-center text-3xl font-semibold mb-6 text-[#9e6748]">
               LOGIN
             </h1>

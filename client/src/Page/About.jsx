@@ -1,6 +1,8 @@
 import Layout from "../layout/layout";
 import AboutImage from "../assets/home/download.jpg";
+import { useNavigate } from "react-router-dom";
 function About() {
+  const navigate = useNavigate();
   return (
     <Layout>
       <div className="sm:mt-[200px] relative max-sm:mt-2">
