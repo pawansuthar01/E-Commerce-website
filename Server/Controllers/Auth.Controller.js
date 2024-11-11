@@ -40,7 +40,7 @@ export const RegisterUser = async (req, res, next) => {
         const avatarUpload = await cloudinary.v2.uploader.upload(
           req.file.path,
           {
-            folder: "Avatar",
+            folder: "content",
             width: 250,
             height: 250,
             gravity: "faces",
@@ -74,6 +74,7 @@ export const RegisterUser = async (req, res, next) => {
 };
 export const login = async (req, res, next) => {
   const { email, password } = req.body;
+  console.log(req);
   if (!email || !password) {
     return next(new AppError(" All felids is required", 400));
   }
@@ -293,9 +294,19 @@ export const UpdateUserProfile = async (req, res, next) => {
 export const getAllDate = async (req, res, next) => {
   try {
     const allUser = await User.find({});
+    const allUserCount = await User.countDocuments();
+    const allADMINCount = await User.countDocuments({
+      role: "ADMIN",
+    });
+    const allAUTHORCount = await User.countDocuments({
+      role: "AUTHOR",
+    });
     res.status(200).json({
       success: true,
-      data: allUser,
+      allUserCount,
+      allADMINCount,
+      allAUTHORCount,
+      allUser,
       message: "successfully allUser get..",
     });
   } catch (error) {

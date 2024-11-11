@@ -21,11 +21,12 @@ export const isLoggedIn = async (req, res, next) => {
   }
   next();
 };
-export const authorizeRoles = (...roles) => {
+
+export const authorizeRoles =
+  (...roles) =>
   async (req, res, next) => {
     if (!roles.includes(req.user.role)) {
       return next(new AppError("you have not permission for this work", 400));
     }
     next();
   };
-};
