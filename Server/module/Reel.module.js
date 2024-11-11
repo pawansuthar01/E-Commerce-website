@@ -21,6 +21,23 @@ const ReelSchema = new Schema(
         type: String,
       },
     },
+    numberOfComment: {
+      type: Number,
+      default: 0,
+    },
+    comments: [
+      {
+        type: String,
+        userName: {
+          type: String,
+          required: [true, "userName is required.."],
+        },
+        comment: {
+          type: String,
+          required: [true, "comment is required.."],
+        },
+      },
+    ],
   },
   {
     timestamps: true,

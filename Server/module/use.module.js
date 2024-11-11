@@ -5,6 +5,13 @@ import JWT from "jsonwebtoken";
 import crypto from "crypto";
 const UserSchema = new Schema(
   {
+    userName: {
+      type: String,
+      required: [true, "username is required"],
+      unique: [true, "username is registered"],
+      trim: true,
+      lowercase: true,
+    },
     fullName: {
       type: "string",
       required: [true, "name is required"],
@@ -24,7 +31,7 @@ const UserSchema = new Schema(
       ],
     },
     password: {
-      type: "string",
+      type: String,
       required: [true, "name is required"],
       minLength: [8, "password must be 8 char"],
       select: false,

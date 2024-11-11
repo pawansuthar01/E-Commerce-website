@@ -21,6 +21,21 @@ const PostSchema = new Schema(
         type: String,
       },
     },
+
+    comments: [
+      {
+        userName: String,
+
+        comment: String,
+      },
+      {
+        timestamps: true,
+      },
+    ],
+    numberOfComment: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

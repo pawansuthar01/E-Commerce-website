@@ -11,8 +11,8 @@ const cookieOption = {
   secure: true,
 };
 export const RegisterUser = async (req, res, next) => {
-  const { fullName, email, password } = req.body;
-  if (!fullName || !email || !password) {
+  const { userName, fullName, email, password } = req.body;
+  if (!fullName || !email || !password || !userName) {
     return next(new AppError(" All felids is required", 400));
   }
   try {
@@ -21,6 +21,7 @@ export const RegisterUser = async (req, res, next) => {
       return next(new AppError(" email is already exist", 400));
     }
     const user = await User.create({
+      userName,
       fullName,
       email,
       password,
