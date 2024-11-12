@@ -32,6 +32,22 @@ const PostSchema = new Schema(
         timestamps: true,
       },
     ],
+    PostLikes: [
+      {
+        likeCount: {
+          type: Number,
+          default: 0,
+        },
+        PostLike: {
+          type: String,
+          userName: {
+            type: String,
+            required: [true, "like be most required userName"],
+          },
+          timestamps: true,
+        },
+      },
+    ],
     numberOfComment: {
       type: Number,
       default: 0,

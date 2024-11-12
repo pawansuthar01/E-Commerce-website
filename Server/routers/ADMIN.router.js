@@ -2,12 +2,10 @@ import { Router } from "express";
 import { authorizeRoles, isLoggedIn } from "../Middleware/authMiddleware.js";
 import { getAllDate } from "../Controllers/Auth.Controller.js";
 import {
-  addCommentPost,
   deletePostById,
   deleteReelById,
   getAllPost,
   getAllReel,
-  getPost,
   getReel,
   postUpdate,
   reelUpdate,
@@ -32,7 +30,7 @@ ADMINRouter.get(
   getAllReel
 );
 ADMINRouter.route("/Post/:id")
-  .get(isLoggedIn, authorizeRoles("ADMIN", "AUTHOR"), getPost)
+
   .delete(isLoggedIn, authorizeRoles("ADMIN", "AUTHOR"), deletePostById)
 
   .put(isLoggedIn, authorizeRoles("ADMIN", "AUTHOR"), postUpdate);

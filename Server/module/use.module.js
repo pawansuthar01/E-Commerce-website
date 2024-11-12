@@ -10,21 +10,19 @@ const UserSchema = new Schema(
       required: [true, "username is required"],
       unique: [true, "username is registered"],
       trim: true,
-      lowercase: true,
     },
     fullName: {
       type: "string",
       required: [true, "name is required"],
       minLength: [5, "name must be 5 char"],
       trim: true,
-      lowercase: true,
     },
     email: {
       type: "string",
       required: [true, "name is required"],
       unique: [true, "email is registered"],
       trim: true,
-      lowercase: true,
+
       match: [
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
         "Please fill in a valid email address",
@@ -46,6 +44,27 @@ const UserSchema = new Schema(
         type: String,
       },
     },
+    walletAddProducts: [
+      {
+        product: {
+          type: String,
+
+          timestamps: true,
+        },
+      },
+    ],
+    ProductLikes: [
+      {
+        likeCount: {
+          type: Number,
+          default: 0,
+        },
+        ProductLike: {
+          type: String,
+          timestamps: true,
+        },
+      },
+    ],
     role: {
       type: String,
       enum: ["USER", "ADMIN", "AUTHOR "],
@@ -68,6 +87,7 @@ UserSchema.methods = {
   generateJWTToken: async function () {
     return await JWT.sign(
       {
+        userName: this.userName,
         id: this._id,
         email: this.email,
         role: this.role,

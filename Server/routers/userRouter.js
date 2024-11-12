@@ -11,7 +11,7 @@ import {
   UpdateUserProfile,
 } from "../Controllers/Auth.Controller.js";
 import upload from "../Middleware/multerMiddleware.js";
-import { authorizeRoles, isLoggedIn } from "../Middleware/authMiddleware.js";
+import { isLoggedIn } from "../Middleware/authMiddleware.js";
 const UserRouter = Router();
 UserRouter.post("/register", upload.single("avatar"), RegisterUser);
 UserRouter.post("/login", login);
@@ -20,7 +20,7 @@ UserRouter.get("/getProfile", isLoggedIn, getProfile);
 UserRouter.post("/resetPassword", resetPassword);
 UserRouter.post("/changePassword:resetToken", changePassword);
 UserRouter.post("/updatePassword", isLoggedIn, updatePassword);
-UserRouter.post(
+UserRouter.put(
   "/UpdateProfile",
   isLoggedIn,
   upload.single("avatar"),

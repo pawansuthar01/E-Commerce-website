@@ -27,14 +27,27 @@ const ReelSchema = new Schema(
     },
     comments: [
       {
-        type: String,
-        userName: {
-          type: String,
-          required: [true, "userName is required.."],
+        userName: String,
+
+        comment: String,
+      },
+      {
+        timestamps: true,
+      },
+    ],
+    PostLikes: [
+      {
+        likeCount: {
+          type: Number,
+          default: 0,
         },
-        comment: {
+        PostLike: {
           type: String,
-          required: [true, "comment is required.."],
+          userName: {
+            type: String,
+            required: [true, "like be most required userName"],
+          },
+          timestamps: true,
         },
       },
     ],

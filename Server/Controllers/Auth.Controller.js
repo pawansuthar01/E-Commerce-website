@@ -16,6 +16,10 @@ export const RegisterUser = async (req, res, next) => {
     return next(new AppError(" All felids is required", 400));
   }
   try {
+    const userNameExit = await User.findOne({ userName });
+    if (userNameExit) {
+      return next(new AppError(" userName is already exist", 400));
+    }
     const userExist = await User.findOne({ email });
     if (userExist) {
       return next(new AppError(" email is already exist", 400));

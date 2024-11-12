@@ -1,5 +1,6 @@
 import Post from "../module/Post.module.js";
 import Reel from "../module/Reel.module.js";
+import User from "../module/use.module.js";
 import AppError from "../utils/AppError.js";
 import cloudinary from "cloudinary";
 import fs from "fs/promises";
@@ -273,7 +274,9 @@ export const getAllPost = async (req, res, next) => {
 };
 // comment api//for post///
 export const addCommentPost = async (req, res, next) => {
-  const { comment, userName } = req.body;
+  const { comment } = req.body;
+
+  const { userName } = req.user;
   const { id } = req.params;
   if (!comment || !userName) {
     return next(new AppError("all filed is required", 400));
@@ -284,6 +287,10 @@ export const addCommentPost = async (req, res, next) => {
   }
 
   try {
+    const userNameExit = await User.findOne({ userName });
+    if (!userNameExit) {
+      return next(new AppError("enter valid user name,please try again", 400));
+    }
     const post = await Post.findById(id);
 
     if (!post) {
@@ -307,7 +314,9 @@ export const addCommentPost = async (req, res, next) => {
   }
 };
 export const exitCommentInPostById = async (req, res, next) => {
-  const { comment, userName } = req.body;
+  const { comment } = req.body;
+  const { userName } = req.user;
+
   const { postId, commentId } = req.query;
   if (!userName) {
     return next(new AppError("username is required", 400));
@@ -341,7 +350,7 @@ export const exitCommentInPostById = async (req, res, next) => {
   }
 };
 export const deleteCommentInPostById = async (req, res, next) => {
-  const { userName } = req.body;
+  const { userName } = req.user;
   const { postId, commentId } = req.query;
   if (!postId || !commentId) {
     return next(new AppError("postId and CommentId is required", 400));
@@ -386,7 +395,8 @@ export const deleteCommentInPostById = async (req, res, next) => {
 };
 // comment api for reel//
 export const addCommentReel = async (req, res, next) => {
-  const { comment, userName } = req.body;
+  const { comment } = req.body;
+  const { userName } = req.user;
   const { id } = req.params;
   if (!comment || !userName) {
     return next(new AppError("all filed is required", 400));
@@ -397,6 +407,10 @@ export const addCommentReel = async (req, res, next) => {
   }
 
   try {
+    const userNameExit = await User.findOne({ userName });
+    if (!userNameExit) {
+      return next(new AppError("enter valid user name,please try again", 400));
+    }
     const reel = await Reel.findById(id);
 
     if (!reel) {
@@ -420,7 +434,9 @@ export const addCommentReel = async (req, res, next) => {
   }
 };
 export const exitCommentInReelById = async (req, res, next) => {
-  const { comment, userName } = req.body;
+  const { comment } = req.body;
+  const { userName } = req.user;
+
   const { postId, commentId } = req.query;
   if (!userName) {
     return next(new AppError("username is required", 400));
@@ -456,7 +472,7 @@ export const exitCommentInReelById = async (req, res, next) => {
   }
 };
 export const deleteCommentInReelById = async (req, res, next) => {
-  const { userName } = req.body;
+  const { userName } = req.user;
   const { postId, commentId } = req.query;
   if (!postId || !commentId) {
     return next(new AppError("postId and CommentId is required", 400));
