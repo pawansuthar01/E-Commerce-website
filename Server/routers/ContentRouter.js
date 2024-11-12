@@ -4,15 +4,20 @@ import {
   addCommentReel,
   deleteCommentInPostById,
   deleteCommentInReelById,
+  LikeAndDisLikePost,
   exitCommentInPostById,
   exitCommentInReelById,
   getPost,
   getReel,
   PostUpload,
   ReelUpload,
+  LikeAndDisLikeReel,
 } from "../Controllers/Content.Controller.js";
+
 import { authorizeRoles, isLoggedIn } from "../Middleware/authMiddleware.js";
+
 import upload from "../Middleware/multerMiddleware.js";
+
 const ContentRouter = Router();
 ContentRouter.post(
   "/post",
@@ -31,11 +36,13 @@ ContentRouter.post(
 
 ContentRouter.route("/Post/:id")
   .post(isLoggedIn, addCommentPost)
-  .get(isLoggedIn, getPost);
+  .get(isLoggedIn, getPost)
+  .put(isLoggedIn, LikeAndDisLikePost);
 
 ContentRouter.route("/Reel/:id")
   .post(isLoggedIn, addCommentReel)
-  .get(isLoggedIn, getReel);
+  .get(isLoggedIn, getReel)
+  .put(isLoggedIn, LikeAndDisLikeReel);
 
 ContentRouter.route("/Post")
   .put(isLoggedIn, exitCommentInPostById)

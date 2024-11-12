@@ -35,20 +35,24 @@ const ReelSchema = new Schema(
         timestamps: true,
       },
     ],
-    PostLikes: [
+    likeCount: {
+      type: Number,
+      default: 0,
+    },
+    ReelLikes: [
       {
-        likeCount: {
-          type: Number,
-          default: 0,
-        },
-        PostLike: {
+        ReelLike: {
           type: String,
-          userName: {
-            type: String,
-            required: [true, "like be most required userName"],
-          },
-          timestamps: true,
+          enum: ["TRUE", "FALSE"],
+          default: "FALSE",
         },
+        userName: {
+          type: String,
+          required: [true, "like be most required userName"],
+        },
+      },
+      {
+        timestamps: true,
       },
     ],
   },

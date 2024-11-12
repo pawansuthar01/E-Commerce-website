@@ -250,6 +250,7 @@ export const getAllReel = async (req, res, next) => {
   try {
     const getAllReelCount = await Reel.countDocuments();
     const getAllReel = await Reel.find({}).select("-comments");
+
     res.status(200).json({
       Success: true,
       getAllReelCount,
@@ -510,6 +511,103 @@ export const deleteCommentInReelById = async (req, res, next) => {
       success: true,
 
       message: "comment successfully delete...",
+    });
+  } catch (error) {
+    return next(new AppError(error.message, 400));
+  }
+};
+
+/////like and dislike   post//////
+
+export const LikeAndDisLikePost = async (req, res, next) => {
+  const { id } = req.params;
+  const { userName } = req.user;
+  if (!userName) {
+    return next(new AppError("username is required ..", 400));
+  }
+  if (!id) {
+    return next(new AppError("postId is required ..", 400));
+  }
+  try {
+    const FindPost = await Post.findOne({
+      _id: id,
+    });
+
+    if (!FindPost) {
+      return next(new AppError("post does not found. ..", 400));
+    }
+    const likeIndex = FindPost.PostLikes.findIndex(
+      (like) => like.userName === userName
+    );
+
+    if (likeIndex !== -1) {
+      if (FindPost.PostLikes[likeIndex].PostLike === "TRUE") {
+        FindPost.PostLikes.splice(likeIndex, 1);
+        console.log("successFully disLike ");
+      } else {
+        FindPost.PostLikes[likeIndex].PostLike = "TRUE";
+        console.log("successFully Like ");
+      }
+    } else {
+      FindPost.PostLikes.push({ userName, PostLike: "TRUE" });
+      console.log("successFully Like in full data ");
+    }
+    FindPost.likeCount = FindPost.PostLikes.filter(
+      (like) => like.PostLike == "TRUE"
+    ).length;
+    await FindPost.save();
+    res.status(200).json({
+      success: true,
+      FindPost,
+      message: "pots successfully like...",
+    });
+  } catch (error) {
+    return next(new AppError(error.message, 400));
+  }
+};
+/////like and dislike   reel//////
+
+export const LikeAndDisLikeReel = async (req, res, next) => {
+  const { id } = req.params;
+  const { userName } = req.user;
+  if (!userName) {
+    return next(new AppError("username is required ..", 400));
+  }
+  if (!id) {
+    return next(new AppError("postId is required ..", 400));
+  }
+  try {
+    const FindReel = await Reel.findOne({
+      _id: id,
+    });
+
+    if (!FindReel) {
+      return next(new AppError("post does not found. ..", 400));
+    }
+    const likeIndex = FindReel.ReelLikes.findIndex(
+      (like) => like.userName === userName
+    );
+
+    if (likeIndex !== -1) {
+      if (FindReel.ReelLikes[likeIndex].ReelLike === "TRUE") {
+        FindReel.ReelLikes.splice(likeIndex, 1);
+        console.log("successFully disLike ");
+      } else {
+        FindReel.ReelLikes[likeIndex].ReelLike = "TRUE";
+        console.log("successFully Like ");
+      }
+    } else {
+      FindReel.ReelLikes.push({ userName, ReelLike: "TRUE" });
+      console.log("successFully Like ");
+    }
+    FindReel.likeCount = FindReel.ReelLikes.filter(
+      (like) => like.ReelLike == "TRUE"
+    ).length;
+    await FindReel.save();
+    res.status(200).json({
+      success: true,
+      FindReel,
+      message: "Reel successfully like...",
     });
   } catch (error) {
     return next(new AppError(error.message, 400));

@@ -4,7 +4,6 @@ import cloudinary from "cloudinary";
 import fs from "fs/promises";
 import crypto from "crypto";
 import SendEmail from "../utils/SendEmial.js";
-import { token } from "morgan";
 const cookieOption = {
   maxAge: 7 * 24 * 60 * 60 * 1000,
   httpOnly: true,
