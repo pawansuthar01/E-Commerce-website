@@ -64,9 +64,10 @@ export const RegisterUser = async (req, res, next) => {
       }
     }
     await user.save();
-    const Token = await user.generateJWTToken();
+    const token = await user.generateJWTToken();
     user.password = undefined;
-    res.cookie("token", Token, cookieOption);
+    console.log(token);
+    res.cookie("token", token, cookieOption);
     res.status(200).json({
       success: true,
       data: user,
@@ -78,7 +79,6 @@ export const RegisterUser = async (req, res, next) => {
 };
 export const login = async (req, res, next) => {
   const { email, password } = req.body;
-  console.log(req);
   if (!email || !password) {
     return next(new AppError(" All felids is required", 400));
   }
@@ -105,6 +105,7 @@ export const login = async (req, res, next) => {
 };
 
 export const logout = async (req, res, next) => {
+  console.log("yes");
   try {
     res.cookie("token", null, {
       maxAge: 0,

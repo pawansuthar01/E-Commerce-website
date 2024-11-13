@@ -2,12 +2,15 @@ import JWT from "jsonwebtoken";
 import AppError from "../utils/AppError.js";
 
 export const isLoggedIn = async (req, res, next) => {
-  const { token } = req.cookies;
-  if (!token) {
-    return next(new AppError("unAuthentication please login..", 400));
-  }
   try {
+    const { token } = req.cookies;
+    console.log(token);
+    if (!token) {
+      return next(new AppError("Unauthenticated,please login ", 500));
+    }
+
     const UserDetails = await JWT.verify(token, process.env.JWT_SECRET);
+
     if (!UserDetails) {
       return next(new AppError("Token is not valid please login..", 400));
     }

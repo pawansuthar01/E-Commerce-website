@@ -3,11 +3,18 @@ import { FiMenu, FiShoppingCart } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/download-removebg-preview.png";
 import { FaMagnifyingGlass, FaMoon, FaSun, FaUser } from "react-icons/fa6";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import Footer from "../Components/footer";
+import LoadingButton from "../constants/LoadingBtn";
+import { useState } from "react";
+import { LogoutAccount } from "../Redux/Slice/authSlice";
+
 function Layout({ children }) {
-  const Navigate = useNavigate();
+  const [loading, setLoading] = useState("");
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state?.auth?.isLoggedIn);
   const role = useSelector((state) => state?.auth?.role);
   function changeWight() {
@@ -23,10 +30,20 @@ function Layout({ children }) {
     drawerSide[0].style.width = "0";
   }
 
+  const handelLogout = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const res = await dispatch(LogoutAccount());
+    console.log(res);
+    if (res) {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="min-h-[90vh]">
-      <div className="">
-        <nav className="flex z-50 relative justify-between h-[36px]  w-[100%] items-center mt-4 mb-4">
+    <div className="min-h-[90vh]  ">
+      <div className=" sticky top-0 z-50">
+        <nav className="flex   z-50 bg-white  justify-between   w-[100%] items-center">
           <label htmlFor="my-drawer" className=" relative cursor-pointer ">
             <FiMenu
               onClick={changeWight}
@@ -34,7 +51,7 @@ function Layout({ children }) {
               className=" font-bold m-4 text-gray-800 "
             />
           </label>
-          <div className="max-sm:hidden flex w-full justify-center mt-4 ">
+          <div className="max-sm:hidden flex w-full justify-center  ">
             <label
               htmlFor="default-search"
               className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
@@ -74,7 +91,7 @@ function Layout({ children }) {
               </button>
             </div>
           </div>
-          <div className="flex gap-5 text-4xl font-bold text-black items-center mt-4">
+          <div className="flex gap-5 text-4xl font-bold text-black items-center">
             <div className="max-sm:hidden flex">
               {!isLoggedIn && (
                 <Link to="/Login">
@@ -89,8 +106,8 @@ function Layout({ children }) {
                 <FaMagnifyingGlass size={"20px"} />
               </div>
             </Link>
-            <div className=" cursor-pointer ">
-              <FaUser size={"20px"} />
+            <div className=" cursor-pointer hover:text-green-400">
+              <FaUser size={"20px"} onClick={() => navigate("/Profile")} />
             </div>
 
             <div className=" cursor-pointer mr-4">
@@ -139,78 +156,32 @@ function Layout({ children }) {
                 </li>
               )}
               {isLoggedIn && (
-                <li className="w-[90%] absolute  bottom-4">
-                  <div className=" flex items-center justify-center  w-full flex-wrap">
-                    <Link to="/Profile">
-                      <button className="btn btn-primary px-8 py-1  rounded-md font-semibold w-full ">
-                        profile
-                      </button>
+                <div className="w-[90%] absolute  bottom-4 ">
+                  <div className=" flex  items-center justify-center  w-full ">
+                    <Link to="/Profile" className="w-1/2">
+                      <LoadingButton
+                        name={"Profile"}
+                        message={"Loading"}
+                        color={"bg-green-500"}
+                      />
                     </Link>
-                    <Link>
-                      <button className="btn btn-secondary px-8 py-1  rounded-md font-semibold w-full">
-                        Logout
-                      </button>
+                    <Link onClick={handelLogout} className="w-1/2  ml-1">
+                      <LoadingButton
+                        loading={loading}
+                        name={"Logout"}
+                        message={"Loading"}
+                        color={"bg-red-500"}
+                        onClick={handelLogout}
+                      />
                     </Link>
                   </div>
-                </li>
+                </div>
               )}
             </ul>
           </div>
         </div>
       </div>
-      {/* <div className="hidden  mt-1 ">
-        <nav
-          className="flex w-full absolute z-50  justify-between
-          items-center"
-        >
-          <img src={logo} alt="logo_image" className="  w-[90px] object-fill" />
-          <div
-            className="flex    pl-10
-           gap-8 text-black font-semibold"
-          >
-            <Link to="/" className=" hover:text-green-400">
-              Home
-            </Link>
-            <Link to="/Shop" className=" hover:text-green-400">
-              Shop
-            </Link>
-            <Link to="/About" className=" hover:text-green-400">
-              About
-            </Link>
-            <Link to="/Contact" className=" hover:text-green-400">
-              Contact
-            </Link>
-          </div>
-          {!isLoggedIn && (
-            <div className=" flex gap-2 mr-1">
-              <Link to="/Login">
-                <button className=" btn btn-primary px-8 py-1  rounded-xl font-semibold ">
-                  Login
-                </button>
-              </Link>
-              <Link to="/SignUp">
-                <button className=" btn btn-secondary px-8 py-1  rounded-xl font-semibold  ">
-                  SignUp
-                </button>
-              </Link>
-            </div>
-          )}
-          {isLoggedIn && (
-            <div className=" flex gap-2 mr-1">
-              <Link to="/profile">
-                <button className="btn btn-primary px-8 py-1   rounded-xl font-semibold  ">
-                  profile
-                </button>
-              </Link>
-              <Link>
-                <button className="btn btn-secondary px-8 py-1   rounded-xl font-semibold">
-                  Shop
-                </button>
-              </Link>
-            </div>
-          )}
-        </nav>
-      </div> */}
+
       {children}
       <Footer />
     </div>

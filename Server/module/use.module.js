@@ -48,26 +48,18 @@ const UserSchema = new Schema(
       {
         product: {
           type: String,
+          timestamps: true,
+        },
+      },
 
-          timestamps: true,
-        },
-      },
-    ],
-    ProductLikes: [
       {
-        likeCount: {
-          type: Number,
-          default: 0,
-        },
-        ProductLike: {
-          type: String,
-          timestamps: true,
-        },
+        timestamps: true,
       },
     ],
+
     role: {
       type: String,
-      enum: ["USER", "ADMIN", "AUTHOR "],
+      enum: ["USER", "ADMIN", "AUTHOR"],
       default: "USER",
     },
     forgotPasswordToken: { type: String },

@@ -10,6 +10,8 @@ import SignUp from "./Page/Signup";
 import Contact from "./Page/Contact";
 import Search from "./Page/Product";
 import Product from "./Page/Product";
+import Profile from "./Page/User/Profile";
+import RequireAuth from "./Components/Auth/RequireRole";
 function App() {
   return (
     <Routes>
@@ -21,7 +23,9 @@ function App() {
       <Route path="/Contact" element={<Contact />}></Route>
 
       <Route path="/About" element={<About />}></Route>
-      <Route element={<CheckRolePermission allowedRole={"USER"} />}></Route>
+      <Route element={<RequireAuth allowedRole={["USER"]} />}>
+        <Route path="/Profile" element={<Profile />}></Route>
+      </Route>
 
       <Route path="/Denied" element={<Denied />}></Route>
       <Route path="*" element={<NotFoundPage />}></Route>

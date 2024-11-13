@@ -1,9 +1,10 @@
 import { useSelector } from "react-redux";
 import { Navigate, Outlet, useNavigate } from "react-router-dom";
 
-function CheckRolePermission({ allowedRole }) {
-  const navigate = useNavigate();
+function RequireAuth({ allowedRole }) {
+  const navigate = useNavigate;
   const { isLoggedIn, role } = useSelector((state) => state.auth);
+
   return isLoggedIn && allowedRole.find((myRole) => myRole == role) ? (
     <Outlet />
   ) : isLoggedIn ? (
@@ -12,4 +13,4 @@ function CheckRolePermission({ allowedRole }) {
     <Navigate to="/Login" />
   );
 }
-export default CheckRolePermission;
+export default RequireAuth;

@@ -4,10 +4,11 @@ import User from "../module/use.module.js";
 import AppError from "../utils/AppError.js";
 import cloudinary from "cloudinary";
 import fs from "fs/promises";
+import { CreateNotification } from "../utils/CreateNotification.js";
 // post //
 export const PostUpload = async (req, res, next) => {
+  const { id } = req.user;
   const { title, description } = req.body;
-  console.log("this");
 
   if (!title || !description) {
     return next(new AppError("All fields are required", 400));
@@ -55,9 +56,13 @@ export const PostUpload = async (req, res, next) => {
 
   await post.save();
 
+  const message = `New Post "${title}" has been uploaded!`;
+
+  await CreateNotification(id, message, "blog");
+
   res.status(201).json({
     success: true,
-    message: "Post  successfully Upload...",
+    message: "Post  successfully Upload... and send notification",
     post,
   });
 };
@@ -131,6 +136,7 @@ export const deletePostById = async (req, res, next) => {
 
 // reel //
 export const ReelUpload = async (req, res, next) => {
+  const { id } = req.user;
   const { title, description } = req.body;
 
   if (!description || !title) {
@@ -170,10 +176,13 @@ export const ReelUpload = async (req, res, next) => {
       );
     }
     await reel.save();
+    const message = `New Reel "${title}" has been uploaded!`;
+
+    await CreateNotification(id, message, "blog");
     res.status(200).json({
       success: true,
       data: reel,
-      Message: "successfully Reel...",
+      Message: "successfully Reel Upload.. and send notification.",
     });
   } catch (error) {
     new AppError(error.message, 400);
@@ -304,6 +313,11 @@ export const addCommentPost = async (req, res, next) => {
 
     post.numberOfComment = post.comments.length;
     await post.save();
+    const UserId = userNameExit._id;
+    console.log(UserId);
+
+    const message = `${userName}comment your post${post.title}`;
+    await CreateNotification(UserId, message, "comment");
     res.status(200).json({
       success: true,
       data: post,
@@ -424,6 +438,9 @@ export const addCommentReel = async (req, res, next) => {
 
     reel.numberOfComment = reel.comments.length;
     await reel.save();
+    const UserId = userNameExit._id;
+    const message = `${userName}comment your reel${reel.title}`;
+    await CreateNotification(UserId, message, "comment");
     res.status(200).json({
       success: true,
       data: reel,
@@ -556,15 +573,18 @@ export const LikeAndDisLikePost = async (req, res, next) => {
       (like) => like.PostLike == "TRUE"
     ).length;
     await FindPost.save();
+    console.log(FindPost.title);
+
     res.status(200).json({
       success: true,
       FindPost,
-      message: "pots successfully like...",
+      message: "pots successfully like.. and send notification.",
     });
   } catch (error) {
     return next(new AppError(error.message, 400));
   }
 };
+
 /////like and dislike   reel//////
 
 export const LikeAndDisLikeReel = async (req, res, next) => {
@@ -604,10 +624,11 @@ export const LikeAndDisLikeReel = async (req, res, next) => {
       (like) => like.ReelLike == "TRUE"
     ).length;
     await FindReel.save();
+
     res.status(200).json({
       success: true,
       FindReel,
-      message: "Reel successfully like...",
+      message: "Reel successfully like. and send notification..",
     });
   } catch (error) {
     return next(new AppError(error.message, 400));

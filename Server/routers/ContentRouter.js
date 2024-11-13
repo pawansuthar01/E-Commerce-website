@@ -9,30 +9,12 @@ import {
   exitCommentInReelById,
   getPost,
   getReel,
-  PostUpload,
-  ReelUpload,
   LikeAndDisLikeReel,
 } from "../Controllers/Content.Controller.js";
 
-import { authorizeRoles, isLoggedIn } from "../Middleware/authMiddleware.js";
-
-import upload from "../Middleware/multerMiddleware.js";
+import { isLoggedIn } from "../Middleware/authMiddleware.js";
 
 const ContentRouter = Router();
-ContentRouter.post(
-  "/post",
-  isLoggedIn,
-  authorizeRoles("ADMIN", "AUTHOR"),
-  upload.single("post"),
-  PostUpload
-);
-ContentRouter.post(
-  "/Reel",
-  isLoggedIn,
-  authorizeRoles("ADMIN", "AUTHOR"),
-  upload.single("reel"),
-  ReelUpload
-);
 
 ContentRouter.route("/Post/:id")
   .post(isLoggedIn, addCommentPost)

@@ -7,6 +7,8 @@ import cors from "cors";
 import ErrorMiddleware from "./Middleware/Error.Middleware.js";
 import ContentRouter from "./routers/ContentRouter.js";
 import ADMINRouter from "./routers/ADMIN.router.js";
+import ProductRouter from "./routers/Product.router.js";
+import CardRouter from "./routers/Card.Router.js";
 
 const app = express();
 
@@ -15,6 +17,10 @@ dataBaseConnection();
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  next();
+});
 
 app.use(express.urlencoded({ extended: true }));
 app.use(
@@ -32,6 +38,8 @@ app.use("/ping", (req, res, next) => {
 app.use("/api/v3/user", UserRouter);
 app.use("/api/v3/Content", ContentRouter);
 app.use("/api/v3/Admin", ADMINRouter);
+app.use("/api/v3/Product", ProductRouter);
+app.use("/api/v3/Card", CardRouter);
 
 app.use("*", (req, res, next) => {
   res.status(404).send("Oops ! page not found..");

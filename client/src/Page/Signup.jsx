@@ -1,18 +1,121 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Footer from "../Components/footer";
 import { BsPersonCircle } from "react-icons/bs";
 
 import { useState } from "react";
 import Layout from "../layout/layout";
+import LoadingButton from "../constants/LoadingBtn";
+import toast from "react-hot-toast";
+import { isEmail, isValidPassword } from "../helper/regexMatch";
+import { useDispatch } from "react-redux";
+import { CreateAccount } from "../Redux/Slice/authSlice";
 
 function SignUp() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [previewImage, setPreviewImage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [SignUpData, setSignUpData] = useState({
+    fullName: "",
+    userName: "",
+    email: "",
+    avatar: "",
+    password: "",
+    ConfirmPassword: "",
+  });
+  const handelImageInput = (e) => {
+    e.preventDefault();
+    const image = e.target.files[0];
+    if (image) {
+      setSignUpData({
+        ...SignUpData,
+        avatar: image,
+      });
+    }
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(image);
+    fileReader.addEventListener("load", function () {
+      setPreviewImage(this.result);
+    });
+  };
+  const handelUserInput = (e) => {
+    e.preventDefault();
+    const { name, value } = e.target;
+    setSignUpData({
+      ...SignUpData,
+      [name]: value,
+    });
+  };
+
+  const handleCreate = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+    if (
+      !SignUpData.fullName ||
+      !SignUpData.userName ||
+      !SignUpData.password ||
+      !SignUpData.email ||
+      !SignUpData.avatar ||
+      !SignUpData.ConfirmPassword
+    ) {
+      setLoading(false);
+      toast.error("All Filed is required...");
+      return;
+    }
+    // console.log(SignUpData.fullName.length);
+    if (SignUpData.fullName.length < 5) {
+      setLoading(false);
+      toast.error("fullName should be altLeast 5 character..");
+      return;
+    }
+    if (!isEmail(SignUpData.email)) {
+      setLoading(false);
+      toast.error("Invalid email..");
+      return;
+    }
+    if (!isValidPassword(SignUpData.password)) {
+      setLoading(false);
+      toast.error(
+        "password should be 6-16 character and atlLeast a number and one special character.."
+      );
+      return;
+    }
+    if (!SignUpData.password == SignUpData.ConfirmPassword) {
+      setLoading(false);
+      toast.error("Password and ConfirmPassword does not match..");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("fullName", SignUpData.fullName);
+    formData.append("email", SignUpData.email);
+    formData.append("userName", SignUpData.userName);
+    formData.append("avatar", SignUpData.avatar);
+    formData.append("password", SignUpData.password);
+
+    const response = await dispatch(CreateAccount(formData));
+    if (response) {
+      setLoading(false);
+    }
+
+    if (response?.payload?.success) {
+      setLoading(false);
+      navigate("/");
+      setSignUpData({
+        fullName: "",
+        userName: "",
+        email: "",
+        avatar: "",
+        password: "",
+      });
+      setPreviewImage("");
+    }
+  };
+
   return (
     <Layout>
-      3
       <div className=" w-full">
         <div className=" relative 2 top-[-64px]  justify-center flex items-center">
-          <div className="bg-white max-sm:mt-20 mt-44 mb-10 w-[400px] rounded-lg shadow-[0_0_5px_black] p-8 h-[600px] max-sm:m-9 ">
+          <div className="bg-white max-sm:mt-20 mt-44 mb-10 w-[400px] rounded-lg shadow-[0_0_5px_black] p-8  max-sm:m-9 ">
             <h1 className="text-center text-3xl font-semibold mb-6 text-[#9e6748]">
               Create Your Account
             </h1>
@@ -33,7 +136,7 @@ function SignUp() {
               </label>
               <input
                 type="file"
-                //   onChange={handelImageInput}
+                onChange={handelImageInput}
                 className="hidden "
                 name="image_uploads"
                 id="image_uploads"
@@ -42,53 +145,106 @@ function SignUp() {
               <div className="relative mb-6">
                 <input
                   type="text"
-                  name="FullName"
+                  onChange={handelUserInput}
+                  value={SignUpData.userName}
+                  name="userName"
                   required
                   className="peer w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent"
                 />
-                <label className="absolute left-0 top-2 text-lg text-gray-500 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
-                  Full name
-                </label>
+                {SignUpData.userName ? (
+                  <label className=" absolute left-0 top-[-20px] text-sm text-gray-500">
+                    UserName
+                  </label>
+                ) : (
+                  <label className="absolute left-0 top-2 text-lg text-gray-500 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
+                    UserName
+                  </label>
+                )}
               </div>
               <div className="relative mb-6">
                 <input
+                  type="text"
+                  onChange={handelUserInput}
+                  value={SignUpData.fullName}
+                  name="fullName"
+                  required
+                  className="peer w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent"
+                />
+                {SignUpData.fullName ? (
+                  <label className=" absolute left-0 top-[-20px] text-sm text-gray-500">
+                    FullName
+                  </label>
+                ) : (
+                  <label className="absolute left-0 top-2 text-lg text-gray-500 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
+                    FullName
+                  </label>
+                )}
+              </div>
+              <div className="relative mb-6">
+                <input
+                  onChange={handelUserInput}
+                  value={SignUpData.email}
                   type="email"
                   name="email"
                   required
                   className="peer w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent"
                 />
-                <label className="absolute left-0 top-2 text-lg text-gray-500 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
-                  Email
-                </label>
+                {SignUpData.email ? (
+                  <label className=" absolute left-0 top-[-20px] text-sm text-gray-500">
+                    Email
+                  </label>
+                ) : (
+                  <label className="absolute left-0 top-2 text-lg text-gray-500 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
+                    Email
+                  </label>
+                )}
               </div>
               <div className="relative mb-6">
                 <input
+                  onChange={handelUserInput}
+                  value={SignUpData.password}
                   type="password"
                   name="password"
                   required
                   className="peer w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent"
                 />
-                <label className="absolute left-0 top-2 text-lg text-gray-500 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
-                  Password
-                </label>
+                {SignUpData.password ? (
+                  <label className=" absolute left-0 top-[-20px] text-sm text-gray-500">
+                    password
+                  </label>
+                ) : (
+                  <label className="absolute left-0 top-2 text-lg text-gray-500 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
+                    password
+                  </label>
+                )}
               </div>
               <div className="relative mb-6">
                 <input
                   type="password"
+                  onChange={handelUserInput}
+                  value={SignUpData.ConfirmPassword}
                   name="ConfirmPassword"
                   required
                   className="peer w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent"
                 />
-                <label className="absolute left-0 top-2 text-lg text-gray-500 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
-                  Confirm Password
-                </label>
+                {SignUpData.ConfirmPassword ? (
+                  <label className=" absolute left-0 top-[-20px] text-sm text-gray-500">
+                    ConfirmPassword
+                  </label>
+                ) : (
+                  <label className="absolute left-0 top-2 text-lg text-gray-500 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
+                    ConfirmPassword
+                  </label>
+                )}
               </div>
-              <button
-                type="submit"
-                className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                Create
-              </button>
+              <div onClick={handleCreate}>
+                <LoadingButton
+                  loading={loading}
+                  color={"bg-green-600"}
+                  message={"Creating.."}
+                  name={"Create"}
+                />
+              </div>
               <p className="mt-1  text-center">
                 you have a Account ?
                 <Link to="/Login" className="link text-blue-600 pl-1">

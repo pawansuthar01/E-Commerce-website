@@ -5,10 +5,13 @@ import list from "../constants/productlist";
 import ProductCard from "../Components/productCard";
 import CarouselSlide from "../Components/CarouselSlice";
 import { celebrities } from "../constants/Homecarousellist";
+import { io } from "socket.io-client";
+import { useSelector } from "react-redux";
 
 function HomePage() {
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const UserId = useSelector((state) => state?.auth?.data?._id);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -17,9 +20,23 @@ function HomePage() {
 
     return () => clearInterval(interval);
   }, [celebrities.length]);
+  // useEffect(() => {
+  //   const socket = io("http://localhost:5000");
+  //   if (UserId != undefined) {
+  //     socket.emit("join", UserId);
+  //   }
 
+  //   socket.on("newNotification", (message) => {
+  //     // Show notification to the user
+  //     alert(`Notification: ${message}`);
+  //   });
+
+  //   return () => {
+  //     socket.disconnect();
+  //   };
+  // }, [UserId]);
   return (
-    <Layout>
+    <Layout className="">
       <div className=" text-white top-[-64px]  justify-center  flex-col items-center   min-h-[90vh]  relative">
         <div className="w-full carousel">
           {celebrities &&
