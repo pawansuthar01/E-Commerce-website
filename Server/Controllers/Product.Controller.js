@@ -2,7 +2,6 @@ import Product from "../module/Product.module.js";
 import AppError from "../utils/AppError.js";
 import cloudinary from "cloudinary";
 import fs from "fs/promises";
-import { CreateNotification } from "../utils/CreateNotification.js";
 
 // //upload product// //
 export const ProductUpload = async (req, res, next) => {
@@ -44,10 +43,6 @@ export const ProductUpload = async (req, res, next) => {
       }
     }
     await product.save();
-    const postId = product._id;
-    const message = `New product "${name}" has been uploaded!`;
-
-    await CreateNotification(postId, message, "new product");
 
     res.status(200).json({
       success: true,

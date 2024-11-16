@@ -4,10 +4,8 @@ import User from "../module/use.module.js";
 import AppError from "../utils/AppError.js";
 import cloudinary from "cloudinary";
 import fs from "fs/promises";
-import { CreateNotification } from "../utils/CreateNotification.js";
 // post //
 export const PostUpload = async (req, res, next) => {
-  const { id } = req.user;
   const { title, description } = req.body;
 
   if (!title || !description) {
@@ -55,10 +53,6 @@ export const PostUpload = async (req, res, next) => {
   }
 
   await post.save();
-
-  const message = `New Post "${title}" has been uploaded!`;
-
-  await CreateNotification(id, message, "blog");
 
   res.status(201).json({
     success: true,
@@ -136,7 +130,6 @@ export const deletePostById = async (req, res, next) => {
 
 // reel //
 export const ReelUpload = async (req, res, next) => {
-  const { id } = req.user;
   const { title, description } = req.body;
 
   if (!description || !title) {
@@ -176,9 +169,7 @@ export const ReelUpload = async (req, res, next) => {
       );
     }
     await reel.save();
-    const message = `New Reel "${title}" has been uploaded!`;
 
-    await CreateNotification(id, message, "blog");
     res.status(200).json({
       success: true,
       data: reel,
@@ -314,11 +305,7 @@ export const addCommentPost = async (req, res, next) => {
 
     post.numberOfComment = post.comments.length;
     await post.save();
-    const UserId = userNameExit._id;
-    console.log(UserId);
 
-    const message = `${userName}comment your post${post.title}`;
-    await CreateNotification(UserId, message, "comment");
     res.status(200).json({
       success: true,
       data: post,
@@ -332,7 +319,6 @@ export const addCommentPost = async (req, res, next) => {
 export const AddReplayToComment = async (req, res, next) => {
   const { postId, commentId } = req.params;
   const { reply } = req.body;
-  console.log(reply);
   const { userName } = req.user;
 
   console.log(userName);
@@ -405,11 +391,11 @@ export const removeReplayToComment = async (req, res, next) => {
 export const exitCommentInPostById = async (req, res, next) => {
   const { comment } = req.body;
   const { userName } = req.user;
-
-  const { postId, commentId } = req.query;
+  const { postId, commentId } = req.params;
   if (!userName) {
     return next(new AppError("username is required", 400));
   }
+
   if (!postId || !commentId) {
     return next(new AppError("postId and CommentId is required", 400));
   }
@@ -514,9 +500,6 @@ export const addCommentReel = async (req, res, next) => {
 
     reel.numberOfComment = reel.comments.length;
     await reel.save();
-    const UserId = userNameExit._id;
-    const message = `${userName}comment your reel${reel.title}`;
-    await CreateNotification(UserId, message, "comment");
     res.status(200).json({
       success: true,
       data: reel,

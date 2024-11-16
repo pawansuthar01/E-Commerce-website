@@ -24,10 +24,16 @@ ContentRouter.route("/Post/:id")
   .get(isLoggedIn, getPost)
   .put(isLoggedIn, LikeAndDisLikePost);
 
-ContentRouter.route("/posts/:postId/comments/:commentId").put(
+ContentRouter.route("/posts/:postId/comments/:commentId/AddNewComment").put(
   isLoggedIn,
   AddReplayToComment
 );
+
+ContentRouter.route("/posts/:postId/comments/:commentId/UpdateComment").put(
+  isLoggedIn,
+  exitCommentInPostById
+);
+
 ContentRouter.route(
   "/posts/:postId/comments/:commentId/replays/:replyId"
 ).delete(isLoggedIn, removeReplayToComment);
@@ -39,7 +45,6 @@ ContentRouter.route("/Reel/:id")
 
 ContentRouter.route("/Post")
   .get(isLoggedIn, getAllPost)
-  .put(isLoggedIn, exitCommentInPostById)
   .put(isLoggedIn, AddReplayToComment)
   .delete(isLoggedIn, deleteCommentInPostById);
 

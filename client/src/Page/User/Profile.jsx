@@ -16,10 +16,6 @@ function Profile() {
   const loadProfile = async (id) => {
     const res = await dispatch(LoadAccount());
   };
-  UserData.data?.walletAddProducts.map((Product) => {
-    console.log(Product);
-  });
-  console.log(UserData.data?.walletAddProducts);
 
   useEffect(() => {
     loadProfile();

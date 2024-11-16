@@ -119,7 +119,7 @@ export const AddCommentToReplay = createAsyncThunk(
     console.log(data);
     try {
       const res = axiosInstance.put(
-        `/api/v3/Content/posts/${data.postId}/comments/${data.commentId}`,
+        `/api/v3/Content/posts/${data.postId}/comments/${data.commentId}/AddNewComment`,
         {
           reply: data.reply,
         }
@@ -154,6 +154,33 @@ export const removeReplayToComment = createAsyncThunk(
 
       toast.promise(res, {
         loading: "please wait! replay delete..",
+        success: (data) => {
+          return data?.data?.message;
+        },
+
+        error: (data) => {
+          return data?.response?.data?.message;
+        },
+      });
+      return (await res).data;
+    } catch (e) {
+      toast.error(e?.response?.message);
+    }
+  }
+);
+export const exitCommentInPostById = createAsyncThunk(
+  "/Content/CommentEdit/Post",
+  async (data) => {
+    try {
+      const res = axiosInstance.put(
+        `/api/v3/Content/posts/${data.postId}/comments/${data.commentId}/UpdateComment`,
+        {
+          comment: data.updatedComment,
+        }
+      );
+
+      toast.promise(res, {
+        loading: "please wait! update comment..",
         success: (data) => {
           return data?.data?.message;
         },

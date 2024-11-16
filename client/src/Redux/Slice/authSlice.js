@@ -118,7 +118,6 @@ const authSliceRedux = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(CreateAccount.fulfilled, (state, action) => {
-        console.log(action);
         localStorage.setItem("data", JSON.stringify(action?.payload?.data));
         localStorage.setItem("isLoggedIn", true);
         localStorage.setItem("role", action?.payload?.data?.role);
@@ -131,7 +130,6 @@ const authSliceRedux = createSlice({
         state.role = action?.payload?.data?.role;
       })
       .addCase(LoginAccount.fulfilled, (state, action) => {
-        console.log(action);
         localStorage.setItem("data", JSON.stringify(action?.payload?.data));
         localStorage.setItem("userName", action?.payload?.data.userName);
         localStorage.setItem("isLoggedIn", true);
@@ -144,7 +142,6 @@ const authSliceRedux = createSlice({
         state.role = action?.payload?.data?.role;
       })
       .addCase(LoadAccount.fulfilled, (state, action) => {
-        console.log(action);
         localStorage.setItem("data", JSON.stringify(action?.payload?.data));
         localStorage.setItem("isLoggedIn", true);
         localStorage.setItem("role", action?.payload?.data.role);

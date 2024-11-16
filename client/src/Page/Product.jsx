@@ -13,7 +13,6 @@ function Product() {
   const dispatch = useDispatch();
   const { product } = useSelector((state) => state.product);
 
- 
   const ProductLoad = async () => {
     await dispatch(getAllProduct());
   };

@@ -58,14 +58,13 @@ export const RegisterUser = async (req, res, next) => {
         fs.rm(`uploads/${req.file.filename}`);
       } catch (error) {
         fs.rm(`uploads/${req.file.filename}`);
-        return next(
-          new AppError(`file upload file try again ${error.message}`, 400)
-        );
+        return next(new AppError(` ${error.message}`, 400));
       }
     }
     await user.save();
     const token = await user.generateJWTToken();
     user.password = undefined;
+    res.cookie("token", token, cookieOption);
     console.log(token);
     res.cookie("token", token, cookieOption);
     res.status(200).json({
