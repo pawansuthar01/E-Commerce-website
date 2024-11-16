@@ -6,12 +6,18 @@ import ProductCard from "../Components/productCard";
 import CarouselSlide from "../Components/CarouselSlice";
 import { celebrities } from "../constants/Homecarousellist";
 import { io } from "socket.io-client";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllProduct } from "../Redux/Slice/ProductSlice";
 
 function HomePage() {
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const dispatch = useDispatch();
   const UserId = useSelector((state) => state?.auth?.data?._id);
+  const { product } = useSelector((state) => state.product);
+  const ProductLoad = async () => {
+    await dispatch(getAllProduct());
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -20,6 +26,9 @@ function HomePage() {
 
     return () => clearInterval(interval);
   }, [celebrities.length]);
+  useEffect(() => {
+    ProductLoad();
+  }, []);
   // useEffect(() => {
   //   const socket = io("http://localhost:5000");
   //   if (UserId != undefined) {
@@ -53,7 +62,13 @@ function HomePage() {
         </div>
         <div className=" flex flex-wrap  max-sm:justify-center justify-evenly  gap-10 my-10">
           {list &&
-            list.map((product, ind) => <ProductCard {...product} key={ind} />)}
+            list.map((product, ind) => (
+              <ProductCard data={product} key={ind} />
+            ))}
+          {product &&
+            product.map((product, ind) => (
+              <ProductCard data={product} key={ind} />
+            ))}
         </div>
       </div>
     </Layout>

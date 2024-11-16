@@ -1,13 +1,30 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Layout from "../../layout/layout";
 import { FiEdit } from "react-icons/fi";
 import bgProfile from "../../assets/home/pexels-photo-29376504.webp";
 import { useNavigate } from "react-router-dom";
+import { getProduct } from "../../Redux/Slice/ProductSlice";
+import { LoadAccount } from "../../Redux/Slice/authSlice";
+import { useEffect } from "react";
+import ProductCard from "../../Components/productCard";
 
 function Profile() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const UserData = useSelector((state) => state?.auth);
-  console.log(UserData);
+
+  const loadProfile = async (id) => {
+    const res = await dispatch(LoadAccount());
+  };
+  UserData.data?.walletAddProducts.map((Product) => {
+    console.log(Product);
+  });
+  console.log(UserData.data?.walletAddProducts);
+
+  useEffect(() => {
+    loadProfile();
+  }, []);
+
   return (
     <Layout>
       <div className="min-h-[100vh] w-full">
@@ -40,29 +57,29 @@ function Profile() {
               />
             </div>
 
-            {UserData?.role === "ADMIN" ? (
-              <div className="flex justify-center items-center text-black">
-                <h1 className="text-xl font-medium">
-                  wellCome
-                  <span className=" font-semibold">{UserData.role}</span>
-                </h1>
-                <div className="flex flex-col">
-                  <h3></h3>
-                  <p></p>
+            {UserData?.role === "ADMIN" ||
+              (UserData?.role === "AUTHOR" && (
+                <div className="flex justify-center items-center text-black">
+                  <h1 className="text-xl font-medium">
+                    WellCome{" "}
+                    <span className=" font-semibold">{UserData.role}</span>
+                  </h1>
+                  <div className="flex flex-col">
+                    <h3></h3>
+                    <p></p>
+                  </div>
+                  <div>
+                    <h3></h3>
+                    <p></p>
+                  </div>
                 </div>
-                <div>
-                  <h3></h3>
-                  <p></p>
-                </div>
-              </div>
-            ) : (
-              <div className="text-center text-black text-xl border-2 shadow-[0_0_2px_black] p-2 rounded-xl">
-                <h1 className="font-bold">
-                  {UserData.data?.walletAddProducts?.length}
-                </h1>
-                <p className=" font-semibold">Add Product</p>
-              </div>
-            )}
+              ))}
+            <div className="text-center text-black text-xl border-2 shadow-[0_0_2px_black] p-2 rounded-xl">
+              <h1 className="font-bold">
+                {UserData.data?.walletAddProducts?.length}
+              </h1>
+              <p className=" font-semibold">Add Product</p>
+            </div>
           </div>
         </div>
         {UserData.data?.walletAddProducts?.length == 0 ? (
@@ -77,7 +94,12 @@ function Profile() {
             </button>
           </div>
         ) : (
-          <h1>hii</h1>
+          <div className=" flex flex-wrap  max-sm:justify-center justify-evenly  gap-10 my-10">
+            {UserData.data?.walletAddProducts &&
+              UserData.data?.walletAddProducts.map((Product, ind) => {
+                return <ProductCard data={Product} key={ind} />;
+              })}
+          </div>
         )}
       </div>
     </Layout>

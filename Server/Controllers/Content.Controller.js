@@ -272,7 +272,7 @@ export const getAllReel = async (req, res, next) => {
 export const getAllPost = async (req, res, next) => {
   try {
     const AllPostGetCount = await Post.countDocuments();
-    const AllPostGet = await Post.find({}).select("-comments");
+    const AllPostGet = await Post.find({});
     res.status(200).json({
       Success: true,
       AllPostGetCount,
@@ -285,7 +285,7 @@ export const getAllPost = async (req, res, next) => {
 // comment api//for post///
 export const addCommentPost = async (req, res, next) => {
   const { comment } = req.body;
-
+  console.log(comment);
   const { userName } = req.user;
   const { id } = req.params;
   if (!comment || !userName) {
@@ -309,6 +309,7 @@ export const addCommentPost = async (req, res, next) => {
     post.comments.push({
       userName: userName,
       comment: comment,
+      createdAt: new Date(),
     });
 
     post.numberOfComment = post.comments.length;
@@ -328,6 +329,79 @@ export const addCommentPost = async (req, res, next) => {
     return next(new AppError(error.message, 400));
   }
 };
+export const AddReplayToComment = async (req, res, next) => {
+  const { postId, commentId } = req.params;
+  const { reply } = req.body;
+  console.log(reply);
+  const { userName } = req.user;
+
+  console.log(userName);
+
+  if (!userName || !reply) {
+    return next(new AppError("Username and reply text are required.", 400));
+  }
+
+  try {
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return next(new AppError("Post not found.", 404));
+    }
+
+    const comment = post.comments.id(commentId);
+
+    if (!comment) {
+      return next(new AppError("Comment not found.", 404));
+    }
+
+    comment.replies.push({ userName, reply, createdAt: new Date() });
+
+    await post.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Reply added successfully.",
+      replies: comment.replies,
+    });
+  } catch (error) {
+    next(new AppError(error.message, 500));
+  }
+};
+export const removeReplayToComment = async (req, res, next) => {
+  const { postId, commentId, replyId } = req.params;
+  console.log(req.params);
+  if (!postId || !commentId || !replyId) {
+    return next(new AppError("all filed is required...", 400));
+  }
+  try {
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return next(new AppError("Post not found.", 404));
+    }
+    const comments = post.comments.id(commentId);
+
+    if (!comments) {
+      return next(new AppError("Comment not found.", 404));
+    }
+    const replayIndex = comments.replies.findIndex(
+      (replay) => replay._id.toString() === replyId
+    );
+    if (replayIndex == -1) {
+      return next(new AppError("replay not found.", 404));
+    }
+    comments.replies.splice(replayIndex, 1);
+
+    await post.save();
+    res.status(200).json({
+      success: true,
+      message: "Reply deleted successfully",
+    });
+  } catch (error) {
+    return next(new AppError(error.message, 404));
+  }
+};
+
 export const exitCommentInPostById = async (req, res, next) => {
   const { comment } = req.body;
   const { userName } = req.user;
@@ -367,6 +441,7 @@ export const exitCommentInPostById = async (req, res, next) => {
 export const deleteCommentInPostById = async (req, res, next) => {
   const { userName } = req.user;
   const { postId, commentId } = req.query;
+  console.log(postId, commentId);
   if (!postId || !commentId) {
     return next(new AppError("postId and CommentId is required", 400));
   }
@@ -408,6 +483,7 @@ export const deleteCommentInPostById = async (req, res, next) => {
     return next(new AppError(error.message, 400));
   }
 };
+
 // comment api for reel//
 export const addCommentReel = async (req, res, next) => {
   const { comment } = req.body;

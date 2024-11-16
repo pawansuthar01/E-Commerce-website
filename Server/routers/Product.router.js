@@ -6,7 +6,7 @@ import {
   LikeAndDisLikeProduct,
 } from "../Controllers/Product.Controller.js";
 const ProductRouter = Router();
-ProductRouter.get("/", isLoggedIn, getAllProduct);
+ProductRouter.get("/", getAllProduct);
 ProductRouter.route("/:id")
   .get(isLoggedIn, getProduct)
   .put(isLoggedIn, LikeAndDisLikeProduct);

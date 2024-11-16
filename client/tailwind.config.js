@@ -11,6 +11,7 @@ export default {
       animation: {
         "carousel-slide": "carousel 0.8s ease-in-out",
       },
+
       keyframes: {
         carousel: {
           "0%": { transform: "translateX(0)" },

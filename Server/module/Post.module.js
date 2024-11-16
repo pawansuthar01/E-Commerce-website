@@ -25,13 +25,24 @@ const PostSchema = new Schema(
     comments: [
       {
         userName: String,
-
         comment: String,
-      },
-      {
-        timestamps: true,
+        replies: [
+          {
+            userName: String,
+            reply: String,
+            createdAt: {
+              type: Date,
+              default: Date.now,
+            },
+          },
+        ],
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
       },
     ],
+
     likeCount: {
       type: Number,
       default: 0,

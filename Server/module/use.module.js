@@ -3,6 +3,7 @@ import { model, Schema } from "mongoose";
 import bcrypt from "bcryptjs";
 import JWT from "jsonwebtoken";
 import crypto from "crypto";
+import { type } from "os";
 const UserSchema = new Schema(
   {
     userName: {
@@ -47,13 +48,17 @@ const UserSchema = new Schema(
     walletAddProducts: [
       {
         product: {
-          type: String,
-          timestamps: true,
+          type: Schema.Types.ObjectId, // Reference to Product model
+          ref: "Product", // Reference to Product model
         },
-      },
-
-      {
-        timestamps: true,
+        name: { type: String },
+        image: {
+          public_id: { type: String },
+          secure_url: { type: String },
+        },
+        price: { type: String },
+        description: { type: String },
+        addedAt: { type: Date, default: Date.now },
       },
     ],
 

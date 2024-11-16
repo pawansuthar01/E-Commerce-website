@@ -10,6 +10,26 @@ input[type="number"] {
   -webkit-appearance: none; /* Webkit-specific */
   -moz-appearance: textfield; /* Firefox-specific */
 }
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--secondary) var(--primary);
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--primary);
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--secondary);
+  border-radius: 0px;
+  border: 10px solid var(--primary);
+}
 
 /* Additional rule to remove margins */
 input[type="number"]::-webkit-inner-spin-button,

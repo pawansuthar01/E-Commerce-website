@@ -4,9 +4,22 @@ import list from "../constants/productlist";
 import ProductCard from "../Components/productCard";
 import Footer from "../Components/footer";
 import { AiOutlineArrowLeft } from "react-icons/ai";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllProduct } from "../Redux/Slice/ProductSlice";
 
 function Product() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { product } = useSelector((state) => state.product);
+
+ 
+  const ProductLoad = async () => {
+    await dispatch(getAllProduct());
+  };
+  useEffect(() => {
+    ProductLoad();
+  }, []);
   return (
     <Layout>
       <div className="min-h-[80vh] ">
@@ -53,7 +66,13 @@ function Product() {
 
         <div className=" flex flex-wrap   max-sm:justify-center justify-evenly  gap-10 my-10">
           {list &&
-            list.map((product, ind) => <ProductCard {...product} key={ind} />)}
+            list.map((product, ind) => (
+              <ProductCard data={product} key={ind} />
+            ))}
+          {product &&
+            product.map((product, ind) => (
+              <ProductCard data={product} key={ind} />
+            ))}
         </div>
       </div>
     </Layout>

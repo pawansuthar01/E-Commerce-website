@@ -5,7 +5,7 @@ function About() {
   const navigate = useNavigate();
   return (
     <Layout>
-      <div className="sm:mt-[200px] relative max-sm:mt-2">
+      <div className="sm:mt-[50px] relative max-sm:mt-2">
         <div className="flex  w-full  max-sm:flex-wrap ">
           <div className="w-full p-1   sm:pl-[100px] flex justify-center ">
             <img

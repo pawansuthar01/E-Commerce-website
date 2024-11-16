@@ -10,6 +10,9 @@ import {
   getPost,
   getReel,
   LikeAndDisLikeReel,
+  getAllPost,
+  AddReplayToComment,
+  removeReplayToComment,
 } from "../Controllers/Content.Controller.js";
 
 import { isLoggedIn } from "../Middleware/authMiddleware.js";
@@ -21,13 +24,23 @@ ContentRouter.route("/Post/:id")
   .get(isLoggedIn, getPost)
   .put(isLoggedIn, LikeAndDisLikePost);
 
+ContentRouter.route("/posts/:postId/comments/:commentId").put(
+  isLoggedIn,
+  AddReplayToComment
+);
+ContentRouter.route(
+  "/posts/:postId/comments/:commentId/replays/:replyId"
+).delete(isLoggedIn, removeReplayToComment);
+
 ContentRouter.route("/Reel/:id")
   .post(isLoggedIn, addCommentReel)
   .get(isLoggedIn, getReel)
   .put(isLoggedIn, LikeAndDisLikeReel);
 
 ContentRouter.route("/Post")
+  .get(isLoggedIn, getAllPost)
   .put(isLoggedIn, exitCommentInPostById)
+  .put(isLoggedIn, AddReplayToComment)
   .delete(isLoggedIn, deleteCommentInPostById);
 
 ContentRouter.route("/Reel")

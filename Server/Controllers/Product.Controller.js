@@ -132,6 +132,7 @@ export const getProduct = async (req, res, next) => {
 export const getAllProduct = async (req, res, next) => {
   try {
     const product = await Product.find({});
+
     if (!product) {
       return next(
         new AppError(" product failed  to get.., Please try again..", 400)
@@ -149,6 +150,7 @@ export const getAllProduct = async (req, res, next) => {
 // // product like and dislike Api//
 export const LikeAndDisLikeProduct = async (req, res, next) => {
   const { id } = req.params;
+  console.log(req.params);
   const { userName } = req.user;
   if (!userName) {
     return next(new AppError("username is required ..", 400));

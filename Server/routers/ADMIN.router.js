@@ -57,7 +57,7 @@ ADMINRouter.route("/Reel/:id")
 ADMINRouter.route("/Product").post(
   isLoggedIn,
   authorizeRoles("ADMIN", "AUTHOR"),
-  authorizeRoles("ADMIN", "AUTHOR"),
+
   upload.single("image"),
   ProductUpload
 );

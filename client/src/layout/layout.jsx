@@ -128,9 +128,18 @@ function Layout({ children }) {
               <li onClick={hideSide} className="pt-5">
                 <Link to="/">Home</Link>
               </li>
+              {role === "ADMIN" ||
+                (role === "AUTHOR" && (
+                  <li onClick={hideSide} className="pt-5">
+                    <Link to="/AddProduct">Add Product</Link>
+                  </li>
+                ))}
 
               <li onClick={hideSide}>
                 <Link to="/AllProduct">All Product</Link>
+              </li>
+              <li onClick={hideSide}>
+                <Link to="/Blog">Blog</Link>
               </li>
 
               <li onClick={hideSide}>
