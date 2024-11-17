@@ -4,17 +4,16 @@ import About from "./Page/About";
 import HomePage from "./Page/Home";
 import NotFoundPage from "./Page/NotFound";
 import Denied from "./Page/Denied";
-import CheckRolePermission from "./Components/Auth/RequireRole";
 import Login from "./Page/Login";
 import SignUp from "./Page/Signup";
 import Contact from "./Page/Contact";
-import Search from "./Page/Product";
 import Product from "./Page/Product";
 import Profile from "./Page/User/Profile";
 import RequireAuth from "./Components/Auth/RequireRole";
 import Blog from "./Page/Blog";
 import ProductDescription from "./Page/Product/ProductDes";
 import AddProduct from "./Page/Product/AddProduct";
+import Cart from "./Page/Card/Cart";
 function App() {
   return (
     <Routes>
@@ -28,6 +27,8 @@ function App() {
         element={<RequireAuth allowedRole={["USER", "ADMIN", "AUTHOR"]} />}
       >
         <Route path="/Profile" element={<Profile />}></Route>
+        <Route path="/Cart" element={<Cart />}></Route>
+
         <Route path="/Blog" element={<Blog />}></Route>
         <Route path="/Description" element={<ProductDescription />}></Route>
       </Route>

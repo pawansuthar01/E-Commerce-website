@@ -81,7 +81,7 @@ function Profile() {
         {UserData.data?.walletAddProducts?.length == 0 ? (
           <div className="w-full flex text-center items-center gap-4 flex-col">
             <h1 className="text-3xl  mt-10">😕No Product Add...😓</h1>
-            <p className="text-2xl">Now Add Product..</p>
+            <p className="text-2xl">No Add Product..</p>
             <button
               onClick={() => navigate("/AllProduct")}
               className="btn btn-primary w-32 text-sm"
@@ -90,7 +90,7 @@ function Profile() {
             </button>
           </div>
         ) : (
-          <div className=" flex flex-wrap  max-sm:justify-center justify-evenly  gap-10 my-10">
+          <div className=" flex flex-wrap   max-sm:justify-center justify-evenly  gap-20 my-20">
             {UserData.data?.walletAddProducts &&
               UserData.data?.walletAddProducts.map((Product, ind) => {
                 return <ProductCard data={Product} key={ind} />;

@@ -18,6 +18,11 @@ const UserSchema = new Schema(
       minLength: [5, "name must be 5 char"],
       trim: true,
     },
+    phoneNumber: {
+      type: String,
+      required: [true, "phoneNumber is required"],
+      trim: true,
+    },
     email: {
       type: "string",
       required: [true, "name is required"],

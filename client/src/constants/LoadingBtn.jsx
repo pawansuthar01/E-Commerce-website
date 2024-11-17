@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 
-function LoadingButton({ name, loading, message, color, hoverColor }) {
+function LoadingButton({ onClick, name, loading, message, color, width }) {
   const [Loading] = useState(loading);
 
   return (
     <button
+      onClick={onClick}
       type="submit"
       disabled={Loading}
-      className={`w-full py-3 rounded-lg transition-colors ${color} text-white`}
+      className={`${
+        width ? width : `w-full`
+      } py-3 rounded-lg transition-colors ${color} text-white`}
     >
       {loading ? (
         <>
@@ -28,7 +31,7 @@ function LoadingButton({ name, loading, message, color, hoverColor }) {
               fill="currentColor"
             />
           </svg>
-          message
+          {message}
         </>
       ) : (
         name

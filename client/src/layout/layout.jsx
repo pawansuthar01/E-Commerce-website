@@ -34,7 +34,6 @@ function Layout({ children }) {
     e.preventDefault();
     setLoading(true);
     const res = await dispatch(LogoutAccount());
-    console.log(res);
     if (res) {
       setLoading(false);
     }
@@ -110,7 +109,10 @@ function Layout({ children }) {
               <FaUser size={"20px"} onClick={() => navigate("/Profile")} />
             </div>
 
-            <div className=" cursor-pointer mr-4">
+            <div
+              onClick={() => navigate("/Cart")}
+              className=" cursor-pointer mr-4"
+            >
               <FiShoppingCart size={"20px"} />
             </div>
           </div>

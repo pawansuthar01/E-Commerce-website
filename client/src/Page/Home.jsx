@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../layout/layout";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import list from "../constants/productlist";
 import ProductCard from "../Components/productCard";
 import CarouselSlide from "../Components/CarouselSlice";
 import { celebrities } from "../constants/Homecarousellist";
-import { io } from "socket.io-client";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProduct } from "../Redux/Slice/ProductSlice";
 
@@ -29,21 +28,7 @@ function HomePage() {
   useEffect(() => {
     ProductLoad();
   }, []);
-  // useEffect(() => {
-  //   const socket = io("http://localhost:5000");
-  //   if (UserId != undefined) {
-  //     socket.emit("join", UserId);
-  //   }
 
-  //   socket.on("newNotification", (message) => {
-  //     // Show notification to the user
-  //     alert(`Notification: ${message}`);
-  //   });
-
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, [UserId]);
   return (
     <Layout className="">
       <div className=" text-white top-[-64px]  justify-center  flex-col items-center   min-h-[90vh]  relative">
@@ -60,7 +45,7 @@ function HomePage() {
               />
             ))}
         </div>
-        <div className=" flex flex-wrap  max-sm:justify-center justify-evenly  gap-10 my-10">
+        <div className=" flex flex-wrap  max-sm:justify-center justify-evenly  gap-20 my-20">
           {list &&
             list.map((product, ind) => (
               <ProductCard data={product} key={ind} />

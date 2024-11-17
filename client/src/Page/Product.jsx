@@ -2,8 +2,6 @@ import { useNavigate } from "react-router-dom";
 import Layout from "../layout/layout";
 import list from "../constants/productlist";
 import ProductCard from "../Components/productCard";
-import Footer from "../Components/footer";
-import { AiOutlineArrowLeft } from "react-icons/ai";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProduct } from "../Redux/Slice/ProductSlice";
@@ -21,7 +19,7 @@ function Product() {
   }, []);
   return (
     <Layout>
-      <div className="min-h-[80vh] ">
+      <div className="min-h-[100vh] ">
         <div className="sm:hidden  flex w-screen justify-center mt-4 ">
           <label
             htmlFor="default-search"
@@ -63,7 +61,7 @@ function Product() {
           </div>
         </div>
 
-        <div className=" flex flex-wrap   max-sm:justify-center justify-evenly  gap-10 my-10">
+        <div className=" flex flex-wrap   max-sm:justify-center justify-evenly  gap-20 my-20">
           {list &&
             list.map((product, ind) => (
               <ProductCard data={product} key={ind} />

@@ -6,7 +6,12 @@ import { useState } from "react";
 import Layout from "../layout/layout";
 import LoadingButton from "../constants/LoadingBtn";
 import toast from "react-hot-toast";
-import { isEmail, isValidPassword } from "../helper/regexMatch";
+import {
+  isEmail,
+  isPhoneNumber,
+  isUserName,
+  isValidPassword,
+} from "../helper/regexMatch";
 import { useDispatch } from "react-redux";
 import { CreateAccount } from "../Redux/Slice/authSlice";
 
@@ -18,6 +23,7 @@ function SignUp() {
   const [SignUpData, setSignUpData] = useState({
     fullName: "",
     userName: "",
+    phoneNumber: "",
     email: "",
     avatar: "",
     password: "",
@@ -56,6 +62,7 @@ function SignUp() {
       !SignUpData.password ||
       !SignUpData.email ||
       !SignUpData.avatar ||
+      !SignUpData.phoneNumber ||
       !SignUpData.ConfirmPassword
     ) {
       setLoading(false);
@@ -80,6 +87,18 @@ function SignUp() {
       );
       return;
     }
+    if (!isPhoneNumber(SignUpData.phoneNumber)) {
+      setLoading(false);
+      toast.error("Invalid Phone Number..");
+      return;
+    }
+    if (!isUserName(SignUpData.userName)) {
+      setLoading(false);
+      toast.error(
+        "userName should be 6-20 character and no space use a special characters.."
+      );
+      return;
+    }
     if (!SignUpData.password == SignUpData.ConfirmPassword) {
       setLoading(false);
       toast.error("Password and ConfirmPassword does not match..");
@@ -89,6 +108,7 @@ function SignUp() {
     formData.append("fullName", SignUpData.fullName);
     formData.append("email", SignUpData.email);
     formData.append("userName", SignUpData.userName);
+    formData.append("phoneNumber", SignUpData.phoneNumber);
     formData.append("avatar", SignUpData.avatar);
     formData.append("password", SignUpData.password);
 
@@ -103,6 +123,7 @@ function SignUp() {
       setSignUpData({
         fullName: "",
         userName: "",
+        phoneNumber: "",
         email: "",
         avatar: "",
         password: "",
@@ -202,6 +223,25 @@ function SignUp() {
               <div className="relative mb-6">
                 <input
                   onChange={handelUserInput}
+                  value={SignUpData.phoneNumber}
+                  type="number"
+                  name="phoneNumber"
+                  required
+                  className="peer w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent"
+                />
+                {SignUpData.phoneNumber ? (
+                  <label className=" absolute left-0 top-[-20px] text-sm text-gray-500">
+                    phoneNumber
+                  </label>
+                ) : (
+                  <label className="absolute left-0 top-2 text-lg text-gray-500 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
+                    phoneNumber
+                  </label>
+                )}
+              </div>
+              <div className="relative mb-6">
+                <input
+                  onChange={handelUserInput}
                   value={SignUpData.password}
                   type="password"
                   name="password"
@@ -237,8 +277,9 @@ function SignUp() {
                   </label>
                 )}
               </div>
-              <div onClick={handleCreate}>
+              <div>
                 <LoadingButton
+                  onClick={handleCreate}
                   loading={loading}
                   color={"bg-green-600"}
                   message={"Creating.."}

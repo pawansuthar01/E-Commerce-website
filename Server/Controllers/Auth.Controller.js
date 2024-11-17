@@ -10,8 +10,8 @@ const cookieOption = {
   secure: true,
 };
 export const RegisterUser = async (req, res, next) => {
-  const { userName, fullName, email, password } = req.body;
-  if (!fullName || !email || !password || !userName) {
+  const { userName, fullName, email, password, phoneNumber } = req.body;
+  if (!fullName || !email || !password || !userName || !phoneNumber) {
     return next(new AppError(" All felids is required", 400));
   }
   try {
@@ -23,22 +23,12 @@ export const RegisterUser = async (req, res, next) => {
     if (userExist) {
       return next(new AppError(" email is already exist", 400));
     }
-    const user = await User.create({
-      userName,
-      fullName,
-      email,
-      password,
-      avatar: {
-        public_id: email,
-        secure_url:
-          "https://res.cloudinary.com/du9jzqlpt/image/upload/v1674647316/avatar_drzgxv.jpg",
-      },
-    });
-    if (!user) {
-      return next(
-        new AppError(" User registration is failed , Please try again..", 400)
-      );
-    }
+
+    const avatar = {
+      public_id: email,
+      secure_url:
+        "https://res.cloudinary.com/du9jzqlpt/image/upload/v1674647316/avatar_drzgxv.jpg",
+    };
     if (req.file) {
       try {
         const avatarUpload = await cloudinary.v2.uploader.upload(
@@ -52,14 +42,28 @@ export const RegisterUser = async (req, res, next) => {
           }
         );
         if (avatarUpload) {
-          user.avatar.public_id = avatarUpload.public_id;
-          user.avatar.secure_url = avatarUpload.secure_url;
+          avatar.public_id = avatarUpload.public_id;
+          avatar.secure_url = avatarUpload.secure_url;
         }
+
         fs.rm(`uploads/${req.file.filename}`);
       } catch (error) {
         fs.rm(`uploads/${req.file.filename}`);
         return next(new AppError(` ${error.message}`, 400));
       }
+    }
+    const user = await User.create({
+      userName,
+      fullName,
+      phoneNumber,
+      email,
+      password,
+      avatar,
+    });
+    if (!user) {
+      return next(
+        new AppError(" User registration is failed , Please try again..", 400)
+      );
     }
     await user.save();
     const token = await user.generateJWTToken();
