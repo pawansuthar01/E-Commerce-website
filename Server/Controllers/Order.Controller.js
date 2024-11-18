@@ -1,17 +1,18 @@
-import Order from "../module/Order.module";
-import Product from "../module/Product.module";
-import AppError from "../utils/AppError";
+import Order from "../module/Order.module.js";
+import Product from "../module/Product.module.js";
+import AppError from "../utils/AppError.js";
 import razorpay from "razorpay";
 
 export const CreateOrder = async (req, res, next) => {
   const { userId, products, shippingAddress, totalAmount } = req.body;
   try {
+    console.log(req.body);
     if (!userId || !products || !shippingAddress || !totalAmount) {
       return next(new AppError("all filed is required...", 400));
     }
     const productDetails = await Promise.all(
       products.map(async (product) => {
-        const productFound = await Product.findById(product.productId);
+        const productFound = await Product.findById(product.product);
         if (!productFound) {
           return next(new AppError("product not Found...", 400));
         }

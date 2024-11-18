@@ -7,7 +7,7 @@ function LoadingButton({ onClick, name, loading, message, color, width }) {
     <button
       onClick={onClick}
       type="submit"
-      disabled={Loading}
+      disabled={loading}
       className={`${
         width ? width : `w-full`
       } py-3 rounded-lg transition-colors ${color} text-white`}

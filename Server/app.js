@@ -9,6 +9,7 @@ import ContentRouter from "./routers/ContentRouter.js";
 import ADMINRouter from "./routers/ADMIN.router.js";
 import ProductRouter from "./routers/Product.router.js";
 import CardRouter from "./routers/Card.Router.js";
+import OrderRouter from "./routers/Order.rouder.js";
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.use("/api/v3/Content", ContentRouter);
 app.use("/api/v3/Admin", ADMINRouter);
 app.use("/api/v3/Product", ProductRouter);
 app.use("/api/v3/Card", CardRouter);
+app.use("/api/v3/Order", OrderRouter);
 
 app.use("*", (req, res, next) => {
   res.status(404).send("Oops ! page not found..");

@@ -5,7 +5,7 @@ import fs from "fs/promises";
 import crypto from "crypto";
 import SendEmail from "../utils/SendEmial.js";
 const cookieOption = {
-  maxAge: 7 * 24 * 60 * 60 * 1000,
+  maxAge: 24 * 24 * 60 * 60 * 1000,
   httpOnly: true,
   secure: true,
 };

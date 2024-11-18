@@ -138,7 +138,7 @@ function AddProduct() {
               </div>
               <div className="relative mb-6">
                 <input
-                  type="text"
+                  type="number"
                   onChange={handelUserInput}
                   value={ProductUpData.price}
                   name="price"

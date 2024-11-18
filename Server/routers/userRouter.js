@@ -14,7 +14,7 @@ import { isLoggedIn } from "../Middleware/authMiddleware.js";
 const UserRouter = Router();
 UserRouter.post("/register", upload.single("avatar"), RegisterUser);
 UserRouter.post("/login", login);
-UserRouter.get("/logout", isLoggedIn, logout);
+UserRouter.get("/logout", logout);
 UserRouter.get("/getProfile", isLoggedIn, getProfile);
 UserRouter.post("/resetPassword", resetPassword);
 UserRouter.post("/changePassword:resetToken", changePassword);

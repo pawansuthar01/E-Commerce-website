@@ -14,6 +14,7 @@ import Blog from "./Page/Blog";
 import ProductDescription from "./Page/Product/ProductDes";
 import AddProduct from "./Page/Product/AddProduct";
 import Cart from "./Page/Card/Cart";
+import CheckoutForm from "./Page/Order/ChecK0ut";
 function App() {
   return (
     <Routes>
@@ -27,6 +28,7 @@ function App() {
         element={<RequireAuth allowedRole={["USER", "ADMIN", "AUTHOR"]} />}
       >
         <Route path="/Profile" element={<Profile />}></Route>
+        <Route path="/CheckoutForm" element={<CheckoutForm />}></Route>
         <Route path="/Cart" element={<Cart />}></Route>
 
         <Route path="/Blog" element={<Blog />}></Route>

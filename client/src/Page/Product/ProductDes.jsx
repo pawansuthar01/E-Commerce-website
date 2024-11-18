@@ -12,10 +12,9 @@ import { MdCurrencyRupee } from "react-icons/md";
 
 function ProductDescription() {
   const [loading, setLoading] = useState("");
-  const [loading_, setLoading_] = useState("");
   const navigate = useNavigate();
   const { state } = useLocation();
-  const { role } = useSelector((state) => state.auth);
+  const { role } = useSelector((state) => state.auth.role);
   const { data } = useSelector((state) => state.auth);
 
   const productExists = data?.walletAddProducts?.some(
@@ -83,8 +82,9 @@ function ProductDescription() {
           </div>
           <div className="w-full flex gap-10 justify-center mt-6">
             {!productExists ? (
-              <div onClick={() => ProductAddCard(state._id)} className="w-1/2">
+              <div className="w-1/2">
                 <LoadingButton
+                  onClick={() => ProductAddCard(state._id)}
                   name={"Add To Card "}
                   color={"bg-green-500"}
                   message={"Loading..."}
@@ -92,11 +92,9 @@ function ProductDescription() {
                 />
               </div>
             ) : (
-              <div
-                onClick={() => ProductRemoveCard(state._id)}
-                className="w-1/2"
-              >
+              <div className="w-1/2">
                 <LoadingButton
+                  onClick={() => ProductRemoveCard(state._id)}
                   name={" Remove To Card "}
                   color={"bg-red-500"}
                   message={"Loading..."}
@@ -104,14 +102,6 @@ function ProductDescription() {
                 />
               </div>
             )}
-            <div className="w-1/2">
-              <LoadingButton
-                name={"Order Now"}
-                color={"bg-sky-800"}
-                message={"Loading..."}
-                loading={loading_}
-              />
-            </div>
           </div>
         </div>
       </div>

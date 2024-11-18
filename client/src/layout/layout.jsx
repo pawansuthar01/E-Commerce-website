@@ -1,6 +1,7 @@
 import { AiFillCloseCircle } from "react-icons/ai";
 import { FiMenu, FiShoppingCart } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
+import { GiShoppingCart } from "react-icons/gi";
 import logo from "../assets/download-removebg-preview.png";
 import { FaMagnifyingGlass, FaMoon, FaSun, FaUser } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,6 +18,7 @@ function Layout({ children }) {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state?.auth?.isLoggedIn);
   const role = useSelector((state) => state?.auth?.role);
+  const { data } = useSelector((state) => state?.auth);
   function changeWight() {
     const drawerSide = document.getElementsByClassName("drawer-side");
     drawerSide[0].style.width = "auto";
@@ -90,7 +92,7 @@ function Layout({ children }) {
               </button>
             </div>
           </div>
-          <div className="flex gap-5 text-4xl font-bold text-black items-center">
+          <div className="flex gap-5 font-bold text-black items-center">
             <div className="max-sm:hidden flex">
               {!isLoggedIn && (
                 <Link to="/Login">
@@ -111,9 +113,20 @@ function Layout({ children }) {
 
             <div
               onClick={() => navigate("/Cart")}
-              className=" cursor-pointer mr-4"
+              className=" relative  cursor-pointer mr-4"
             >
-              <FiShoppingCart size={"20px"} />
+              <p className=" absolute text-green-600 font-serif text-sm top-[-12px] right-[-5px] ">
+                {data?.walletAddProducts?.length >= 1 &&
+                  data?.walletAddProducts?.length}
+              </p>
+              <GiShoppingCart
+                size={"20px"}
+                className={`${
+                  data?.walletAddProducts?.length >= 1
+                    ? `text-green-400`
+                    : `text-black`
+                }`}
+              />
             </div>
           </div>
         </nav>

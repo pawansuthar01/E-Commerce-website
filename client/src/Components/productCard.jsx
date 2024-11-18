@@ -69,12 +69,12 @@ function ProductCard({ data }) {
   }, [data.product]);
 
   return (
-    <div className="sm:w-[260px] max-sm:w-[200px]  max-sm:h-[200px] flex flex-col  cursor-pointer bg-white border border-gray-200 rounded-lg shadow p-1  dark:bg-gray-800 dark:border-gray-700 ">
-      <section className="relative h-full flex justify-center rounded-lg p-5 w-[100%]  group">
+    <div className="w-[250px] max-sm:w-[150px]  max-sm:h-[200px] flex flex-col h-[300px] cursor-pointer bg-white border border-gray-200 rounded-lg shadow p-2  dark:bg-gray-800 dark:border-gray-700 ">
+      <section className="relative h-full flex  justify-center rounded-lg p-5 w-[100%]  group">
         <img
           src={data.image.secure_url ? data.image.secure_url : data.image}
           alt="product_image"
-          className=" rounded-xl w-[100%] max-sm:h-[150px] sm:h-[200px] "
+          className=" rounded-xl object-fill  h-[100%] w-[100%]"
         />
 
         <div className="absolute inset-0 bg-opacity-50 flex items-end pb-3 justify-center space-x-4 max-sm:space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-400">
@@ -118,7 +118,7 @@ function ProductCard({ data }) {
       <h1 className="text-black text-center capitalize font-semibold mt-3">
         {data.name}
       </h1>
-      <p className="font-serif text-black text-center flex justify-center items-center ">
+      <p className="font-serif text-black text-center flex justify-center items-center pb-2">
         Price : <MdCurrencyRupee />
         {data.price}
       </p>
