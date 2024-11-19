@@ -73,6 +73,33 @@ export const createOrderPayment = async () => {
     return next(new AppError(error.message, 400));
   }
 };
+
+export const UpdateOrder = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    console.log(req.body);
+    if (!id) {
+      return next(new AppError("all  filed required ", 400));
+    }
+    const order = await Order.findOneAndUpdate(
+      { _id: id },
+      { $set: req.body },
+      { new: true }
+    );
+    if (!order) {
+      return next(new AppError("order is does not found..", 400));
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "update Order...",
+      data: order,
+    });
+  } catch (error) {
+    return next(new AppError(error.message, 400));
+  }
+};
+
 export const getOrder = async (req, res, next) => {
   try {
     const { id } = req.params;

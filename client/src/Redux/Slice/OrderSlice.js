@@ -26,7 +26,6 @@ export const PlaceOrder = createAsyncThunk("Order/Place", async (data) => {
 
 export const getOrder = createAsyncThunk("Order/get", async (id) => {
   try {
-    console.log(id);
     const res = axiosInstance.get(`/api/v3/Order/${id}`);
     toast.promise(res, {
       loading: "please wait ! Order get...",
@@ -43,6 +42,30 @@ export const getOrder = createAsyncThunk("Order/get", async (id) => {
     toast.error(e?.response?.message);
   }
 });
+export const UpdateOrder = createAsyncThunk(
+  "Order/updateOrder",
+  async (data) => {
+    try {
+      const res = axiosInstance.put(
+        `/api/v3/Order/${data.id}`,
+        data.shippingAddress
+      );
+      toast.promise(res, {
+        loading: "please wait ! Order get...",
+        success: (data) => {
+          return data?.data?.message;
+        },
+
+        error: (data) => {
+          return data?.response?.data?.message;
+        },
+      });
+      return (await res).data;
+    } catch (e) {
+      toast.error(e?.response?.message);
+    }
+  }
+);
 
 export const AllOrder = createAsyncThunk("Order/Orders", async () => {
   try {

@@ -75,6 +75,14 @@ const OrderSchema = new Schema({
     enum: ["Processing", "Shipped", "Delivered", "Canceled"],
     default: "Processing",
   },
+  deliveryDate: {
+    type: Date,
+    default: () => {
+      const date = new Date();
+      date.setDate(date.getDate() + 10);
+      return date;
+    },
+  },
   createdAt: {
     type: Date,
     default: Date.now,

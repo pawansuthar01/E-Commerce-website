@@ -4,6 +4,7 @@ import {
   AllOrder,
   CreateOrder,
   getOrder,
+  UpdateOrder,
 } from "../Controllers/Order.Controller.js";
 const OrderRouter = Router();
 OrderRouter.route("/PlaceOrder").post(isLoggedIn, CreateOrder);
@@ -12,5 +13,7 @@ OrderRouter.route("/").get(
   authorizeRoles("ADMIN", "AUTHOR"),
   AllOrder
 );
-OrderRouter.route("/:id").get(isLoggedIn, getOrder);
+OrderRouter.route("/:id")
+  .get(isLoggedIn, getOrder)
+  .put(isLoggedIn, UpdateOrder);
 export default OrderRouter;
