@@ -80,3 +80,30 @@ export const removeCardProduct = async (req, res, next) => {
     return next(new AppError(error.message, 400));
   }
 };
+
+export const AllRemoveCardProduct = async (req, res, next) => {
+  const { id } = req.params;
+  if (!id) {
+    return next(new AppError("all filed is required..", 400));
+  }
+  try {
+    const userFind = await User.findOneAndUpdate(
+      { _id: id },
+      { $set: { walletAddProducts: [] } },
+      { new: true }
+    );
+
+    if (!userFind) {
+      return next(new AppError("user is not Found..", 400));
+    }
+
+    await userFind.save();
+    res.status(200).json({
+      success: true,
+      userFind,
+      message: "successfully All product remove in wallet..",
+    });
+  } catch (error) {
+    return next(new AppError(error.message, 400));
+  }
+};

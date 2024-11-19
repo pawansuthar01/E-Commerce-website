@@ -1,6 +1,16 @@
 import { Router } from "express";
-import { isLoggedIn } from "../Middleware/authMiddleware.js";
-import { CreateOrder } from "../Controllers/Order.Controller.js";
+import { authorizeRoles, isLoggedIn } from "../Middleware/authMiddleware.js";
+import {
+  AllOrder,
+  CreateOrder,
+  getOrder,
+} from "../Controllers/Order.Controller.js";
 const OrderRouter = Router();
 OrderRouter.route("/PlaceOrder").post(isLoggedIn, CreateOrder);
+OrderRouter.route("/").get(
+  isLoggedIn,
+  authorizeRoles("ADMIN", "AUTHOR"),
+  AllOrder
+);
+OrderRouter.route("/:id").get(isLoggedIn, getOrder);
 export default OrderRouter;

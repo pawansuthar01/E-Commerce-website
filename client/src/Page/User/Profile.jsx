@@ -3,22 +3,51 @@ import Layout from "../../layout/layout";
 import { FiEdit } from "react-icons/fi";
 import bgProfile from "../../assets/home/pexels-photo-29376504.webp";
 import { useNavigate } from "react-router-dom";
-import { getProduct } from "../../Redux/Slice/ProductSlice";
 import { LoadAccount } from "../../Redux/Slice/authSlice";
-import { useEffect } from "react";
-import ProductCard from "../../Components/productCard";
+import { useEffect, useState } from "react";
+import { getOrder } from "../../Redux/Slice/OrderSlice";
+import { MdEmail, MdPhone } from "react-icons/md";
 
 function Profile() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [UserId, setUserID] = useState("");
+  const [Orders, setOrder] = useState({});
   const UserData = useSelector((state) => state?.auth);
 
-  const loadProfile = async (id) => {
+  const loadProfile = async () => {
     const res = await dispatch(LoadAccount());
+    setUserID(res?.payload?.data?._id);
+  };
+  const order = {
+    productName: "Minimalist Wristwatch",
+    price: 149.0,
+    description:
+      "This contemporary wristwatch has a clean, minimalist look and high quality components.",
+    image: "https://via.placeholder.com/100", // Replace with your product image URL
+    deliveryAddress: {
+      name: "Floyd Miles",
+      street: "7363 Cynthia Pass",
+      city: "Toronto, ON N3Y 4H8",
+    },
+    contactInfo: {
+      email: "f•••@example.com",
+      phone: "1••••••••40",
+    },
+    status: "Shipped",
+    shippedDate: "March 23, 2021",
+  };
+  console.log(UserId);
+  const loadOrders = async (UserId) => {
+    const res = await dispatch(getOrder(UserId ? UserId : UserData?.data._id));
+    console.log(res);
+    setOrder(res?.payload?.data);
   };
 
   useEffect(() => {
     loadProfile();
+
+    loadOrders();
   }, []);
 
   return (
@@ -78,25 +107,65 @@ function Profile() {
             </div>
           </div>
         </div>
-        {UserData.data?.walletAddProducts?.length == 0 ? (
-          <div className="w-full flex text-center items-center gap-4 flex-col">
-            <h1 className="text-3xl  mt-10">😕No Product Add...😓</h1>
-            <p className="text-2xl">No Add Product..</p>
-            <button
-              onClick={() => navigate("/AllProduct")}
-              className="btn btn-primary w-32 text-sm"
-            >
-              Add Product
-            </button>
+        <div className="bg-white shadow rounded-lg p-6 max-w-2xl mx-auto">
+          <div className="flex space-x-4">
+            <img
+              src={order.image}
+              alt={order.productName}
+              className="w-24 h-24 object-cover rounded"
+            />
+            <div>
+              <h2 className="text-lg font-semibold">{order.productName}</h2>
+              <p className="text-gray-500">${order.price.toFixed(2)}</p>
+              <p className="mt-2 text-gray-700">{order.description}</p>
+            </div>
           </div>
-        ) : (
-          <div className=" flex flex-wrap   max-sm:justify-center justify-evenly  gap-20 my-20">
-            {UserData.data?.walletAddProducts &&
-              UserData.data?.walletAddProducts.map((Product, ind) => {
-                return <ProductCard data={Product} key={ind} />;
-              })}
+
+          <div className="mt-6 grid grid-cols-2 gap-4">
+            <div>
+              <h3 className="text-sm font-bold mb-2">Delivery address</h3>
+              <p className="text-gray-700">
+                {order.deliveryAddress.name}
+                <br />
+                {order.deliveryAddress.street}
+                <br />
+                {order.deliveryAddress.city}
+              </p>
+            </div>
+            <div>
+              <h3 className="text-sm font-bold mb-2">Shipping updates</h3>
+              <p className="text-gray-700 flex items-center">
+                <MdEmail className="mr-2" />
+                {order.contactInfo.email}
+              </p>
+              <p className="text-gray-700 flex items-center mt-1">
+                <MdPhone className="mr-2" />
+                {order.contactInfo.phone}
+              </p>
+              <button className="text-blue-500 hover:underline mt-2">
+                Edit
+              </button>
+            </div>
           </div>
-        )}
+
+          <div className="mt-6">
+            <h3 className="text-sm text-gray-600 mb-2">
+              Shipped on {order.shippedDate}
+            </h3>
+            <div className="w-full bg-gray-200 h-1 rounded-full">
+              <div
+                className="bg-blue-600 h-1 rounded-full"
+                style={{ width: "75%" }}
+              ></div>
+            </div>
+            <div className="flex justify-between text-xs text-gray-600 mt-2">
+              <span className="text-blue-600 font-bold">Order placed</span>
+              <span>Processing</span>
+              <span>Shipped</span>
+              <span>Delivered</span>
+            </div>
+          </div>
+        </div>
       </div>
     </Layout>
   );

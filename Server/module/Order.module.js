@@ -1,17 +1,55 @@
 import { model, Schema } from "mongoose";
+
 const OrderSchema = new Schema({
   userId: {
     type: String,
-    required: [true, "userId is required..."],
+    required: [true, "User ID is required"],
     ref: "User",
   },
   products: [
     {
-      productId: { type: String, ref: "Product", required: true },
-      quantity: { type: Number, required: true },
-      price: { type: Number, required: true },
+      product: {
+        type: String,
+        ref: "Product",
+        required: true,
+      },
+      productDetails: {
+        name: {
+          type: String,
+          required: true,
+        },
+        image: {
+          public_id: {
+            type: String,
+          },
+          secure_url: {
+            type: String,
+          },
+        },
+        description: {
+          type: String,
+          required: true,
+        },
+        price: {
+          type: Number,
+          required: true,
+        },
+      },
+      quantity: {
+        type: Number,
+        required: true,
+      },
+      price: {
+        type: Number,
+        required: true,
+      },
     },
   ],
+  PaymentMethod: {
+    type: String,
+    enum: ["cash on Delivery", "razorpay"],
+    default: "razorpay",
+  },
   totalAmount: {
     type: Number,
     required: true,
@@ -19,7 +57,12 @@ const OrderSchema = new Schema({
   shippingAddress: {
     name: { type: String, required: true },
     address: { type: String, required: true },
+    email: { type: String, required: true },
+    phoneNumber: { type: Number, required: true },
+
     city: { type: String, required: true },
+    state: { type: String, required: true },
+    country: { type: String, required: true },
     postalCode: { type: String, required: true },
   },
   paymentStatus: {
@@ -32,7 +75,11 @@ const OrderSchema = new Schema({
     enum: ["Processing", "Shipped", "Delivered", "Canceled"],
     default: "Processing",
   },
-  createdAt: { type: Date, default: Date.now },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
+
 const Order = model("Order", OrderSchema);
 export default Order;

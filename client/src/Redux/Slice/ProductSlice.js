@@ -69,11 +69,33 @@ export const RemoveProductCard = createAsyncThunk(
   "/product/RemoveProduct",
   async (id) => {
     try {
-      const res = axiosInstance.put("/api/v3/Card/RemoveProduct", {
+      const res = axiosInstance.put("/api/v3/Card/v2/RemoveProduct", {
         productId: id,
       });
       toast.promise(res, {
-        loading: "please wait! Add product..",
+        loading: "please wait! remove  product..",
+        success: (data) => {
+          return data?.data?.message;
+        },
+
+        error: (data) => {
+          return data?.response?.data?.message;
+        },
+      });
+      return (await res).data;
+    } catch (e) {
+      toast.error(e?.response?.message);
+    }
+  }
+);
+export const AllRemoveCardProduct = createAsyncThunk(
+  "/product/AllRemoveCardProduct",
+  async (id) => {
+    try {
+      const res = axiosInstance.put(`/api/v3/Card/${id}/AllRemoveCardProduct`);
+
+      toast.promise(res, {
+        loading: "please wait!  product..",
         success: (data) => {
           return data?.data?.message;
         },

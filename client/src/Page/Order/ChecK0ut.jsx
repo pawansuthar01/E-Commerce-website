@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import LoadingButton from "../../constants/LoadingBtn";
 import { isEmail, isPhoneNumber } from "../../helper/regexMatch";
 import { PlaceOrder } from "../../Redux/Slice/OrderSlice";
+import { AllRemoveCardProduct } from "../../Redux/Slice/ProductSlice";
 
 function CheckoutPage() {
   const navigate = useNavigate();
@@ -120,10 +121,13 @@ function CheckoutPage() {
       shippingAddress: shippingInfo,
       totalAmount: totalPrice,
     };
+    console.log(orderData);
     const res = await dispatch(PlaceOrder(orderData));
     console.log(res);
-    if (res) {
-      setLoading(false);
+    setLoading(false);
+    if (res?.payload?.success) {
+      await dispatch(AllRemoveCardProduct(UserId));
+      loadProfile();
     }
   };
 
