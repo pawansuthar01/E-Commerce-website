@@ -199,14 +199,14 @@ function Profile() {
         </div>
         <h1 className="text-xl p-5 font-normal text-center">Your Orders.</h1>
         <hr className=" h-1" />
-        {Orders.length == 0 ? (
-          <div>
-            <h1> NO order....</h1>
+        {Orders?.length == 0 ? (
+          <div className="flex justify-center items-center gap-10 mt-2 flex-col">
+            <h1 className="text-center"> NO order....</h1>
             <button
               onClick={() => {
                 navigate("/AllProduct");
               }}
-              className="px-3 font-medium py-2 bg-green-400 rounded-xl hover:bg-transparent hover:border-2 border-green-400"
+              className="px-3 font-medium py-2 bg-green-400 w-1/2 rounded-xl hover:bg-transparent hover:border-2 border-green-400"
             >
               Continue Shopping...
             </button>
@@ -215,7 +215,7 @@ function Profile() {
           Orders?.map((order, index) => (
             <div
               key={index}
-              className="bg-white shadow-[0_0_1px_black] rounded-lg p-6 max-w-2xl mx-auto mb-4  flex flex-col"
+              className="bg-white shadow-[0_0_1px_black] rounded-lg p-6 max-w-2xl max-sm:mx-4 mx-auto mb-4  flex flex-col"
             >
               <h2 className="text-lg font-semibold mb-4 max-sm:text-sm">
                 Order ID: {order._id}
@@ -244,10 +244,10 @@ function Profile() {
                 </div>
               ))}
 
-              <div className="mt-6 grid grid-cols-2 gap-4">
+              <div className="mt-6 sm:grid grid-cols-2 gap-4 ">
                 <div>
                   <h3 className="text-sm font-bold mb-2">Delivery address</h3>
-                  <div className="text-gray-700">
+                  <div className="text-gray-700 max-sm:py-3">
                     <p className="w-[70%] text-sm">
                       {" "}
                       {order.shippingAddress.name},{" "}

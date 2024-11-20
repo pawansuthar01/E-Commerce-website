@@ -10,6 +10,7 @@ import LoadingButton from "../../constants/LoadingBtn";
 import { isEmail, isPhoneNumber } from "../../helper/regexMatch";
 import { PlaceOrder } from "../../Redux/Slice/OrderSlice";
 import { AllRemoveCardProduct } from "../../Redux/Slice/ProductSlice";
+import { paymentCreate } from "../../Redux/Slice/paymentSlice";
 
 function CheckoutPage() {
   const navigate = useNavigate();
@@ -31,6 +32,11 @@ function CheckoutPage() {
     city: "",
     postalCode: "",
   });
+  const [paymentMethod, setPaymentMethod] = useState("razorpay");
+
+  const handlePaymentMethodChange = (event) => {
+    setPaymentMethod(event.target.value);
+  };
 
   const loadProfile = async () => {
     const res = await dispatch(LoadAccount());
@@ -60,6 +66,7 @@ function CheckoutPage() {
 
   const handelPlaceOrder = async () => {
     setLoading(true);
+
     if (!shippingInfo.name) {
       setLoading(false);
       toast.error("Name is required to order");
@@ -121,13 +128,55 @@ function CheckoutPage() {
       shippingAddress: shippingInfo,
       totalAmount: totalPrice,
     };
-    console.log(orderData);
-    const res = await dispatch(PlaceOrder(orderData));
-    console.log(res);
-    setLoading(false);
-    if (res?.payload?.success) {
-      await dispatch(AllRemoveCardProduct(UserId));
-      loadProfile();
+    if (paymentMethod === "razorpay") {
+      setLoading(false);
+
+      try {
+        setLoading(true);
+
+        const orderResponse = await dispatch(paymentCreate(totalPrice)); // Adjust if using async Thunk
+        console.log(orderResponse);
+        const { orderId, currency, amount } = orderResponse?.payload;
+        // Razorpay options and initialization
+        const options = {
+          key: "rzp_test_5SBL5zBd3YDIum", // Use env variable
+          amount,
+          currency,
+          name: "Your Store Name",
+          description: "Order Description",
+          order_id: orderId,
+          handler: function (response) {
+            console.log("Payment successful", response);
+            toast.success("Payment Successful");
+          },
+          prefill: {
+            name: shippingInfo.name,
+            email: shippingInfo.email,
+            contact: shippingInfo.phoneNumber,
+          },
+          theme: {
+            color: "#F37254",
+          },
+        };
+
+        const paymentObject = new window.Razorpay(options);
+        paymentObject.open();
+      } catch (error) {
+        setPaymentStatus("Error processing payment");
+        toast.error("Error processing payment");
+        console.error("Error:", error);
+      } finally {
+        setLoading(false);
+      }
+
+      console.log(paymentMethod);
+    } else {
+      const res = await dispatch(PlaceOrder(orderData));
+      setLoading(false);
+      if (res?.payload?.success) {
+        await dispatch(AllRemoveCardProduct(UserId));
+        loadProfile();
+      }
     }
   };
 
@@ -137,7 +186,6 @@ function CheckoutPage() {
       setTotalPrice(Total);
     }
   }, [cart]);
-
   useEffect(() => {
     loadProfile();
     if (!ProductDetails) {
@@ -333,6 +381,33 @@ function CheckoutPage() {
                       </tbody>
                     ))}
                   </table>
+                  <div>
+                    PaymentMethod :
+                    <div>
+                      <input
+                        type="radio"
+                        name="payment_method"
+                        checked={paymentMethod === "razorpay"}
+                        value="razorpay"
+                        id="razorpay"
+                        onChange={handlePaymentMethodChange}
+                      />
+                      <label htmlFor="razorpay" className="text-sm pl-2">
+                        PhonePay,other...
+                      </label>
+                    </div>
+                    <input
+                      type="radio"
+                      name="payment_method"
+                      checked={paymentMethod === "cash_on_delivery"}
+                      value="cash_on_delivery"
+                      id="cash_on_Delivery"
+                      onChange={handlePaymentMethodChange}
+                    />
+                    <label htmlFor="cash_on_Delivery" className="text-sm pl-2">
+                      Cash on Delivery
+                    </label>
+                  </div>
                   <div className="text-xl justify-end  w-full flex pr-3 items-center">
                     <span className="flex items-center my-2 ">
                       Total price : <MdCurrencyRupee />
@@ -347,10 +422,6 @@ function CheckoutPage() {
                     loading={loading}
                     name={"Place Order"}
                   />
-
-                  {/* <button className="btn btn-black w-full p-3 bg-gray-800 text-white rounded">
-                    Place Order
-                  </button> */}
                 </div>
               </div>
             </div>

@@ -1,5 +1,5 @@
 import { config } from "dotenv";
-import http from "http";
+import Razorpay from "razorpay";
 config();
 
 import app from "./app.js";
@@ -12,6 +12,11 @@ v2.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+
+// export const razorpay = new Razorpay({
+//   key_id: process.env.KEY_ID,
+//   key_secret: process.env.SECRET_ID,
+// });
 
 //socket listen//
 //sever listen//

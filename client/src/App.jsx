@@ -15,6 +15,7 @@ import ProductDescription from "./Page/Product/ProductDes";
 import AddProduct from "./Page/Product/AddProduct";
 import Cart from "./Page/Card/Cart";
 import CheckoutForm from "./Page/Order/ChecK0ut";
+import Checkout from "./Page/payment/Checkout";
 function App() {
   return (
     <Routes>
@@ -29,6 +30,7 @@ function App() {
       >
         <Route path="/Profile" element={<Profile />}></Route>
         <Route path="/CheckoutForm" element={<CheckoutForm />}></Route>
+        <Route path="/Checkout" element={<Checkout />}></Route>
         <Route path="/Cart" element={<Cart />}></Route>
 
         <Route path="/Blog" element={<Blog />}></Route>
