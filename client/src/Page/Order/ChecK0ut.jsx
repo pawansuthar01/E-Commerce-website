@@ -10,7 +10,8 @@ import LoadingButton from "../../constants/LoadingBtn";
 import { isEmail, isPhoneNumber } from "../../helper/regexMatch";
 import { PlaceOrder } from "../../Redux/Slice/OrderSlice";
 import { AllRemoveCardProduct } from "../../Redux/Slice/ProductSlice";
-import { paymentCreate } from "../../Redux/Slice/paymentSlice";
+import { checkPayment, paymentCreate } from "../../Redux/Slice/paymentSlice";
+import { IoCloseCircleOutline } from "react-icons/io5";
 
 function CheckoutPage() {
   const navigate = useNavigate();
@@ -32,7 +33,11 @@ function CheckoutPage() {
     city: "",
     postalCode: "",
   });
+
   const [paymentMethod, setPaymentMethod] = useState("razorpay");
+  const [paymentStatus, setPaymentStatus] = useState("Pending");
+  const [error, setError] = useState(false);
+  const [message, setMessage] = useState("");
 
   const handlePaymentMethodChange = (event) => {
     setPaymentMethod(event.target.value);
@@ -43,7 +48,7 @@ function CheckoutPage() {
     setUserId(res?.payload?.data?._id);
     const updatedCart = res?.payload?.data?.walletAddProducts?.map(
       (product) => {
-        const productQuantity = ProductDetails[product.product] || 1; // Set quantity from ProductDetails or default to 1
+        const productQuantity = ProductDetails[product.product] || 1;
         return { ...product, quantity: productQuantity };
       }
     );
@@ -66,88 +71,84 @@ function CheckoutPage() {
 
   const handelPlaceOrder = async () => {
     setLoading(true);
+    if (
+      !shippingInfo.name ||
+      !shippingInfo.phoneNumber ||
+      !shippingInfo.address ||
+      !shippingInfo.email ||
+      !shippingInfo.city ||
+      !shippingInfo.state ||
+      !shippingInfo.country ||
+      !shippingInfo.postalCode
+    ) {
+      setError(true);
+      setLoading(false);
+      setMessage("All  Field  is mandatory To Order ....");
+      return;
+    }
 
-    if (!shippingInfo.name) {
-      setLoading(false);
-      toast.error("Name is required to order");
-      return;
-    }
-    if (!shippingInfo.phoneNumber) {
-      setLoading(false);
-      toast.error("phoneNumber is required to order");
-      return;
-    }
     if (!isPhoneNumber(shippingInfo.phoneNumber)) {
       setLoading(false);
-      toast.error("Invalid Phone Number");
+      setMessage(" Invalid Phone Number....");
       return;
     }
-    if (!shippingInfo.address) {
-      setLoading(false);
-      toast.error("address is required to order");
-      return;
-    }
-    if (!shippingInfo.email) {
-      setLoading(false);
-      toast.error("email is required to order");
-      return;
-    }
+
     if (!isEmail(shippingInfo.email)) {
       setLoading(false);
-      toast.error("Invalid email");
+      setMessage("Invalid email....");
+
       return;
     }
-    if (!shippingInfo.city) {
-      setLoading(false);
-      toast.error("city is required to order");
-      return;
-    }
-    if (!shippingInfo.state) {
-      setLoading(false);
-      toast.error("state is required to order");
-      return;
-    }
-    if (!shippingInfo.country) {
-      setLoading(false);
-      toast.error("country is required to order");
-      return;
-    }
-    if (!shippingInfo.postalCode) {
-      setLoading(false);
-      toast.error("postalCode is required to order");
-      return;
-    }
+
     if (!UserId) {
       setLoading(false);
-      toast.error("Something want Worng try again..");
+      setMessage("Something want Wrong try again..");
       return;
     }
+
     const orderData = {
       userId: UserId,
       products: cart,
       shippingAddress: shippingInfo,
+      paymentStatus: paymentStatus,
+      PaymentMethod: paymentMethod,
       totalAmount: totalPrice,
     };
+    async function OrderPlaceNew() {
+      const res = await dispatch(PlaceOrder(orderData));
+      setLoading(false);
+      if (res?.payload?.success) {
+        await dispatch(AllRemoveCardProduct(UserId));
+        loadProfile();
+      }
+    }
     if (paymentMethod === "razorpay") {
       setLoading(false);
 
       try {
         setLoading(true);
 
-        const orderResponse = await dispatch(paymentCreate(totalPrice)); // Adjust if using async Thunk
+        const orderResponse = await dispatch(paymentCreate(totalPrice));
         console.log(orderResponse);
         const { orderId, currency, amount } = orderResponse?.payload;
-        // Razorpay options and initialization
         const options = {
-          key: "rzp_test_5SBL5zBd3YDIum", // Use env variable
+          key: "rzp_live_tQdXshnQ0yJCfk",
           amount,
           currency,
-          name: "Your Store Name",
+          name: "Kgs Doors",
           description: "Order Description",
           order_id: orderId,
-          handler: function (response) {
+          handler: async function (response) {
             console.log("Payment successful", response);
             toast.success("Payment Successful");
+
+            const res = await dispatch(checkPayment(response));
+
+            res?.payload?.success
+              ? (setPaymentStatus("Completed"), OrderPlaceNew())
+              : (setError(true),
+                setLoading(false),
+                setMessage("Payment is Fail 💔 please try again.."));
           },
           prefill: {
             name: shippingInfo.name,
@@ -162,7 +163,6 @@ function CheckoutPage() {
         const paymentObject = new window.Razorpay(options);
         paymentObject.open();
       } catch (error) {
-        setPaymentStatus("Error processing payment");
         toast.error("Error processing payment");
         console.error("Error:", error);
       } finally {
@@ -171,12 +171,7 @@ function CheckoutPage() {
 
       console.log(paymentMethod);
     } else {
-      const res = await dispatch(PlaceOrder(orderData));
-      setLoading(false);
-      if (res?.payload?.success) {
-        await dispatch(AllRemoveCardProduct(UserId));
-        loadProfile();
-      }
+      OrderPlaceNew();
     }
   };
 
@@ -196,6 +191,16 @@ function CheckoutPage() {
   return (
     <Layout>
       <div className="pb-10 ">
+        {error && (
+          <div className="flex  z-20  items-center gap-10 fixed bg-red-200   w-full mx-2 border-2 border-red-500 text-red-500 font-medium p-3">
+            <p>{message}</p>
+            <IoCloseCircleOutline
+              size={20}
+              className=" cursor-pointer"
+              onClick={() => setError(false)}
+            />
+          </div>
+        )}
         <h1
           onClick={() => navigate("/Cart")}
           className="flex items-center text-xl cursor-pointer hover:text-blue-500"
@@ -344,7 +349,7 @@ function CheckoutPage() {
             </div>
 
             <div className="w-full md:w-1/2 px-4">
-              <div className="mb-5">
+              <div className="mb-5 sm:sticky top-6">
                 <h2 className="text-2xl mb-3 font-bold text-black">
                   Your Order
                 </h2>
@@ -392,19 +397,25 @@ function CheckoutPage() {
                         id="razorpay"
                         onChange={handlePaymentMethodChange}
                       />
-                      <label htmlFor="razorpay" className="text-sm pl-2">
-                        PhonePay,other...
+                      <label
+                        htmlFor="razorpay"
+                        className="text-sm font-medium pl-2"
+                      >
+                        PhonePay,Paytm,Google Pay and Other...
                       </label>
                     </div>
                     <input
                       type="radio"
                       name="payment_method"
-                      checked={paymentMethod === "cash_on_delivery"}
-                      value="cash_on_delivery"
+                      checked={paymentMethod === "cash on Delivery"}
+                      value="cash on Delivery"
                       id="cash_on_Delivery"
                       onChange={handlePaymentMethodChange}
                     />
-                    <label htmlFor="cash_on_Delivery" className="text-sm pl-2">
+                    <label
+                      htmlFor="cash_on_Delivery"
+                      className="text-sm font-medium pl-2"
+                    >
                       Cash on Delivery
                     </label>
                   </div>

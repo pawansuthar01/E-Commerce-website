@@ -1,7 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import Footer from "../Components/footer";
 import { BsPersonCircle } from "react-icons/bs";
-
 import { useState } from "react";
 import Layout from "../layout/layout";
 import LoadingButton from "../constants/LoadingBtn";
@@ -20,6 +19,7 @@ function SignUp() {
   const navigate = useNavigate();
   const [previewImage, setPreviewImage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false); // Dark mode state
   const [SignUpData, setSignUpData] = useState({
     fullName: "",
     userName: "",
@@ -29,6 +29,9 @@ function SignUp() {
     password: "",
     ConfirmPassword: "",
   });
+
+  const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
+
   const handelImageInput = (e) => {
     e.preventDefault();
     const image = e.target.files[0];
@@ -44,6 +47,7 @@ function SignUp() {
       setPreviewImage(this.result);
     });
   };
+
   const handelUserInput = (e) => {
     e.preventDefault();
     const { name, value } = e.target;
@@ -66,13 +70,12 @@ function SignUp() {
       !SignUpData.ConfirmPassword
     ) {
       setLoading(false);
-      toast.error("All Filed is required...");
+      toast.error("All Fields are required...");
       return;
     }
-    // console.log(SignUpData.fullName.length);
     if (SignUpData.fullName.length < 5) {
       setLoading(false);
-      toast.error("fullName should be altLeast 5 character..");
+      toast.error("FullName should be at least 5 characters..");
       return;
     }
     if (!isEmail(SignUpData.email)) {
@@ -83,7 +86,7 @@ function SignUp() {
     if (!isValidPassword(SignUpData.password)) {
       setLoading(false);
       toast.error(
-        "password should be 6-16 character and atlLeast a number and one special character.."
+        "Password should be 6-16 characters and include at least one number and one special character.."
       );
       return;
     }
@@ -95,13 +98,13 @@ function SignUp() {
     if (!isUserName(SignUpData.userName)) {
       setLoading(false);
       toast.error(
-        "userName should be 6-20 character and no space use a special characters.."
+        "Username should be 6-20 characters and contain no spaces or special characters.."
       );
       return;
     }
-    if (!SignUpData.password == SignUpData.ConfirmPassword) {
+    if (SignUpData.password !== SignUpData.ConfirmPassword) {
       setLoading(false);
-      toast.error("Password and ConfirmPassword does not match..");
+      toast.error("Password and Confirm Password do not match..");
       return;
     }
     const formData = new FormData();
@@ -134,14 +137,14 @@ function SignUp() {
 
   return (
     <Layout>
-      <div className=" w-full">
-        <div className=" relative 2 top-[-64px]  justify-center flex items-center">
-          <div className="bg-white max-sm:mt-20 mt-44 mb-10 w-[400px] rounded-lg shadow-[0_0_5px_black] p-8  max-sm:m-9 ">
-            <h1 className="text-center text-3xl font-semibold mb-6 text-[#9e6748]">
+      <div className="w-full">
+        <div className="relative top-[-64px] justify-center flex items-center">
+          <div className="bg-white dark:bg-gray-800 dark:text-gray-200 max-sm:mt-20 mt-44 mb-10 w-[400px] rounded-lg shadow-[0_0_5px_black] p-8 max-sm:m-9">
+            <h1 className="text-center text-3xl font-semibold mb-6 text-[#9e6748] dark:text-[#f5d9b1]">
               Create Your Account
             </h1>
             <form>
-              <label htmlFor="image_uploads" className=" cursor-pointer">
+              <label htmlFor="image_uploads" className="cursor-pointer">
                 {previewImage ? (
                   <div>
                     <img
@@ -158,7 +161,7 @@ function SignUp() {
               <input
                 type="file"
                 onChange={handelImageInput}
-                className="hidden "
+                className="hidden"
                 name="image_uploads"
                 id="image_uploads"
                 accept=".png ,.svg ,.jpeg ,.jpg"
@@ -170,14 +173,14 @@ function SignUp() {
                   value={SignUpData.userName}
                   name="userName"
                   required
-                  className="peer w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent"
+                  className="peer w-full border-b-2 border-gray-300  focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent  dark:text-gray-200"
                 />
                 {SignUpData.userName ? (
-                  <label className=" absolute left-0 top-[-20px] text-sm text-gray-500">
+                  <label className=" absolute left-0 top-[-20px] text-sm text-gray-500 dark:text-gray-300">
                     UserName
                   </label>
                 ) : (
-                  <label className="absolute left-0 top-2 text-lg text-gray-500 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
+                  <label className="absolute left-0 top-2 text-lg text-gray-500 dark:text-gray-300 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
                     UserName
                   </label>
                 )}
@@ -189,14 +192,14 @@ function SignUp() {
                   value={SignUpData.fullName}
                   name="fullName"
                   required
-                  className="peer w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent"
+                  className="peer w-full border-b-2 border-gray-300  focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent  dark:text-gray-200"
                 />
                 {SignUpData.fullName ? (
-                  <label className=" absolute left-0 top-[-20px] text-sm text-gray-500">
+                  <label className=" absolute left-0 top-[-20px] text-sm text-gray-500 dark:text-gray-300">
                     FullName
                   </label>
                 ) : (
-                  <label className="absolute left-0 top-2 text-lg text-gray-500 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
+                  <label className="absolute left-0 top-2 text-lg text-gray-500 dark:text-gray-300 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
                     FullName
                   </label>
                 )}
@@ -208,14 +211,14 @@ function SignUp() {
                   type="email"
                   name="email"
                   required
-                  className="peer w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent"
+                  className="peer w-full border-b-2 border-gray-300  focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent  dark:text-gray-200"
                 />
                 {SignUpData.email ? (
-                  <label className=" absolute left-0 top-[-20px] text-sm text-gray-500">
+                  <label className=" absolute left-0 top-[-20px] text-sm text-gray-500 dark:text-gray-300">
                     Email
                   </label>
                 ) : (
-                  <label className="absolute left-0 top-2 text-lg text-gray-500 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
+                  <label className="absolute left-0 top-2 text-lg text-gray-500 dark:text-gray-300 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
                     Email
                   </label>
                 )}
@@ -227,15 +230,15 @@ function SignUp() {
                   type="number"
                   name="phoneNumber"
                   required
-                  className="peer w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent"
+                  className="peer w-full border-b-2 border-gray-300  focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent dark:text-gray-200"
                 />
                 {SignUpData.phoneNumber ? (
-                  <label className=" absolute left-0 top-[-20px] text-sm text-gray-500">
-                    phoneNumber
+                  <label className=" absolute left-0 top-[-20px] text-sm text-gray-500 dark:text-gray-300">
+                    Phone Number
                   </label>
                 ) : (
-                  <label className="absolute left-0 top-2 text-lg text-gray-500 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
-                    phoneNumber
+                  <label className="absolute left-0 top-2 text-lg text-gray-500 dark:text-gray-300 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
+                    Phone Number
                   </label>
                 )}
               </div>
@@ -246,53 +249,53 @@ function SignUp() {
                   type="password"
                   name="password"
                   required
-                  className="peer w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent"
+                  className="peer w-full border-b-2 border-gray-300  focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent  dark:text-gray-200"
                 />
                 {SignUpData.password ? (
-                  <label className=" absolute left-0 top-[-20px] text-sm text-gray-500">
-                    password
+                  <label className=" absolute left-0 top-[-20px] text-sm text-gray-500 dark:text-gray-300">
+                    Password
                   </label>
                 ) : (
-                  <label className="absolute left-0 top-2 text-lg text-gray-500 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
-                    password
+                  <label className="absolute left-0 top-2 text-lg text-gray-500 dark:text-gray-300 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
+                    Password
                   </label>
                 )}
               </div>
               <div className="relative mb-6">
                 <input
-                  type="password"
                   onChange={handelUserInput}
                   value={SignUpData.ConfirmPassword}
+                  type="password"
                   name="ConfirmPassword"
                   required
-                  className="peer w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent"
+                  className="peer w-full border-b-2 border-gray-300  focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent  dark:text-gray-200"
                 />
                 {SignUpData.ConfirmPassword ? (
-                  <label className=" absolute left-0 top-[-20px] text-sm text-gray-500">
-                    ConfirmPassword
+                  <label className=" absolute left-0 top-[-20px] text-sm text-gray-500 dark:text-gray-300">
+                    Confirm Password
                   </label>
                 ) : (
-                  <label className="absolute left-0 top-2 text-lg text-gray-500 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
-                    ConfirmPassword
+                  <label className="absolute left-0 top-2 text-lg text-gray-500 dark:text-gray-300 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
+                    Confirm Password
                   </label>
                 )}
               </div>
-              <div>
+              <div className="flex justify-center mt-5">
                 <LoadingButton
-                  onClick={handleCreate}
-                  loading={loading}
-                  color={"bg-green-600"}
-                  message={"Creating.."}
-                  name={"Create"}
+                  text={loading ? "Creating..." : "Create Account"}
+                  handleClick={handleCreate}
+                  width="w-[300px]"
                 />
               </div>
-              <p className="mt-1  text-center">
-                you have a Account ?
-                <Link to="/Login" className="link text-blue-600 pl-1">
-                  Login
+            </form>
+            <div className="flex items-center justify-center mt-4">
+              <p className="text-sm text-gray-500 dark:text-gray-300">
+                Already have an account?{" "}
+                <Link to="/login" className="text-blue-500 hover:underline">
+                  Log In
                 </Link>
               </p>
-            </form>
+            </div>
           </div>
         </div>
       </div>

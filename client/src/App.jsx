@@ -15,39 +15,42 @@ import ProductDescription from "./Page/Product/ProductDes";
 import AddProduct from "./Page/Product/AddProduct";
 import Cart from "./Page/Card/Cart";
 import CheckoutForm from "./Page/Order/ChecK0ut";
-import Checkout from "./Page/payment/Checkout";
+import { ThemeProvider } from "./Components/ThemeContext";
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />}></Route>
-      <Route path="/Login" element={<Login />}></Route>
-      <Route path="/Signup" element={<SignUp />}></Route>
-      <Route path="/Search" element={<Product />}></Route>
-      <Route path="/AllProduct" element={<Product />}></Route>
-      <Route path="/Contact" element={<Contact />}></Route>
-      <Route
-        element={<RequireAuth allowedRole={["USER", "ADMIN", "AUTHOR"]} />}
-      >
-        <Route path="/Profile" element={<Profile />}></Route>
-        <Route path="/CheckoutForm" element={<CheckoutForm />}></Route>
-        <Route path="/Checkout" element={<Checkout />}></Route>
-        <Route path="/Cart" element={<Cart />}></Route>
+    <ThemeProvider>
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+        <Routes>
+          <Route path="/" element={<HomePage />}></Route>
+          <Route path="/Login" element={<Login />}></Route>
+          <Route path="/Signup" element={<SignUp />}></Route>
+          <Route path="/Search" element={<Product />}></Route>
+          <Route path="/AllProduct" element={<Product />}></Route>
+          <Route path="/Contact" element={<Contact />}></Route>
+          <Route
+            element={<RequireAuth allowedRole={["USER", "ADMIN", "AUTHOR"]} />}
+          >
+            <Route path="/Profile" element={<Profile />}></Route>
+            <Route path="/CheckoutForm" element={<CheckoutForm />}></Route>
+            <Route path="/Cart" element={<Cart />}></Route>
 
-        <Route path="/Blog" element={<Blog />}></Route>
-        <Route path="/Description" element={<ProductDescription />}></Route>
-      </Route>
-      <Route path="/About" element={<About />}></Route>
-      <Route element={<RequireAuth allowedRole={["USER"]} />}>
-        <Route path="/Profile" element={<Profile />}></Route>
-        <Route path="/Blog" element={<Blog />}></Route>
-        <Route path="/Description" element={<ProductDescription />}></Route>
-      </Route>
-      <Route element={<RequireAuth allowedRole={["ADMIN", "AUTHOR"]} />}>
-        <Route path="/AddProduct" element={<AddProduct />}></Route>
-      </Route>
-      <Route path="/Denied" element={<Denied />}></Route>
-      <Route path="*" element={<NotFoundPage />}></Route>
-    </Routes>
+            <Route path="/Blog" element={<Blog />}></Route>
+            <Route path="/Description" element={<ProductDescription />}></Route>
+          </Route>
+          <Route path="/About" element={<About />}></Route>
+          <Route element={<RequireAuth allowedRole={["USER"]} />}>
+            <Route path="/Profile" element={<Profile />}></Route>
+            <Route path="/Blog" element={<Blog />}></Route>
+            <Route path="/Description" element={<ProductDescription />}></Route>
+          </Route>
+          <Route element={<RequireAuth allowedRole={["ADMIN", "AUTHOR"]} />}>
+            <Route path="/AddProduct" element={<AddProduct />}></Route>
+          </Route>
+          <Route path="/Denied" element={<Denied />}></Route>
+          <Route path="*" element={<NotFoundPage />}></Route>
+        </Routes>
+      </div>
+    </ThemeProvider>
   );
 }
 

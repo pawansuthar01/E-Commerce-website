@@ -45,13 +45,17 @@ function ProductDescription() {
   };
 
   useEffect(() => {
-    LoadAccount();
+    if (state) {
+      LoadAccount();
+    } else {
+      navigate("/");
+    }
   }, []);
   return (
     <Layout>
       <div className="min-h-[90vh] text-white bg-[#F5F5F5] pt-12 px-20 flex flex-col justify-center items-center ">
         <div className="bg-white p-5 rounded-sm">
-          <div className=" grid grid-cols-2 gap-10 relative  ">
+          <div className="  gap-10 relative   ">
             <div className=" space-y-6">
               <img
                 src={
@@ -63,11 +67,12 @@ function ProductDescription() {
                 className="w-full h-64 rounded-sm"
               />
 
-              {role === "ADMIN" && (
-                <button className="bg-yellow-500 text-xl rounded-sm font-bold px-5 py-2 w-full hover:bg-yellow-400 transition-all duration-300">
-                  Delete
-                </button>
-              )}
+              {role === "ADMIN" ||
+                (role === "AUTHOR" && (
+                  <button className="bg-yellow-500 text-xl rounded-sm font-bold px-5 py-2 w-full hover:bg-yellow-400 transition-all duration-300">
+                    Delete
+                  </button>
+                ))}
             </div>
             <div className=" space-y-5 text-xl">
               <h1 className="text-3xl font-bold text-black capitalize mb-5 text-center">

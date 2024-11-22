@@ -5,20 +5,21 @@ import { GiShoppingCart } from "react-icons/gi";
 import logo from "../assets/download-removebg-preview.png";
 import { FaMagnifyingGlass, FaMoon, FaSun, FaUser } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
-
 import Footer from "../Components/footer";
 import LoadingButton from "../constants/LoadingBtn";
 import { useState } from "react";
 import { LogoutAccount } from "../Redux/Slice/authSlice";
+import { useTheme } from "../Components/ThemeContext";
 
 function Layout({ children }) {
   const [loading, setLoading] = useState("");
-
+  const { darkMode, toggleDarkMode } = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state?.auth?.isLoggedIn);
   const role = useSelector((state) => state?.auth?.role);
   const { data } = useSelector((state) => state?.auth);
+
   function changeWight() {
     const drawerSide = document.getElementsByClassName("drawer-side");
     drawerSide[0].style.width = "auto";
@@ -42,27 +43,41 @@ function Layout({ children }) {
   };
 
   return (
-    <div className="min-h-[90vh]  ">
-      <div className=" sticky top-0 z-50">
-        <nav className="flex   z-50 bg-white  justify-between   w-[100%] items-center">
-          <label htmlFor="my-drawer" className=" relative cursor-pointer ">
+    <div
+      className={`min-h-[90vh] ${
+        darkMode ? "bg-gray-900 text-white" : "bg-white text-black"
+      }`}
+    >
+      <div className="sticky top-0 z-50">
+        <nav
+          className={`flex z-50 justify-between w-[100%] items-center ${
+            darkMode ? "bg-gray-800" : "bg-white"
+          }`}
+        >
+          <label htmlFor="my-drawer" className="relative cursor-pointer">
             <FiMenu
               onClick={changeWight}
               size={"36px"}
-              className=" font-bold m-4 text-gray-800 "
+              className={`font-bold m-4 ${
+                darkMode ? "text-white" : "text-gray-800"
+              }`}
             />
           </label>
-          <div className="max-sm:hidden flex w-full justify-center  ">
+          <div className="max-sm:hidden flex w-full justify-center">
             <label
               htmlFor="default-search"
-              className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+              className={`mb-2 text-sm font-medium ${
+                darkMode ? "text-white" : "text-gray-900"
+              } sr-only`}
             >
               Search
             </label>
-            <div className="relative w-1/2  ">
-              <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none   ">
+            <div className="relative w-1/2">
+              <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                 <svg
-                  className="w-4 h-4 text-gray-500 dark:text-gray-400"
+                  className={`w-4 h-4 ${
+                    darkMode ? "text-gray-400" : "text-gray-500"
+                  }`}
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -80,13 +95,19 @@ function Layout({ children }) {
               <input
                 type="search"
                 id="default-search"
-                className="w-full p-4 ps-10 text-sm outline-none text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                className={`w-full p-4 ps-10 text-sm outline-none ${
+                  darkMode
+                    ? "text-white bg-gray-700 border-gray-600"
+                    : "text-gray-900 bg-gray-50 border-gray-300"
+                } rounded-lg focus:ring-blue-500 focus:border-blue-500`}
                 placeholder="Search Mockups, Logos..."
                 required
               />
               <button
                 type="submit"
-                className="text-white absolute end-2.5 bottom-2.5 bg-blue-700  border-blue-700 hover:bg-transparent hover:text-blue-700 hover:border-2 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                className={`text-white absolute end-2.5 bottom-2.5 ${
+                  darkMode ? "bg-blue-600" : "bg-blue-700"
+                } border-blue-700 hover:bg-transparent hover:text-blue-700 hover:border-2 font-medium rounded-lg text-sm px-4 py-2`}
               >
                 Search
               </button>
@@ -96,26 +117,40 @@ function Layout({ children }) {
             <div className="max-sm:hidden flex">
               {!isLoggedIn && (
                 <Link to="/Login">
-                  <button className=" text-sm  bg-blue-700 border-blue-700  px-8 py-3 font-medium  text-white rounded-md w-full hover:bg-transparent hover:text-blue-700 hover:border-2 ">
+                  <button
+                    className={`${
+                      darkMode ? "bg-blue-600" : "bg-blue-700"
+                    } text-sm px-8 py-3 font-medium text-white rounded-md w-full hover:bg-transparent hover:text-blue-700 hover:border-2`}
+                  >
                     Login
                   </button>
                 </Link>
               )}
             </div>
             <Link to="/Search">
-              <div className=" cursor-pointer sm:hidden ">
+              <div className="cursor-pointer sm:hidden">
                 <FaMagnifyingGlass size={"20px"} />
               </div>
             </Link>
-            <div className=" cursor-pointer hover:text-green-400">
+
+            <div className="cursor-pointer hover:text-green-400">
               <FaUser size={"20px"} onClick={() => navigate("/Profile")} />
             </div>
 
+            <button
+              onClick={toggleDarkMode}
+              className={`p-2 ${
+                darkMode ? "bg-gray-700" : "bg-gray-300"
+              } rounded`}
+            >
+              {darkMode ? <FaSun size={20} /> : <FaMoon size={20} />}
+            </button>
+
             <div
               onClick={() => navigate("/Cart")}
-              className=" relative  cursor-pointer mr-4"
+              className="relative cursor-pointer mr-4"
             >
-              <p className=" absolute text-green-600 font-serif text-sm top-[-12px] right-[-5px] ">
+              <p className="absolute text-green-600 font-serif text-sm top-[-12px] right-[-5px]">
                 {data?.walletAddProducts?.length >= 1 &&
                   data?.walletAddProducts?.length}
               </p>
@@ -130,12 +165,18 @@ function Layout({ children }) {
             </div>
           </div>
         </nav>
-        <div className="drawer absolute left-0 z-50 w-fit ">
-          <input className="drawer-toggle " id="my-drawer" type="checkbox" />
-          <div className="drawer-side  w-0">
+        <div className="drawer absolute left-0 z-50 w-fit">
+          <input className="drawer-toggle" id="my-drawer" type="checkbox" />
+          <div className="drawer-side w-0">
             <label htmlFor="my-drawer" className="drawer-overlay"></label>
-            <ul className="menu p-4 w-56 h-[100%]   sm:w-80 bg-base-200 text-base-content space-y-5 relative">
-              <li className="w-fit absolute right-2 z-50 ">
+            <ul
+              className={`menu p-4 w-56 h-[100%] sm:w-80 ${
+                darkMode
+                  ? "bg-gray-800 text-gray-300"
+                  : "bg-base-200 text-base-content"
+              } space-y-5 relative`}
+            >
+              <li className="w-fit absolute right-2 z-50">
                 <button onClick={hideSide}>
                   <AiFillCloseCircle size={"20px"} />
                 </button>
@@ -164,15 +205,15 @@ function Layout({ children }) {
                 <Link to="/About">About Us</Link>
               </li>
               {!isLoggedIn && (
-                <li className="w-[90%] absolute  bottom-4">
-                  <div className=" flex items-center justify-center w-full flex-wrap ">
+                <li className="w-[90%] absolute bottom-4">
+                  <div className="flex items-center justify-center w-full flex-wrap">
                     <Link to="/Login">
-                      <button className=" btn btn-primary px-8 py-1  rounded-md font-semibold w-full  ">
+                      <button className="btn btn-primary px-8 py-1 rounded-md font-semibold w-full">
                         Login
                       </button>
                     </Link>
                     <Link to="/SignUp">
-                      <button className=" btn btn-secondary px-8 py-1  rounded-md font-semibold  w-full ">
+                      <button className="btn btn-secondary px-8 py-1 rounded-md font-semibold w-full">
                         SignUp
                       </button>
                     </Link>
@@ -180,24 +221,14 @@ function Layout({ children }) {
                 </li>
               )}
               {isLoggedIn && (
-                <div className="w-[90%] absolute  bottom-4 ">
-                  <div className=" flex  items-center justify-center  w-full ">
-                    <Link to="/Profile" className="w-1/2">
-                      <LoadingButton
-                        name={"Profile"}
-                        message={"Loading"}
-                        color={"bg-green-500"}
-                      />
-                    </Link>
-                    <Link onClick={handelLogout} className="w-1/2  ml-1">
-                      <LoadingButton
-                        loading={loading}
-                        name={"Logout"}
-                        message={"Loading"}
-                        color={"bg-red-500"}
-                        onClick={handelLogout}
-                      />
-                    </Link>
+                <div className="w-[90%] absolute bottom-4">
+                  <div className="flex items-center justify-center w-full flex-wrap">
+                    <button
+                      onClick={handelLogout}
+                      className="btn btn-danger px-8 py-1 rounded-md font-semibold w-full"
+                    >
+                      {loading ? <LoadingButton /> : "Logout"}
+                    </button>
                   </div>
                 </div>
               )}
@@ -205,10 +236,10 @@ function Layout({ children }) {
           </div>
         </div>
       </div>
-
-      {children}
+      <div>{children}</div>
       <Footer />
     </div>
   );
 }
+
 export default Layout;

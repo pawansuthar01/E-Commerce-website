@@ -50,6 +50,7 @@ const OrderSchema = new Schema({
     enum: ["cash on Delivery", "razorpay"],
     default: "razorpay",
   },
+
   totalAmount: {
     type: Number,
     required: true,
@@ -75,6 +76,7 @@ const OrderSchema = new Schema({
     enum: ["Processing", "Shipped", "Delivered", "Canceled"],
     default: "Processing",
   },
+
   deliveryDate: {
     type: Date,
     default: () => {

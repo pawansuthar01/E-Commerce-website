@@ -2,10 +2,18 @@ import Order from "../module/Order.module.js";
 import Product from "../module/Product.module.js";
 import AppError from "../utils/AppError.js";
 import Razorpay from "razorpay";
+import crypto from "crypto";
 
 export const CreateOrder = async (req, res, next) => {
-  const { userId, products, shippingAddress, totalAmount } = req.body;
-  console.log(shippingAddress);
+  const {
+    userId,
+    products,
+    shippingAddress,
+    paymentStatus,
+    PaymentMethod,
+    totalAmount,
+  } = req.body;
+  console.log(PaymentMethod, paymentStatus);
   if (!userId || !products || !shippingAddress || !totalAmount) {
     return next(new AppError("All fields are required.", 400));
   }
@@ -36,6 +44,8 @@ export const CreateOrder = async (req, res, next) => {
     userId,
     products: productDetails,
     shippingAddress,
+    PaymentMethod,
+    paymentStatus,
     totalAmount,
   });
 
@@ -51,44 +61,11 @@ export const CreateOrder = async (req, res, next) => {
     data: newOrder,
   });
 };
-// export const createOrderPayment = async (req, res, next) => {
-//   console.log(req.body);
-//   const { totalAmount } = req.body;
-//   try {
-//     if (!totalAmount) {
-//       return next(new AppError("totalAmount is required", 400));
-//     }
-//     const Option = {
-//       amount: totalAmount * 100,
-//       currency: "INR",
-//       receipt: `order_rcptid_${Math.random()}`,
-//     };
-
-//     const order = await razorpay.Order.create(Option);
-//     if (!order) {
-//       return next(new AppError("order payment not create..", 400));
-//     }
-//     res.status(200).json({
-//       success: true,
-//       orderId: order.id,
-//       currency: order.currency,
-//       amount: order.amount,
-//     });
-//   } catch (error) {
-//     return next(new AppError(error.message, 400));
-//   }
-// };
-//
-// import AppError from "../utils/AppError.js"; // Ensure you have a proper AppError utility
-
-// Initialize Razorpay instance
 
 const razorpay = new Razorpay({
-  key_id: process.env.KEY_ID, // Use environment variables for security
+  key_id: process.env.KEY_ID,
   key_secret: process.env.SECRET_ID,
 });
-// console.log("Razorpay Key ID:", process.env.KEY_ID);
-// console.log("Razorpay Key Secret:", process.env.SECRET_ID);
 
 export const createOrderPayment = async (req, res, next) => {
   try {
@@ -126,6 +103,29 @@ export const createOrderPayment = async (req, res, next) => {
   }
 };
 
+export const PaymentVerify = async (req, res, next) => {
+  const { razorpay_payment_id, razorpay_order_id, razorpay_signature } =
+    req.body;
+  console.log(req.boy);
+  console.log(process.env.SECRET_ID);
+  try {
+    const generated_signature = crypto
+      .createHmac("sha256", process.env.SECRET_ID)
+      .update(razorpay_order_id + "|" + razorpay_payment_id)
+      .digest("hex");
+
+    if (generated_signature === razorpay_signature) {
+      res.status(200).json({ success: true, message: "Payment Verified" });
+    } else {
+      res
+        .status(400)
+        .json({ success: false, message: "Payment verification failed" });
+    }
+  } catch (error) {
+    return next(new AppError(error.message, 400));
+  }
+};
+
 export const UpdateOrder = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -136,6 +136,32 @@ export const UpdateOrder = async (req, res, next) => {
     const order = await Order.findOneAndUpdate(
       { _id: id },
       { $set: req.body },
+      { new: true }
+    );
+    if (!order) {
+      return next(new AppError("order is does not found..", 400));
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "update Order...",
+      data: order,
+    });
+  } catch (error) {
+    return next(new AppError(error.message, 400));
+  }
+};
+
+export const CancelOrder = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return next(new AppError("all  filed required ", 400));
+    }
+    const order = await Order.findOneAndUpdate(
+      { _id: id },
+      { $set: { orderStats: "Canceled" } },
       { new: true }
     );
     if (!order) {

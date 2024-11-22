@@ -30,7 +30,7 @@ export const paymentCreate = createAsyncThunk(
 );
 export const checkPayment = createAsyncThunk("payment/check", async (data) => {
   try {
-    const res = axiosInstance.post("/api/v3/Order/checkPayment", data);
+    const res = axiosInstance.post("/api/v3/Order/PaymentVerify/verify", data);
     toast.promise(res, {
       loading: "please wait! remove  product..",
       success: (data) => {

@@ -5,7 +5,11 @@ import bgProfile from "../../assets/home/pexels-photo-29376504.webp";
 import { useNavigate } from "react-router-dom";
 import { LoadAccount } from "../../Redux/Slice/authSlice";
 import { useEffect, useState } from "react";
-import { getOrder, UpdateOrder } from "../../Redux/Slice/OrderSlice";
+import {
+  CancelOrder,
+  getOrder,
+  UpdateOrder,
+} from "../../Redux/Slice/OrderSlice";
 import { MdEmail, MdPhone } from "react-icons/md";
 import LoadingButton from "../../constants/LoadingBtn";
 import { FaArrowLeft } from "react-icons/fa6";
@@ -50,62 +54,53 @@ function Profile() {
     const { name, value } = e.target;
     setShippingInfo({ ...shippingInfo, [name]: value });
   };
+  const handelOrderCancel = async (id) => {
+    if (!id) {
+      setLoading(false);
+      toast.error("Something want Wrong try again..");
+      return;
+    }
+    const res = await dispatch(CancelOrder(id));
+    setLoading(false);
+    setShow(false);
+    if (res?.payload?.success) {
+      loadOrders();
+    }
+  };
 
   const handelPlaceOrder = async () => {
     setLoading(true);
-    if (!shippingInfo.name) {
+    if (
+      !shippingInfo.name ||
+      !shippingInfo.phoneNumber ||
+      !shippingInfo.address ||
+      !shippingInfo.email ||
+      !shippingInfo.city ||
+      !shippingInfo.state ||
+      !shippingInfo.country ||
+      !shippingInfo.postalCode
+    ) {
+      toast.error("All  Field  is mandatory To Order ....");
       setLoading(false);
-      toast.error("Name is required to order");
       return;
     }
-    if (!shippingInfo.phoneNumber) {
-      setLoading(false);
-      toast.error("phoneNumber is required to order");
-      return;
-    }
+
     if (!isPhoneNumber(shippingInfo.phoneNumber)) {
       setLoading(false);
-      toast.error("Invalid Phone Number");
+      toast.error(" Invalid Phone Number....");
       return;
     }
-    if (!shippingInfo.address) {
-      setLoading(false);
-      toast.error("address is required to order");
-      return;
-    }
-    if (!shippingInfo.email) {
-      setLoading(false);
-      toast.error("email is required to order");
-      return;
-    }
+
     if (!isEmail(shippingInfo.email)) {
       setLoading(false);
-      toast.error("Invalid email");
+      toast.error("Invalid email....");
+
       return;
     }
-    if (!shippingInfo.city) {
-      setLoading(false);
-      toast.error("city is required to order");
-      return;
-    }
-    if (!shippingInfo.state) {
-      setLoading(false);
-      toast.error("state is required to order");
-      return;
-    }
-    if (!shippingInfo.country) {
-      setLoading(false);
-      toast.error("country is required to order");
-      return;
-    }
-    if (!shippingInfo.postalCode) {
-      setLoading(false);
-      toast.error("postalCode is required to order");
-      return;
-    }
+
     if (!UserId) {
       setLoading(false);
-      toast.error("Something want Worng try again..");
+      toast.error("Something want Wrong try again..");
       return;
     }
     const orderData = {
@@ -217,8 +212,20 @@ function Profile() {
               key={index}
               className="bg-white shadow-[0_0_1px_black] rounded-lg p-6 max-w-2xl max-sm:mx-4 mx-auto mb-4  flex flex-col"
             >
-              <h2 className="text-lg font-semibold mb-4 max-sm:text-sm">
+              <h2 className="text-lg flex justify-between font-semibold mb-4 max-sm:text-sm">
                 Order ID: {order._id}
+                {orderStats[order._id] === "Canceled" ? (
+                  <p className="text-red-500 text-sm cursor-pointer hover:underline">
+                    Canceled
+                  </p>
+                ) : (
+                  <p
+                    onClick={() => handelOrderCancel(order._id)}
+                    className="text-red-500 text-sm cursor-pointer hover:underline"
+                  >
+                    Cancel
+                  </p>
+                )}
               </h2>
               {order.products.map((product, productIndex) => (
                 <div key={productIndex} className="flex space-x-4 mb-4">
@@ -286,77 +293,86 @@ function Profile() {
                   </p>
                 </div>
               </div>
-
-              <div className="mt-6">
-                <div className="flex justify-between">
+              {orderStats[order._id] === "Canceled" ? (
+                <div className="flex flex-col items-center mt-10">
                   <h3 className="text-sm text-gray-600 mb-2">
                     Order placed on{" "}
                     {new Date(order.createdAt).toLocaleDateString()}
                   </h3>
-                  <h3 className="text-sm text-gray-600 mb-2">
-                    Order Delivery on{" "}
-                    {new Date(order.deliveryDate).toLocaleDateString()}
-                  </h3>
+                  <h1 className="text-red-500">Canceled</h1>
                 </div>
+              ) : (
+                <div className="mt-6">
+                  <div className="flex justify-between">
+                    <h3 className="text-sm text-gray-600 mb-2">
+                      Order placed on{" "}
+                      {new Date(order.createdAt).toLocaleDateString()}
+                    </h3>
+                    <h3 className="text-sm text-gray-600 mb-2">
+                      Order Delivery on{" "}
+                      {new Date(order.deliveryDate).toLocaleDateString()}
+                    </h3>
+                  </div>
 
-                <div className="w-full bg-gray-200 h-1 rounded-full">
-                  <div
-                    className="bg-blue-600 h-1 rounded-full"
-                    style={{
-                      width: `${
-                        orderStats[order._id] === "Processing"
-                          ? "40%"
-                          : orderStats[order._id] === "Shipped"
-                          ? "70%"
-                          : orderStats[order._id] === "Delivered"
-                          ? "10%"
-                          : "10%"
-                      }`,
-                    }}
-                  ></div>
-                </div>
-                <div className="flex justify-between text-xs text-gray-600 mt-2">
-                  <span
-                    className="
+                  <div className="w-full bg-gray-200 h-1 rounded-full">
+                    <div
+                      className="bg-blue-600 h-1 rounded-full"
+                      style={{
+                        width: `${
+                          orderStats[order._id] === "Processing"
+                            ? "40%"
+                            : orderStats[order._id] === "Shipped"
+                            ? "70%"
+                            : orderStats[order._id] === "Delivered"
+                            ? "10%"
+                            : "10%"
+                        }`,
+                      }}
+                    ></div>
+                  </div>
+                  <div className="flex justify-between text-xs text-gray-600 mt-2">
+                    <span
+                      className="
                    text-blue-600 font-medium "
-                  >
-                    Order placed
-                  </span>
-                  <span
-                    className={` ${
-                      orderStats[order._id] === "Processing"
-                        ? `text-blue-600`
-                        : `text-black`
-                    }  font-medium `}
-                  >
-                    Processing
-                  </span>
-                  <span
-                    className={`${
-                      orderStats[order._id] === "Shipped"
-                        ? `text-blue-600`
-                        : `text-black`
-                    }   font-medium `}
-                  >
-                    Shipped
-                  </span>
-                  <span
-                    className={`${
-                      orderStats[order._id] === "Delivered"
-                        ? `text-blue-600`
-                        : `text-black`
-                    }   font-medium  mb-5`}
-                  >
-                    Delivered
-                  </span>
+                    >
+                      Order placed
+                    </span>
+                    <span
+                      className={` ${
+                        orderStats[order._id] === "Processing"
+                          ? `text-blue-600`
+                          : `text-black`
+                      }  font-medium `}
+                    >
+                      Processing
+                    </span>
+                    <span
+                      className={`${
+                        orderStats[order._id] === "Shipped"
+                          ? `text-blue-600`
+                          : `text-black`
+                      }   font-medium `}
+                    >
+                      Shipped
+                    </span>
+                    <span
+                      className={`${
+                        orderStats[order._id] === "Delivered"
+                          ? `text-blue-600`
+                          : `text-black`
+                      }   font-medium  mb-5`}
+                    >
+                      Delivered
+                    </span>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           ))
         )}
         {show && (
-          <div className="fixed inset-0 flex  overflow-y-auto justify-center  items-center bg-gray-800 bg-opacity-50 z-50">
-            <div className=" px-4 mb-5 md:mb-0  max-sm:mt-10 max-sm:h-[90%]">
+          <div className="fixed inset-0 flex  overflow-y-auto  justify-center   items-center bg-gray-800 bg-opacity-50 z-50">
+            <div className=" px-4 mb-5 md:mb-0 sm:my-10  max-sm:h-[90%]  ">
               <h2 className="text-2xl mb-3 font-bold text-black">
                 Billing Details
               </h2>
