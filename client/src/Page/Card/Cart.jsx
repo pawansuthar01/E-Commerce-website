@@ -69,7 +69,7 @@ const Cart = () => {
 
   return (
     <Layout>
-      <div className="min-h-[50vh] p-6 bg-gray-100">
+      <div className="min-h-[50vh] p-6 bg-gray-100 dark:bg-[#111827]">
         <h2 className="text-2xl font-bold mb-4">Your Cart</h2>
         {cart.length === 0 ? (
           <div className="flex flex-col items-center gap-5">
@@ -88,9 +88,9 @@ const Cart = () => {
         ) : (
           <div>
             <div className="overflow-x-auto">
-              <table className="w-full bg-white border border-gray-200 shadow-xl rounded-lg">
+              <table className="w-full bg-white border dark:bg-[#111827] border-gray-200 shadow-xl rounded-lg">
                 <thead>
-                  <tr className="bg-gray-100">
+                  <tr className="bg-gray-100 dark:bg-[#111827]">
                     <th className="p-4 text-left">Image</th>
                     <th className="p-4 text-left">Product</th>
                     <th className="p-4 text-left">Price</th>
@@ -112,12 +112,12 @@ const Cart = () => {
                           className="max-w-20"
                         />
                       </td>
-                      <td className="p-4">
-                        <h2 className="text-black font-medium">
+                      <td className="p-4 ">
+                        <h2 className="text-black dark:text-white font-medium">
                           {product.name}
                         </h2>
                       </td>
-                      <td className="p-4 flex items-center">
+                      <td className="p-4 flex items-center  ">
                         <MdCurrencyRupee />
                         {Number(product.price).toFixed(2)}
                       </td>
@@ -131,7 +131,7 @@ const Cart = () => {
                           </button>
                           <input
                             type="text"
-                            className="w-12 text-center border rounded"
+                            className="w-12 dark:bg-[#111827] text-center border rounded"
                             value={quantities[product.product] || 1}
                             readOnly
                           />
@@ -176,11 +176,11 @@ const Cart = () => {
               </button>
 
               <div className="flex gap-2 flex-col   p-2 rounded-md">
-                <header className="text-black font-medium text-2xl">
+                <header className="text-black dark:text-white font-medium text-2xl">
                   Cart Total
                   <hr className="h-1 bg-slate-500" />
                 </header>
-                <div className="text-xl grid grid-cols-2 text-black font-normal ">
+                <div className="text-xl grid grid-cols-2 dark:text-white text-black font-normal ">
                   <p>Total Amount =</p>{" "}
                   <h1 className="flex items-center text-2xl">
                     <MdCurrencyRupee />

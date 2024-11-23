@@ -3,7 +3,7 @@ import Layout from "../../layout/layout";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { LoadAccount } from "../../Redux/Slice/authSlice";
-import { FaArrowLeft } from "react-icons/fa6";
+import { FaArrowLeft, FaS } from "react-icons/fa6";
 import { MdCurrencyRupee } from "react-icons/md";
 import toast from "react-hot-toast";
 import LoadingButton from "../../constants/LoadingBtn";
@@ -12,6 +12,7 @@ import { PlaceOrder } from "../../Redux/Slice/OrderSlice";
 import { AllRemoveCardProduct } from "../../Redux/Slice/ProductSlice";
 import { checkPayment, paymentCreate } from "../../Redux/Slice/paymentSlice";
 import { IoCloseCircleOutline } from "react-icons/io5";
+import { useTheme } from "../../Components/ThemeContext";
 
 function CheckoutPage() {
   const navigate = useNavigate();
@@ -38,7 +39,8 @@ function CheckoutPage() {
   const [paymentStatus, setPaymentStatus] = useState("Pending");
   const [error, setError] = useState(false);
   const [message, setMessage] = useState("");
-
+  const { darkMode } = useTheme();
+  console.log();
   const handlePaymentMethodChange = (event) => {
     setPaymentMethod(event.target.value);
   };
@@ -117,6 +119,7 @@ function CheckoutPage() {
     async function OrderPlaceNew() {
       const res = await dispatch(PlaceOrder(orderData));
       setLoading(false);
+      setError(false);
       if (res?.payload?.success) {
         await dispatch(AllRemoveCardProduct(UserId));
         loadProfile();
@@ -145,7 +148,9 @@ function CheckoutPage() {
             const res = await dispatch(checkPayment(response));
 
             res?.payload?.success
-              ? (setPaymentStatus("Completed"), OrderPlaceNew())
+              ? (setError(false),
+                setPaymentStatus("Completed"),
+                OrderPlaceNew())
               : (setError(true),
                 setLoading(false),
                 setMessage("Payment is Fail 💔 please try again.."));
@@ -156,7 +161,7 @@ function CheckoutPage() {
             contact: shippingInfo.phoneNumber,
           },
           theme: {
-            color: "#F37254",
+            color: ` ${darkMode ? `#111827` : `#F37254`}`,
           },
         };
 
@@ -210,13 +215,16 @@ function CheckoutPage() {
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap -mx-4">
             <div className="w-full md:w-1/2 px-4 mb-5 md:mb-0">
-              <h2 className="text-2xl mb-3 font-bold text-black">
+              <h2 className="text-2xl mb-3 font-bold dark:text-white text-black">
                 Billing Details
               </h2>
-              <div className="p-5 border bg-white">
+              <div className="p-5 border dark:bg-[#111827]  bg-white">
                 {/* Country Selection */}
                 <div className="mb-4">
-                  <label htmlFor="country" className="block text-black">
+                  <label
+                    htmlFor="country"
+                    className="block dark:text-white text-black"
+                  >
                     Country <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -225,13 +233,16 @@ function CheckoutPage() {
                     value={shippingInfo.country}
                     name="country"
                     id="country"
-                    className="form-control mt-1 w-full border p-2 rounded"
+                    className="form-control mt-1 w-full dark:bg-[#111827]   border p-2 rounded"
                   />
                 </div>
 
                 <div className="flex flex-wrap mb-4">
                   <div className="w-full  pr-2 mb-4 md:mb-0">
-                    <label htmlFor="name" className="block text-black">
+                    <label
+                      htmlFor="name"
+                      className="block dark:text-white text-black"
+                    >
                       Full Name <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -240,14 +251,17 @@ function CheckoutPage() {
                       value={shippingInfo.name}
                       name="name"
                       id="name"
-                      className="form-control mt-1 w-full border p-2 rounded"
+                      className="form-control mt-1 w-full dark:bg-[#111827]  border p-2 rounded"
                     />
                   </div>
                 </div>
 
                 {/* Address */}
                 <div className="mb-4">
-                  <label htmlFor="c_address" className="block text-black">
+                  <label
+                    htmlFor="c_address"
+                    className="block dark:text-white text-black"
+                  >
                     Address <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -257,7 +271,7 @@ function CheckoutPage() {
                     id="address"
                     name="address"
                     placeholder="Street address"
-                    className="form-control mt-1 w-full border p-2 rounded"
+                    className="form-control mt-1 w-full dark:bg-[#111827]  border p-2 rounded"
                   />
                 </div>
 
@@ -268,13 +282,16 @@ function CheckoutPage() {
                     onChange={handelUserInput}
                     value={shippingInfo.address2}
                     placeholder="Apartment, suite, unit etc. (optional)"
-                    className="form-control mt-1 w-full border p-2 rounded"
+                    className="form-control mt-1 w-full dark:bg-[#111827] border p-2 rounded"
                   />
                 </div>
 
                 <div className="flex flex-wrap mb-4">
                   <div className="w-full md:w-1/2 pr-2 mb-4 md:mb-0">
-                    <label htmlFor="city" className="block text-black">
+                    <label
+                      htmlFor="city"
+                      className="block dark:text-white text-black"
+                    >
                       City <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -283,11 +300,14 @@ function CheckoutPage() {
                       name="city"
                       type="text"
                       id="city"
-                      className="form-control mt-1 w-full border p-2 rounded"
+                      className="form-control mt-1 w-full dark:bg-[#111827]  border p-2 rounded"
                     />
                   </div>
                   <div className="w-full md:w-1/2 pr-2 mb-4 md:mb-0">
-                    <label htmlFor="state" className="block text-black">
+                    <label
+                      htmlFor="state"
+                      className="block dark:text-white text-black"
+                    >
                       State <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -296,11 +316,14 @@ function CheckoutPage() {
                       name="state"
                       type="text"
                       id="state"
-                      className="form-control mt-1 w-full border p-2 rounded"
+                      className="form-control mt-1 w-full dark:bg-[#111827]  border p-2 rounded"
                     />
                   </div>
                   <div className="w-full md:w-1/2 pl-2">
-                    <label htmlFor="postalCode" className="block text-black">
+                    <label
+                      htmlFor="postalCode"
+                      className="block dark:text-white text-black"
+                    >
                       Postal / Zip <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -309,14 +332,17 @@ function CheckoutPage() {
                       value={shippingInfo.postalCode}
                       name="postalCode"
                       id="postalCode"
-                      className="form-control mt-1 w-full border p-2 rounded"
+                      className="form-control mt-1 w-full dark:bg-[#111827]  border p-2 rounded"
                     />
                   </div>
                 </div>
 
                 <div className="flex flex-wrap mb-5">
                   <div className="w-full md:w-1/2 pr-2 mb-4 md:mb-0">
-                    <label htmlFor="email" className="block text-black">
+                    <label
+                      htmlFor="email"
+                      className="block dark:text-white text-black"
+                    >
                       Email Address <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -325,11 +351,14 @@ function CheckoutPage() {
                       name="email"
                       type="email"
                       id="email"
-                      className="form-control mt-1 w-full border p-2 rounded"
+                      className="form-control mt-1 w-full dark:bg-[#111827]  border p-2 rounded"
                     />
                   </div>
                   <div className="w-full md:w-1/2 pl-2">
-                    <label htmlFor="phoneNumber" className="block text-black">
+                    <label
+                      htmlFor="phoneNumber"
+                      className="block dark:text-white text-black"
+                    >
                       Phone <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -339,7 +368,7 @@ function CheckoutPage() {
                       type="number"
                       id="phoneNumber"
                       placeholder="Phone Number"
-                      className="form-control mt-1 w-full border p-2 rounded"
+                      className="form-control mt-1 w-full dark:bg-[#111827]  border p-2 rounded"
                     />
                   </div>
                 </div>
@@ -350,14 +379,14 @@ function CheckoutPage() {
 
             <div className="w-full md:w-1/2 px-4">
               <div className="mb-5 sm:sticky top-6">
-                <h2 className="text-2xl mb-3 font-bold text-black">
+                <h2 className="text-2xl mb-3 font-bold dark:text-white text-black">
                   Your Order
                 </h2>
-                <div className="p-5 border bg-white overflow-x-auto ">
+                <div className="p-5 border bg-white dark:bg-[#111827]  overflow-x-auto ">
                   <table className="w-full mb-5">
                     <thead className="">
                       <tr>
-                        <th className=" p-4 text-center">Product</th>
+                        <th className=" p-4 text-center ">Product</th>
                         <th className=" p-4 text-center">Price</th>
                         <th className=" p-4 text-center">Quantity</th>
                         <th className=" p-4 text-center">Total</th>

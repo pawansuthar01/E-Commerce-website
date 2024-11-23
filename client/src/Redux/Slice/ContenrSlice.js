@@ -19,6 +19,7 @@ export const getAllPost = createAsyncThunk("/content/post", async () => {
         return data?.response?.data?.message;
       },
     });
+
     return (await res).data;
   } catch (e) {
     toast.error(e?.response?.message);

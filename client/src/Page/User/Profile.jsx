@@ -10,7 +10,7 @@ import {
   getOrder,
   UpdateOrder,
 } from "../../Redux/Slice/OrderSlice";
-import { MdEmail, MdPhone } from "react-icons/md";
+import { MdCurrencyRupee, MdEmail, MdPhone } from "react-icons/md";
 import LoadingButton from "../../constants/LoadingBtn";
 import { FaArrowLeft } from "react-icons/fa6";
 import toast from "react-hot-toast";
@@ -240,8 +240,9 @@ function Profile() {
                     <h2 className="text-lg font-semibold dark:text-white">
                       {product.productDetails.name}
                     </h2>
-                    <p className="text-gray-500 dark:text-white">
-                      ${product.productDetails.price.toFixed(2)}
+                    <p className="text-gray-500 dark:text-white flex items-center">
+                      <MdCurrencyRupee />
+                      {product.productDetails.price.toFixed(2)}
                     </p>
                     <p className="text-gray-500 text-sm dark:text-white">
                       quantity :{product.quantity}
@@ -290,8 +291,9 @@ function Profile() {
                   <p className="text-gray-700 dark:text-white">
                     Payment Method: {order.PaymentMethod}
                   </p>
-                  <p className="text-gray-700 dark:text-white">
-                    Total Amount: ${order.totalAmount.toFixed(2)}
+                  <p className="text-gray-700 dark:text-white flex items-center">
+                    Total Amount: <MdCurrencyRupee />
+                    {order.totalAmount.toFixed(2)}
                   </p>
                   <p className="text-gray-700  dark:text-white">
                     Status: {order.orderStats}

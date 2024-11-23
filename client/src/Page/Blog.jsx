@@ -11,6 +11,7 @@ function Blog() {
   const { PostData } = useSelector((state) => state.content);
   async function handelBlogLoad() {
     const res = await dispatch(getAllPost());
+    console.log(res);
   }
   useEffect(() => {
     handelBlogLoad();

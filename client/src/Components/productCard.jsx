@@ -74,12 +74,12 @@ function ProductCard({ data }) {
   }, [data.product]);
 
   return (
-    <div className="w-[250px] max-sm:w-[150px] flex flex-col cursor-pointer bg-white border border-gray-200 rounded-lg shadow p-2 dark:bg-gray-800 dark:border-gray-700">
+    <div className="w-[260px] max-sm:w-[150px] flex flex-col cursor-pointer h-[450px] bg-white border border-gray-200 rounded-lg shadow p-2 dark:bg-gray-800 dark:border-gray-700">
       <section className="relative h-full flex justify-center rounded-lg p-5 w-[100%] group overflow-hidden">
         <img
           src={data.image.secure_url ? data.image.secure_url : data.image}
           alt="product_image"
-          className="rounded-xl  transition-transform duration-500 ease-in-out group-hover:scale-110 h-[100%] w-[100%]"
+          className="rounded-xl  transition-transform duration-500 ease-in-out group-hover:scale-110 "
         />
       </section>
 
@@ -94,7 +94,7 @@ function ProductCard({ data }) {
         <button
           title="add to cart"
           onClick={() => ProductAddCard(data._id)}
-          className={` text-white dark:text-white text-2xl   w-1/3 flex justify-center dark:hover:text-green-500 hover:text-green-300`}
+          className={`  dark:text-white text-2xl text-black  w-1/3 flex justify-center dark:hover:text-green-500 hover:text-green-300`}
         >
           <FiShoppingCart
             className={`${
@@ -126,8 +126,8 @@ function ProductCard({ data }) {
         >
           <FiHeart
             className={`${
-              isLike ? `text-red-500 dark:text-red-500 ` : ``
-            } p-2 dark:text-white dark:hover:text-red-500 hover:text-red-300`}
+              isLike ? `text-red-500 dark:text-red-500 ` : `dark:text-white`
+            } p-2  dark:hover:text-red-500 hover:text-red-300`}
             size={36}
           />
         </button>

@@ -3,16 +3,26 @@ import { FiMenu, FiShoppingCart } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import { GiShoppingCart } from "react-icons/gi";
 import logo from "../assets/download-removebg-preview.png";
-import { FaMagnifyingGlass, FaMoon, FaSun, FaUser } from "react-icons/fa6";
+import {
+  FaBell,
+  FaMagnifyingGlass,
+  FaMoon,
+  FaSun,
+  FaUser,
+} from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
 import Footer from "../Components/footer";
 import LoadingButton from "../constants/LoadingBtn";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LogoutAccount } from "../Redux/Slice/authSlice";
 import { useTheme } from "../Components/ThemeContext";
+import { NotificationGet } from "../Redux/Slice/notification.Slice";
+import NotificationCart from "../Page/notification/notification";
 
 function Layout({ children }) {
   const [loading, setLoading] = useState("");
+  const [NotificationShow, setNotificationShow] = useState(false);
+  const [notification, setNotification] = useState([]);
   const { darkMode, toggleDarkMode } = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -41,7 +51,24 @@ function Layout({ children }) {
       setLoading(false);
     }
   };
+  const toggleNotificationSidebar = () => {
+    setNotificationShow(!NotificationShow);
+  };
+  const handelNotificationLoad = async () => {
+    const res = await dispatch(NotificationGet());
 
+    if (res?.payload?.data) {
+      const notificationsArray = Array.isArray(res.payload.data)
+        ? res.payload.data
+        : [res.payload.data];
+
+      setNotification(notificationsArray);
+    }
+  };
+
+  useEffect(() => {
+    handelNotificationLoad();
+  }, []);
   return (
     <div
       className={`min-h-[90vh] select-none ${
@@ -127,8 +154,14 @@ function Layout({ children }) {
                 </Link>
               )}
             </div>
+            <div className="cursor-pointer hover:text-green-400 dark:text-white">
+              <FaBell
+                size={"20px"}
+                onClick={() => toggleNotificationSidebar()}
+              />
+            </div>
             <Link to="/Search">
-              <div className="cursor-pointer  sm:hidden">
+              <div className="cursor-pointer dark:text-white sm:hidden">
                 <FaMagnifyingGlass size={"20px"} />
               </div>
             </Link>
@@ -232,6 +265,50 @@ function Layout({ children }) {
                 </div>
               )}
             </ul>
+          </div>
+        </div>
+        {NotificationShow && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-30 z-10"
+            onClick={toggleNotificationSidebar}
+          ></div>
+        )}
+
+        <div
+          className={`fixed top-0 right-0 h-full dark:bg-[#111827] bg-white shadow-lg max-sm:w-[60%] w-[30%] z-20 transition-transform duration-500 ease-in-out ${
+            NotificationShow ? "translate-x-0" : "translate-x-full"
+          }`}
+        >
+          <div className="flex justify-between items-center dark:bg-[#111827]  bg-gray-100 p-4 border-b border-gray-300">
+            <h2 className="text-xl font-bold dark:text-white text-gray-800">
+              Notifications
+            </h2>
+            <button
+              className="text-red-500 text-lg font-bold"
+              onClick={toggleNotificationSidebar}
+            >
+              X
+            </button>
+          </div>
+
+          <div className="p-4 space-y-4 dark:text-white text-black">
+            {notification && notification.length <= 0 ? (
+              <p className="text-center">NO notification...</p>
+            ) : (
+              notification.map((data, ind) => {
+                return (
+                  <div
+                    key={ind}
+                    className="p-3 bg-gray-100 dark:bg-[#111827] rounded-md shadow-[0_0_1px_white]"
+                  >
+                    <NotificationCart
+                      data={data}
+                      onUpdate={handelNotificationLoad}
+                    />
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
       </div>
