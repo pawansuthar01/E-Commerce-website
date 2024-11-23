@@ -44,7 +44,7 @@ function Layout({ children }) {
 
   return (
     <div
-      className={`min-h-[90vh] ${
+      className={`min-h-[90vh] select-none ${
         darkMode ? "bg-gray-900 text-white" : "bg-white text-black"
       }`}
     >
@@ -76,7 +76,7 @@ function Layout({ children }) {
               <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                 <svg
                   className={`w-4 h-4 ${
-                    darkMode ? "text-gray-400" : "text-gray-500"
+                    darkMode ? "text-gray-400" : "text-gray-400"
                   }`}
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
@@ -128,27 +128,25 @@ function Layout({ children }) {
               )}
             </div>
             <Link to="/Search">
-              <div className="cursor-pointer sm:hidden">
+              <div className="cursor-pointer  sm:hidden">
                 <FaMagnifyingGlass size={"20px"} />
               </div>
             </Link>
 
-            <div className="cursor-pointer hover:text-green-400">
+            <div className="cursor-pointer hover:text-green-400 dark:text-white">
               <FaUser size={"20px"} onClick={() => navigate("/Profile")} />
             </div>
 
             <button
               onClick={toggleDarkMode}
-              className={`p-2 ${
-                darkMode ? "bg-gray-700" : "bg-gray-300"
-              } rounded`}
+              className={`p-2 rounded dark:text-white`}
             >
               {darkMode ? <FaSun size={20} /> : <FaMoon size={20} />}
             </button>
 
             <div
               onClick={() => navigate("/Cart")}
-              className="relative cursor-pointer mr-4"
+              className="relative cursor-pointer mr-4 dark:text-white"
             >
               <p className="absolute text-green-600 font-serif text-sm top-[-12px] right-[-5px]">
                 {data?.walletAddProducts?.length >= 1 &&
@@ -159,7 +157,7 @@ function Layout({ children }) {
                 className={`${
                   data?.walletAddProducts?.length >= 1
                     ? `text-green-400`
-                    : `text-black`
+                    : `text-black dark:text-white`
                 }`}
               />
             </div>
@@ -223,12 +221,13 @@ function Layout({ children }) {
               {isLoggedIn && (
                 <div className="w-[90%] absolute bottom-4">
                   <div className="flex items-center justify-center w-full flex-wrap">
-                    <button
+                    <LoadingButton
+                      loading={loading}
+                      message={"Loading.."}
                       onClick={handelLogout}
-                      className="btn btn-danger px-8 py-1 rounded-md font-semibold w-full"
-                    >
-                      {loading ? <LoadingButton /> : "Logout"}
-                    </button>
+                      name={"Logout"}
+                      color={"bg-red-500"}
+                    />
                   </div>
                 </div>
               )}

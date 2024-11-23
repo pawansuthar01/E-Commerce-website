@@ -75,7 +75,9 @@ function BlogCard({ data }) {
               <h1 className="flex gap-1">
                 <FiHeart
                   className={`${
-                    productExists ? "text-red-800" : "bg-white"
+                    productExists
+                      ? "text-red-800 dark:text-red-800"
+                      : "bg-white"
                   } rounded-lg text-black dark:text-white font-bold`}
                   size={20}
                 />

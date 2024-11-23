@@ -49,11 +49,8 @@ function CommentCard({ data, onAddComment }) {
       })
     ).then(() => {
       setNewComment("");
-    });
-
-    if (res) {
       onAddComment();
-    }
+    });
   }
 
   async function addComment() {
@@ -65,9 +62,9 @@ function CommentCard({ data, onAddComment }) {
     }
   }
 
-  async function DeleteComment(id) {
+  async function DeleteComment(id, userName) {
     const res = await dispatch(
-      deleteCommentById({ postId: data._id, commentId: id })
+      deleteCommentById({ postId: data._id, commentId: id, userName: userName })
     );
     if (res) {
       onAddComment();
@@ -100,7 +97,7 @@ function CommentCard({ data, onAddComment }) {
       if (res) {
         setEditingCommentId(null);
         setEditedComment("");
-        onAddComment(); // Refresh comments after editing
+        onAddComment();
       }
     }
   }
@@ -126,7 +123,7 @@ function CommentCard({ data, onAddComment }) {
                 comment.userName === userName ? "justify-start" : "justify-end"
               }`}
             >
-              <div className="bg-green-200 shadow-[0_0_1px_black] rounded-xl">
+              <div className="bg-green-200 dark:text-black shadow-[0_0_1px_black] rounded-xl">
                 <p
                   className={`${
                     comment.userName === userName
@@ -164,7 +161,7 @@ function CommentCard({ data, onAddComment }) {
                           setEditingCommentId(null);
                           setEditedComment("");
                         }}
-                        className="ml-2 mt-1 px-4 py-1 bg-red-500 text-white rounded-md"
+                        className="ml-2 mt-1 px-4 py-1 bg-red-500  rounded-md"
                       >
                         Cancel
                       </button>
@@ -193,7 +190,9 @@ function CommentCard({ data, onAddComment }) {
                             ? `flex`
                             : `hidden`
                         } justify-between text-blue-600 cursor-pointer hover:underline`}
-                        onClick={() => DeleteComment(comment._id)}
+                        onClick={() =>
+                          DeleteComment(comment._id, comment.userName)
+                        }
                       >
                         Delete
                       </p>
@@ -231,7 +230,9 @@ function CommentCard({ data, onAddComment }) {
                                     ? `flex`
                                     : `hidden`
                                 } justify-between text-blue-600 cursor-pointer hover:underline`}
-                                onClick={() => DeleteComment(comment._id)}
+                                onClick={() =>
+                                  DeleteComment(comment._id, comment.userName)
+                                }
                               >
                                 Delete
                               </p>
@@ -263,11 +264,11 @@ function CommentCard({ data, onAddComment }) {
           }
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
-          className="flex-1 p-2 border border-gray-300 rounded-md focus:outline-none"
+          className="flex-1 p-2 border border-gray-300 dark:bg-[#18212F] rounded-md focus:outline-none"
         />
         <button
           type="submit"
-          className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md"
+          className="ml-2 px-4 py-2 bg-blue-500 text-white  rounded-md"
         >
           Send
         </button>

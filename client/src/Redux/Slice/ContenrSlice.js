@@ -68,8 +68,12 @@ export const deleteCommentById = createAsyncThunk(
   "/Content/Delete/CommentById",
   async (data) => {
     try {
+      console.log(data.userName);
       const res = axiosInstance.delete(
-        `/api/v3/Content/Post/?postId=${data.postId}&commentId=${data.commentId}`
+        `/api/v3/Content/Post/?postId=${data.postId}&commentId=${data.commentId}`,
+        {
+          data: { userName: data.userName },
+        }
       );
       toast.promise(res, {
         loading: "please wait! Delete Comment..",

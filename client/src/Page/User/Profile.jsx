@@ -137,7 +137,7 @@ function Profile() {
 
   return (
     <Layout>
-      <div className="min-h-[100vh] w-full">
+      <div className="min-h-[100vh] w-full ">
         <div className=" flex flex-col justify-center mt-1 items-center gap-2  border-b-4 border-s-orange-100 ">
           <div className="w-full  h-[200px] ">
             <h2 className=" absolute text-white font-bold text-center w-full mt-10 sm:text-3xl max-sm:text-2xl">
@@ -158,7 +158,7 @@ function Profile() {
               />
             </div>
             <div className="text-xl flex items-center  gap-2">
-              <h1 className="text-black text-xl font-medium">
+              <h1 className="text-black dark:text-white text-xl font-medium">
                 {UserData?.data?.userName}
               </h1>
               <FiEdit
@@ -169,7 +169,7 @@ function Profile() {
 
             {UserData?.role === "ADMIN" ||
               (UserData?.role === "AUTHOR" && (
-                <div className="flex justify-center items-center text-black">
+                <div className="flex justify-center items-center dark:text-white text-black">
                   <h1 className="text-xl font-medium">
                     WellCome{" "}
                     <span className=" font-semibold">{UserData.role}</span>
@@ -184,7 +184,7 @@ function Profile() {
                   </div>
                 </div>
               ))}
-            <div className="text-center text-black text-xl border-2 shadow-[0_0_2px_black] p-2 rounded-xl">
+            <div className="text-center text-black dark:text-white text-xl border-2 shadow-[0_0_2px_black] p-2 rounded-xl">
               <h1 className="font-bold">
                 {UserData.data?.walletAddProducts?.length}
               </h1>
@@ -192,16 +192,18 @@ function Profile() {
             </div>
           </div>
         </div>
-        <h1 className="text-xl p-5 font-normal text-center">Your Orders.</h1>
+        <h1 className="text-xl p-5 font-normal dark:text-white text-center">
+          Your Orders.
+        </h1>
         <hr className=" h-1" />
         {Orders?.length == 0 ? (
           <div className="flex justify-center items-center gap-10 mt-2 flex-col">
-            <h1 className="text-center"> NO order....</h1>
+            <h1 className="text-center dark:text-white"> NO order....</h1>
             <button
               onClick={() => {
                 navigate("/AllProduct");
               }}
-              className="px-3 font-medium py-2 bg-green-400 w-1/2 rounded-xl hover:bg-transparent hover:border-2 border-green-400"
+              className="px-3 dark:text-white font-medium py-2 bg-green-400 w-1/2 rounded-xl hover:bg-transparent hover:border-2 border-green-400"
             >
               Continue Shopping...
             </button>
@@ -210,12 +212,12 @@ function Profile() {
           Orders?.map((order, index) => (
             <div
               key={index}
-              className="bg-white shadow-[0_0_1px_black] rounded-lg p-6 max-w-2xl max-sm:mx-4 mx-auto mb-4  flex flex-col"
+              className="bg-white dark:bg-[#111827] dark:text-white shadow-[0_0_2px_black] mt-2 rounded-lg p-6 max-w-2xl max-sm:mx-4 mx-auto mb-4  flex flex-col"
             >
-              <h2 className="text-lg flex justify-between font-semibold mb-4 max-sm:text-sm">
+              <h2 className="text-lg flex justify-between dark:text-white font-semibold mb-4 max-sm:text-sm">
                 Order ID: {order._id}
                 {orderStats[order._id] === "Canceled" ? (
-                  <p className="text-red-500 text-sm cursor-pointer hover:underline">
+                  <p className="text-red-500 text-sm  cursor-pointer hover:underline">
                     Canceled
                   </p>
                 ) : (
@@ -235,26 +237,28 @@ function Profile() {
                     className="w-24 h-24 object-cover rounded"
                   />
                   <div>
-                    <h2 className="text-lg font-semibold">
+                    <h2 className="text-lg font-semibold dark:text-white">
                       {product.productDetails.name}
                     </h2>
-                    <p className="text-gray-500">
+                    <p className="text-gray-500 dark:text-white">
                       ${product.productDetails.price.toFixed(2)}
                     </p>
-                    <p className="text-gray-500 text-sm">
+                    <p className="text-gray-500 text-sm dark:text-white">
                       quantity :{product.quantity}
                     </p>
-                    <p className="mt-2 text-gray-700">
+                    <p className="mt-2 text-gray-700 dark:text-white">
                       {product.productDetails.description}
                     </p>
                   </div>
                 </div>
               ))}
 
-              <div className="mt-6 sm:grid grid-cols-2 gap-4 ">
+              <div className="mt-6 sm:grid grid-cols-2 gap-4 dark:text-white">
                 <div>
-                  <h3 className="text-sm font-bold mb-2">Delivery address</h3>
-                  <div className="text-gray-700 max-sm:py-3">
+                  <h3 className="text-sm font-bold mb-2 dark:text-white">
+                    Delivery address
+                  </h3>
+                  <div className="text-gray-700 max-sm:py-3 dark:text-white">
                     <p className="w-[70%] text-sm">
                       {" "}
                       {order.shippingAddress.name},{" "}
@@ -280,22 +284,26 @@ function Profile() {
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold mb-2">Order Details</h3>
-                  <p className="text-gray-700">
+                  <h3 className="text-sm font-bold mb-2 dark:text-white">
+                    Order Details
+                  </h3>
+                  <p className="text-gray-700 dark:text-white">
                     Payment Method: {order.PaymentMethod}
                   </p>
-                  <p className="text-gray-700">
+                  <p className="text-gray-700 dark:text-white">
                     Total Amount: ${order.totalAmount.toFixed(2)}
                   </p>
-                  <p className="text-gray-700">Status: {order.orderStats}</p>
-                  <p className="text-gray-700">
+                  <p className="text-gray-700  dark:text-white">
+                    Status: {order.orderStats}
+                  </p>
+                  <p className="text-gray-700 dark:text-white">
                     Payment Status: {order.paymentStatus}
                   </p>
                 </div>
               </div>
               {orderStats[order._id] === "Canceled" ? (
                 <div className="flex flex-col items-center mt-10">
-                  <h3 className="text-sm text-gray-600 mb-2">
+                  <h3 className="text-sm text-gray-600 mb-2 dark:text-white">
                     Order placed on{" "}
                     {new Date(order.createdAt).toLocaleDateString()}
                   </h3>
@@ -304,17 +312,17 @@ function Profile() {
               ) : (
                 <div className="mt-6">
                   <div className="flex justify-between">
-                    <h3 className="text-sm text-gray-600 mb-2">
+                    <h3 className="text-sm text-gray-600 mb-2 dark:text-white">
                       Order placed on{" "}
                       {new Date(order.createdAt).toLocaleDateString()}
                     </h3>
-                    <h3 className="text-sm text-gray-600 mb-2">
+                    <h3 className="text-sm text-gray-600 mb-2 dark:text-white">
                       Order Delivery on{" "}
                       {new Date(order.deliveryDate).toLocaleDateString()}
                     </h3>
                   </div>
 
-                  <div className="w-full bg-gray-200 h-1 rounded-full">
+                  <div className="w-full bg-gray-200 dark:bg-black h-1 rounded-full">
                     <div
                       className="bg-blue-600 h-1 rounded-full"
                       style={{
@@ -330,7 +338,7 @@ function Profile() {
                       }}
                     ></div>
                   </div>
-                  <div className="flex justify-between text-xs text-gray-600 mt-2">
+                  <div className="flex justify-between text-xs text-gray-600 mt-2 dark:text-white">
                     <span
                       className="
                    text-blue-600 font-medium "
@@ -341,7 +349,7 @@ function Profile() {
                       className={` ${
                         orderStats[order._id] === "Processing"
                           ? `text-blue-600`
-                          : `text-black`
+                          : `text-black dark:text-white`
                       }  font-medium `}
                     >
                       Processing
@@ -350,7 +358,7 @@ function Profile() {
                       className={`${
                         orderStats[order._id] === "Shipped"
                           ? `text-blue-600`
-                          : `text-black`
+                          : `text-black dark:text-white`
                       }   font-medium `}
                     >
                       Shipped
@@ -359,7 +367,7 @@ function Profile() {
                       className={`${
                         orderStats[order._id] === "Delivered"
                           ? `text-blue-600`
-                          : `text-black`
+                          : `text-black dark:text-white`
                       }   font-medium  mb-5`}
                     >
                       Delivered
@@ -373,20 +381,23 @@ function Profile() {
         {show && (
           <div className="fixed inset-0 flex  overflow-y-auto  justify-center   items-center bg-gray-800 bg-opacity-50 z-50">
             <div className=" px-4 mb-5 md:mb-0 sm:my-10  max-sm:h-[90%]  ">
-              <h2 className="text-2xl mb-3 font-bold text-black">
+              <h2 className="text-2xl mb-3 font-bold text-black dark:text-white">
                 Billing Details
               </h2>
 
-              <div className="p-5 border bg-white">
+              <div className="p-5 border bg-white dark:bg-black">
                 <button
                   onClick={() => setShow(false)}
-                  className=" text-black  px-2  flex text-2xl rounded-lg"
+                  className=" text-black  dark:text-white px-2  flex text-2xl rounded-lg"
                 >
                   <FaArrowLeft size={20} />
                 </button>
                 {/* Country Selection */}
                 <div className="mb-4">
-                  <label htmlFor="country" className="block text-black">
+                  <label
+                    htmlFor="country"
+                    className="block text-black dark:text-white"
+                  >
                     Country <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -401,7 +412,10 @@ function Profile() {
 
                 <div className="flex flex-wrap mb-4">
                   <div className="w-full  pr-2 mb-4 md:mb-0">
-                    <label htmlFor="name" className="block text-black">
+                    <label
+                      htmlFor="name"
+                      className="block text-black dark:text-white"
+                    >
                       Full Name <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -417,7 +431,10 @@ function Profile() {
 
                 {/* Address */}
                 <div className="mb-4">
-                  <label htmlFor="c_address" className="block text-black">
+                  <label
+                    htmlFor="c_address"
+                    className="block text-black dark:text-white"
+                  >
                     Address <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -444,7 +461,10 @@ function Profile() {
 
                 <div className="flex flex-wrap mb-4">
                   <div className="w-full md:w-1/2 pr-2 mb-4 md:mb-0">
-                    <label htmlFor="city" className="block text-black">
+                    <label
+                      htmlFor="city"
+                      className="block text-black dark:text-white"
+                    >
                       City <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -457,7 +477,10 @@ function Profile() {
                     />
                   </div>
                   <div className="w-full md:w-1/2 pr-2 mb-4 md:mb-0">
-                    <label htmlFor="state" className="block text-black">
+                    <label
+                      htmlFor="state"
+                      className="block text-black dark:text-white"
+                    >
                       State <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -470,7 +493,10 @@ function Profile() {
                     />
                   </div>
                   <div className="w-full md:w-1/2 pl-2">
-                    <label htmlFor="postalCode" className="block text-black">
+                    <label
+                      htmlFor="postalCode"
+                      className="block text-black dark:text-white"
+                    >
                       Postal / Zip <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -486,7 +512,10 @@ function Profile() {
 
                 <div className="flex flex-wrap mb-5">
                   <div className="w-full md:w-1/2 pr-2 mb-4 md:mb-0">
-                    <label htmlFor="email" className="block text-black">
+                    <label
+                      htmlFor="email"
+                      className="block text-black dark:text-white"
+                    >
                       Email Address <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -499,7 +528,10 @@ function Profile() {
                     />
                   </div>
                   <div className="w-full md:w-1/2 pl-2 mb-2">
-                    <label htmlFor="phoneNumber" className="block text-black">
+                    <label
+                      htmlFor="phoneNumber"
+                      className="block text-black dark:text-white"
+                    >
                       Phone <span className="text-red-500">*</span>
                     </label>
                     <input

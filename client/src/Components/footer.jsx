@@ -10,23 +10,11 @@ function Footer() {
   const { darkMode } = useTheme(); // Get darkMode state from ThemeContext
 
   return (
-    <footer
-      className={`relative py-4 bottom-0 left-0 w-full ${
-        darkMode ? "bg-[#2F2F2F]" : "bg-[#FAFAFB]"
-      }`}
-    >
-      <h1
-        className={`text-center text-3xl font-semibold ${
-          darkMode ? "text-white" : "text-black"
-        }`}
-      >
-        KGS DOORS
-      </h1>
+    <footer className="relative py-4 bottom-0 border-t-2 border-[#0005] left-0 w-full ">
+      <h1 className="text-center text-3xl font-semibold">KGS DOORS</h1>
 
       <div
-        className={`flex justify-evenly max-sm:gap-6 gap-36 max-sm:items-center p-5 max-sm:flex-col max-sm:text-center ${
-          darkMode ? "text-white" : "text-gray-950"
-        }`}
+        className={`flex justify-evenly max-sm:gap-6 gap-36 max-sm:items-center p-5 max-sm:flex-col max-sm:text-center `}
       >
         <div>
           <ul className="flex flex-col gap-1">

@@ -75,49 +75,12 @@ function ProductCard({ data }) {
 
   return (
     <div className="w-[250px] max-sm:w-[150px] flex flex-col cursor-pointer bg-white border border-gray-200 rounded-lg shadow p-2 dark:bg-gray-800 dark:border-gray-700">
-      <section className="relative h-full flex justify-center rounded-lg p-5 w-[100%] group">
+      <section className="relative h-full flex justify-center rounded-lg p-5 w-[100%] group overflow-hidden">
         <img
           src={data.image.secure_url ? data.image.secure_url : data.image}
           alt="product_image"
-          className="rounded-xl object-fill hover:scale-110 h-[100%] w-[100%]"
+          className="rounded-xl  transition-transform duration-500 ease-in-out group-hover:scale-110 h-[100%] w-[100%]"
         />
-
-        <div className="absolute inset-0 bg-opacity-50 flex items-end pb-3 justify-center space-x-4 max-sm:space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-400">
-          <button
-            onClick={() => ProductAddCard(data._id)}
-            className="text-white text-2xl focus:outline-none transform opacity-0 translate-y-10 group-hover:opacity-100 group-hover:translate-y-5 transition-all duration-300 delay-00"
-          >
-            <FiShoppingCart
-              className={`${
-                productExists ? `bg-green-300` : `bg-black`
-              } p-2 rounded-lg w-[36px] h-[36px] max-sm:h-[32px] max-sm:w-[32px] dark:bg-green-600`}
-            />
-          </button>
-          <button className="text-white text-2xl focus:outline-none transform opacity-0 translate-y-10 group-hover:opacity-100 group-hover:translate-y-5 transition-all duration-300 delay-200">
-            <FiEye
-              onClick={() =>
-                navigate("/Description", {
-                  state: { ...data },
-                })
-              }
-              className="bg-black p-2 rounded-lg dark:bg-gray-700"
-              size={36}
-            />
-          </button>
-          <button
-            onClick={() =>
-              handelLikeDisLike(data.product ? data.product : data._id)
-            }
-            className="text-white text-2xl focus:outline-none transform opacity-0 translate-y-10 group-hover:opacity-100 group-hover:translate-y-5 transition-all duration-300 delay-300"
-          >
-            <FiHeart
-              className={`${
-                isLike ? `bg-red-800` : `bg-black`
-              } p-2 rounded-lg dark:bg-red-600`}
-              size={36}
-            />
-          </button>
-        </div>
       </section>
 
       <h1 className="text-black text-center capitalize font-semibold mt-3 dark:text-white">
@@ -127,6 +90,48 @@ function ProductCard({ data }) {
         Price : <MdCurrencyRupee />
         {data.price}
       </p>
+      <div className="flex justify-between  w-full  rounded-sm  gap-1 border-2 dark:border-white border-black ">
+        <button
+          title="add to cart"
+          onClick={() => ProductAddCard(data._id)}
+          className={` text-white dark:text-white text-2xl   w-1/3 flex justify-center dark:hover:text-green-500 hover:text-green-300`}
+        >
+          <FiShoppingCart
+            className={`${
+              productExists ? `text-green-300 dark:text-green-400` : ``
+            }  p-2   max-sm:h-[32px] max-sm:w-[32px]   `}
+            size={36}
+          />
+        </button>
+        <button
+          title="more..."
+          className="text-white text-2xl   w-1/3 flex justify-center"
+        >
+          <FiEye
+            onClick={() =>
+              navigate("/Description", {
+                state: { ...data },
+              })
+            }
+            className="text-black p-2  dark:text-white dark:hover:text-green-500 hover:text-green-300"
+            size={36}
+          />
+        </button>
+        <button
+          title="Like..."
+          onClick={() =>
+            handelLikeDisLike(data.product ? data.product : data._id)
+          }
+          className={`  text-black text-2xl  w-1/3 flex justify-center `}
+        >
+          <FiHeart
+            className={`${
+              isLike ? `text-red-500 dark:text-red-500 ` : ``
+            } p-2 dark:text-white dark:hover:text-red-500 hover:text-red-300`}
+            size={36}
+          />
+        </button>
+      </div>
     </div>
   );
 }

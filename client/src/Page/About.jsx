@@ -5,7 +5,7 @@ function About() {
   const navigate = useNavigate();
   return (
     <Layout>
-      <div className="sm:mt-[50px] relative max-sm:mt-2">
+      <div className="sm:mt-[50px ]  select-none relative max-sm:mt-2">
         <div className="flex  w-full  max-sm:flex-wrap ">
           <div className="w-full p-1   sm:pl-[100px] flex justify-center ">
             <img
@@ -15,7 +15,7 @@ function About() {
             />
           </div>
           <div className="  w-full sm:pr-10 ">
-            <div className="font-bold text-black  w-full my-5 flex flex-col gap-3 mr-28   text-center">
+            <div className="font-bold text-black dark:text-white  w-full my-5 flex flex-col gap-3 mr-28   text-center">
               <h1 className="sm:text-4xl max-sm:text-2xl  ">
                 {" "}
                 Exquisite Design Combined
@@ -44,7 +44,7 @@ function About() {
             </div>
           </div>
         </div>
-        <div className="flex   capitalize text-black  sm:text-3xl max-sm:text-2xl  justify-center text-center w-full my-10  max-sm:px-[10%] sm:px-[20%] ">
+        <div className="flex  capitalize text-black  dark:text-white  sm:text-3xl max-sm:text-2xl  justify-center text-center w-full my-10  max-sm:px-[10%] sm:px-[20%] ">
           <h1 className="font-medium">
             {" "}
             🤩 i am passionately dedicated to 😊
@@ -55,20 +55,20 @@ function About() {
             <span>👌 stories our brand is not just about adornment 💯</span>
           </h1>
         </div>
-        <div className="flex gap-5 capitalize  justify-center flex-wrap my-5 p-5">
-          <div className="flex flex-col justify-center cursor-pointer  p-5 rounded hover:bg-[#f1d6cb] bg-[#fce7de] text-center line-clamp-2 sm:min-w-[200px]">
+        <div className=" select-none  flex gap-5 capitalize  justify-center flex-wrap my-5 p-5">
+          <div className="flex flex-col justify-center cursor-pointer  p-5 rounded hover:bg-[#f1d6cb] dark:bg-[#111825] dark:border-2 border-[#182237] bg-[#fce7de] text-center line-clamp-2 sm:min-w-[200px]">
             <h1 className="text-2xl font-bold">15+</h1>
             <p className="text-xl ">All Over India </p>
           </div>
-          <div className="flex flex-col justify-center cursor-pointer  p-5 rounded hover:bg-[#f1d6cb] bg-[#fce7de] text-center line-clamp-2 sm:min-w-[200px]">
+          <div className="flex flex-col justify-center cursor-pointer  p-5 rounded hover:bg-[#f1d6cb] bg-[#fce7de] dark:bg-[#111825] dark:border-2 border-[#182237] text-center line-clamp-2 sm:min-w-[200px]">
             <h1 className="text-2xl font-bold">250K</h1>
             <p className="text-xl ">prodect avaliable </p>
           </div>
-          <div className="flex flex-col justify-center cursor-pointer  p-5 rounded hover:bg-[#f1d6cb] bg-[#fce7de] text-center line-clamp-2 sm:min-w-[200px]">
+          <div className="flex flex-col justify-center cursor-pointer  p-5 rounded hover:bg-[#f1d6cb] bg-[#fce7de] dark:bg-[#111825] dark:border-2 border-[#182237] text-center line-clamp-2 sm:min-w-[200px]">
             <h1 className="text-2xl font-bold">2K</h1>
             <p className="text-xl  ">prodect reviews </p>
           </div>
-          <div className="flex flex-col justify-center cursor-pointer  p-5 rounded hover:bg-[#f1d6cb] bg-[#fce7de] text-center line-clamp-2 sm:min-w-[200px] ">
+          <div className="flex flex-col justify-center cursor-pointer  p-5 rounded hover:bg-[#f1d6cb] bg-[#fce7de] dark:bg-[#111825] dark:border-2 border-[#182237] text-center line-clamp-2 sm:min-w-[200px] ">
             <h1 className="text-2xl font-bold capitalize">100K</h1>
             <p className="text-xl  ">happy customers</p>
           </div>
