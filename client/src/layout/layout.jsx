@@ -293,7 +293,7 @@ function Layout({ children }) {
 
           <div className="p-4 space-y-4 dark:text-white text-black">
             {notification && notification.length <= 0 ? (
-              <p className="text-center">NO notification...</p>
+              <p className="text-center">No notification...</p>
             ) : (
               notification.map((data, ind) => {
                 return (

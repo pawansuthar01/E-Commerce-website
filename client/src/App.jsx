@@ -16,6 +16,7 @@ import AddProduct from "./Page/Product/AddProduct";
 import Cart from "./Page/Card/Cart";
 import CheckoutForm from "./Page/Order/ChecK0ut";
 import { ThemeProvider } from "./Components/ThemeContext";
+import ThankYou from "./Page/Order/Thankyou";
 function App() {
   return (
     <ThemeProvider>
@@ -32,6 +33,7 @@ function App() {
           >
             <Route path="/Profile" element={<Profile />}></Route>
             <Route path="/CheckoutForm" element={<CheckoutForm />}></Route>
+            <Route path="/ThankYou" element={<ThankYou />}></Route>
             <Route path="/Cart" element={<Cart />}></Route>
 
             <Route path="/Blog" element={<Blog />}></Route>

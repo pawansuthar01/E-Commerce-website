@@ -74,7 +74,7 @@ function ProductCard({ data }) {
   }, [data.product]);
 
   return (
-    <div className="w-[260px] max-sm:w-[150px] flex flex-col cursor-pointer h-[450px] bg-white border border-gray-200 rounded-lg shadow p-2 dark:bg-gray-800 dark:border-gray-700">
+    <div className="w-[260px] max-sm:w-[150px] flex flex-col cursor-pointer sm:h-[400px] bg-white border border-gray-200 rounded-lg shadow p-2 dark:bg-gray-800 dark:border-gray-700">
       <section className="relative h-full flex justify-center rounded-lg p-5 w-[100%] group overflow-hidden">
         <img
           src={data.image.secure_url ? data.image.secure_url : data.image}

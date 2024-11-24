@@ -22,6 +22,7 @@ function CheckoutPage() {
   const [totalPrice, setTotalPrice] = useState(0);
   const [loading, setLoading] = useState(false);
   const [UserId, setUserId] = useState("");
+  const [data, setData] = useState("");
   const ProductDetails = useLocation().state;
   const [shippingInfo, setShippingInfo] = useState({
     name: "",
@@ -123,6 +124,7 @@ function CheckoutPage() {
       if (res?.payload?.success) {
         await dispatch(AllRemoveCardProduct(UserId));
         loadProfile();
+        navigate("/ThankYou", { state: { data: res?.payload?.data } });
       }
     }
     if (paymentMethod === "razorpay") {

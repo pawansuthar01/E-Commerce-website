@@ -64,9 +64,9 @@ function ProductDescription() {
     <Layout>
       <div className="min-h-[90vh] text-white bg-[#F5F5F5] dark:bg-[#1F2937] flex flex-col justify-center items-center">
         <div className="w-full rounded-sm">
-          <div className="flex gap-10 relative">
+          <div className="flex gap-10 relative max-sm:flex-col items-center">
             {/* Image Section */}
-            <div className="w-1/2 h-full space-y-6 group">
+            <div className="w-1/2 h-full space-y-6 group max-sm:w-full">
               <div
                 className="overflow-hidden cursor-pointer relative h-[500px] w-full rounded-sm"
                 onMouseMove={handleMouseMove}
@@ -88,7 +88,7 @@ function ProductDescription() {
             </div>
 
             {/* Details Section */}
-            <div className="w-1/2 space-y-1 text-xl">
+            <div className="w-1/2 space-y-1 text-xl max-sm:mb-2">
               <h1 className="text-3xl font-bold dark:text-white text-black capitalize mb-1">
                 {state?.name}
               </h1>
@@ -119,6 +119,7 @@ function ProductDescription() {
                       color={"bg-red-500"}
                       message={"Loading..."}
                       loading={loading}
+                      width={"w-[150px]"}
                     />
                   </div>
                 )}

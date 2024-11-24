@@ -234,7 +234,7 @@ function Profile() {
                   <img
                     src={product.productDetails.image.secure_url}
                     alt={product.productDetails.name}
-                    className="w-24 h-24 object-cover rounded"
+                    className="w-24 h-24 object-contain rounded"
                   />
                   <div>
                     <h2 className="text-lg font-semibold dark:text-white">
