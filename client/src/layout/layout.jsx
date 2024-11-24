@@ -154,11 +154,16 @@ function Layout({ children }) {
                 </Link>
               )}
             </div>
-            <div className="cursor-pointer hover:text-green-400 dark:text-white">
+            <div className=" relative cursor-pointer hover:text-green-400 dark:text-white">
               <FaBell
                 size={"20px"}
                 onClick={() => toggleNotificationSidebar()}
               />
+              <p className="absolute text-green-600 font-serif text-sm top-[-12px] right-[-5px]">
+                {notification &&
+                  notification.length >= 1 &&
+                  notification.length}
+              </p>
             </div>
             <Link to="/Search">
               <div className="cursor-pointer dark:text-white sm:hidden">
@@ -292,7 +297,7 @@ function Layout({ children }) {
           </div>
 
           <div className="p-4 space-y-4 dark:text-white text-black">
-            {notification && notification.length <= 0 ? (
+            {notification && notification.length == 0 ? (
               <p className="text-center">No notification...</p>
             ) : (
               notification.map((data, ind) => {

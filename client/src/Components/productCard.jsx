@@ -10,6 +10,7 @@ import {
 } from "../Redux/Slice/ProductSlice";
 import { MdCurrencyRupee } from "react-icons/md";
 import { LoadAccount } from "../Redux/Slice/authSlice";
+import { AiOutlineDelete } from "react-icons/ai";
 
 let isLike;
 
@@ -17,6 +18,7 @@ function ProductCard({ data }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [response, SetResponse] = useState("");
+  const [imageUrl, setImageUrl] = useState(""); // State to hold image URL
   const { userName } = useSelector((state) => state?.auth);
   const Data = useSelector((state) => state?.auth);
 
@@ -71,15 +73,50 @@ function ProductCard({ data }) {
 
   useEffect(() => {
     ProductGet();
-  }, [data.product]);
+    // Set the initial image URL
+    setImageUrl(
+      data.image?.secure_url
+        ? data.image.secure_url
+        : data.images && data.images.length > 0
+        ? data.images[0]?.secure_url
+        : data.image
+    );
+  }, [data]);
+
+  // Handle image hover
+  const handleMouseEnter = () => {
+    if (data.images && data.images.length > 1) {
+      setImageUrl(data.images[0]?.secure_url); // Use second image (or alternate image)
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setImageUrl(
+      data.image?.secure_url
+        ? data.image.secure_url
+        : data.images && data.images.length > 0
+        ? data.images[1]?.secure_url
+        : data.image
+    );
+  };
 
   return (
     <div className="w-[260px] max-sm:w-[150px] flex flex-col cursor-pointer sm:h-[400px] bg-white border border-gray-200 rounded-lg shadow p-2 dark:bg-gray-800 dark:border-gray-700">
+      {Data.role == "ADMIN" ||
+        (Data.role == "AUTHOR" && (
+          <AiOutlineDelete
+            size={36}
+            className="text-red-400"
+            onClick={() => {}}
+          />
+        ))}
       <section className="relative h-full flex justify-center rounded-lg p-5 w-[100%] group overflow-hidden">
         <img
-          src={data.image.secure_url ? data.image.secure_url : data.image}
+          src={imageUrl} // Display the current image URL from state
           alt="product_image"
-          className="rounded-xl  transition-transform duration-500 ease-in-out group-hover:scale-110 "
+          className="rounded-xl transition-transform duration-500 ease-in-out group-hover:scale-110"
+          onMouseEnter={handleMouseEnter} // Trigger when mouse enters
+          onMouseLeave={handleMouseLeave} // Trigger when mouse leaves
         />
       </section>
 
@@ -90,22 +127,22 @@ function ProductCard({ data }) {
         Price : <MdCurrencyRupee />
         {data.price}
       </p>
-      <div className="flex justify-between  w-full  rounded-sm  gap-1 border-2 dark:border-white border-black ">
+      <div className="flex justify-between w-full rounded-sm gap-1 border-2 dark:border-white border-black">
         <button
           title="add to cart"
           onClick={() => ProductAddCard(data._id)}
-          className={`  dark:text-white text-2xl text-black  w-1/3 flex justify-center dark:hover:text-green-500 hover:text-green-300`}
+          className={`dark:text-white text-2xl text-black w-1/3 flex justify-center dark:hover:text-green-500 hover:text-green-300`}
         >
           <FiShoppingCart
             className={`${
               productExists ? `text-green-300 dark:text-green-400` : ``
-            }  p-2   max-sm:h-[32px] max-sm:w-[32px]   `}
+            } p-2 max-sm:h-[32px] max-sm:w-[32px]`}
             size={36}
           />
         </button>
         <button
           title="more..."
-          className="text-white text-2xl   w-1/3 flex justify-center"
+          className="text-white text-2xl w-1/3 flex justify-center"
         >
           <FiEye
             onClick={() =>
@@ -113,7 +150,7 @@ function ProductCard({ data }) {
                 state: { ...data },
               })
             }
-            className="text-black p-2  dark:text-white dark:hover:text-green-500 hover:text-green-300"
+            className="text-black p-2 dark:text-white dark:hover:text-green-500 hover:text-green-300"
             size={36}
           />
         </button>
@@ -122,12 +159,12 @@ function ProductCard({ data }) {
           onClick={() =>
             handelLikeDisLike(data.product ? data.product : data._id)
           }
-          className={`  text-black text-2xl  w-1/3 flex justify-center `}
+          className={`text-black text-2xl w-1/3 flex justify-center`}
         >
           <FiHeart
             className={`${
               isLike ? `text-red-500 dark:text-red-500 ` : `dark:text-white`
-            } p-2  dark:hover:text-red-500 hover:text-red-300`}
+            } p-2 dark:hover:text-red-500 hover:text-red-300`}
             size={36}
           />
         </button>

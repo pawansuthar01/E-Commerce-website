@@ -232,7 +232,7 @@ function Profile() {
               {order.products.map((product, productIndex) => (
                 <div key={productIndex} className="flex space-x-4 mb-4">
                   <img
-                    src={product.productDetails.image.secure_url}
+                    src={product?.productDetails?.image?.secure_url}
                     alt={product.productDetails.name}
                     className="w-24 h-24 object-contain rounded"
                   />

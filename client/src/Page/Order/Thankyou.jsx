@@ -41,7 +41,10 @@ const ThankYou = () => {
           </h2>
           {state.data.products.map((product, ind) => {
             return (
-              <table className="w-full border-collapse border border-gray-300 mb-6">
+              <table
+                key={ind}
+                className="w-full border-collapse border border-gray-300 mb-6"
+              >
                 <h1 className="pl-4 py-2 font-bold">Order #{ind + 1}</h1>
                 <thead>
                   <tr className="bg-gray-200 text-gray-800">

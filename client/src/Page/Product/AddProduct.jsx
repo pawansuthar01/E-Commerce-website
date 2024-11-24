@@ -1,6 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
 import { BsPersonCircle } from "react-icons/bs";
-
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
@@ -8,32 +7,53 @@ import Layout from "../../layout/layout";
 import LoadingButton from "../../constants/LoadingBtn";
 import { FiEdit, FiPenTool } from "react-icons/fi";
 import { AddNewProduct } from "../../Redux/Slice/ProductSlice";
+
 function AddProduct() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [previewImage, setPreviewImage] = useState("");
+  const [previewImages, setPreviewImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [ProductUpData, setProductUpData] = useState({
     name: "",
     price: "",
     description: "",
-    image: "",
+    images: [], // For multiple images
   });
+
+  // Handle multiple image inputs with validation
   const handelImageInput = (e) => {
     e.preventDefault();
-    const image = e.target.files[0];
-    if (image) {
-      setProductUpData({
-        ...ProductUpData,
-        image: image,
-      });
+    const files = Array.from(e.target.files); // Convert file list to array
+
+    // Validate minimum and maximum number of files
+    if (files.length < 2) {
+      toast.error("You must upload at least 2 images.");
+      return;
     }
-    const fileReader = new FileReader();
-    fileReader.readAsDataURL(image);
-    fileReader.addEventListener("load", function () {
-      setPreviewImage(this.result);
+    if (files.length > 6) {
+      toast.error("You can upload a maximum of 6 images.");
+      return;
+    }
+
+    setProductUpData({
+      ...ProductUpData,
+      images: files,
+    });
+
+    // Generate previews for selected images
+    const fileReaders = files.map((file) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      return new Promise((resolve) => {
+        reader.onload = () => resolve(reader.result);
+      });
+    });
+
+    Promise.all(fileReaders).then((previews) => {
+      setPreviewImages(previews); // Set preview images
     });
   };
+
   const handelUserInput = (e) => {
     e.preventDefault();
     const { name, value } = e.target;
@@ -46,20 +66,30 @@ function AddProduct() {
   const handleCreate = async (event) => {
     event.preventDefault();
     setLoading(true);
+
+    // Validate form fields and image count
     if (
       !ProductUpData.name ||
       !ProductUpData.price ||
       !ProductUpData.description ||
-      !ProductUpData.image
+      ProductUpData.images.length < 2 ||
+      ProductUpData.images.length > 6
     ) {
       setLoading(false);
-      toast.error("All Filed is required...");
+      toast.error(
+        "All fields are required. Ensure you upload between 2 and 6 images."
+      );
       return;
     }
-    // console.log(SignUpData.fullName.length);
+
     if (ProductUpData.name.length < 5) {
       setLoading(false);
-      toast.error("Product name should be altLeast 5 character..");
+      toast.error("Product name should be at least 5 characters.");
+      return;
+    }
+    if (ProductUpData.price < 1) {
+      setLoading(false);
+      toast.error("Product price  should be at least 1 Rupees.");
       return;
     }
 
@@ -67,7 +97,12 @@ function AddProduct() {
     formData.append("name", ProductUpData.name);
     formData.append("price", ProductUpData.price);
     formData.append("description", ProductUpData.description);
-    formData.append("image", ProductUpData.image);
+
+    // Append multiple images to FormData
+    ProductUpData.images.forEach((image) => {
+      formData.append("images", image);
+    });
+
     const response = await dispatch(AddNewProduct(formData));
     if (response) {
       setLoading(false);
@@ -80,43 +115,51 @@ function AddProduct() {
         name: "",
         price: "",
         description: "",
-        image: "",
+        images: [],
       });
-      setPreviewImage("");
+      setPreviewImages([]);
     }
   };
+
   return (
     <Layout>
-      <div className=" w-full">
-        <div className=" relative 2 top-[-64px]  justify-center flex items-center">
-          <div className="bg-white dark:bg-[#111827] max-sm:mt-20 mt-44 mb-10 w-[400px] rounded-lg shadow-[0_0_5px_black] p-8  max-sm:m-9 ">
+      <div className="w-full">
+        <div className="relative justify-center flex items-center">
+          <div className="bg-white dark:bg-[#111827] mt-44 mb-10 w-[400px] rounded-lg shadow-[0_0_5px_black] p-8">
             <h1 className="text-center text-3xl font-semibold mb-6 text-[#9e6748]">
               Add Product
             </h1>
             <form>
               <label
                 htmlFor="image_uploads"
-                className=" cursor-pointer justify-center flex"
+                className="cursor-pointer justify-center flex"
               >
-                {previewImage ? (
-                  <div>
-                    <img src={previewImage} className="" />
+                {previewImages.length > 0 ? (
+                  <div className="grid grid-cols-3 gap-2">
+                    {previewImages.map((img, index) => (
+                      <img
+                        key={index}
+                        src={img}
+                        alt="preview"
+                        className="h-20 w-20 object-cover"
+                      />
+                    ))}
                   </div>
                 ) : (
-                  <div>
-                    <FiEdit className="w-full" size={"100px"} />
-                  </div>
+                  <FiEdit className="w-full" size={"100px"} />
                 )}
               </label>
               <input
                 type="file"
                 onChange={handelImageInput}
-                className="hidden "
+                className="hidden"
                 name="image_uploads"
                 id="image_uploads"
-                accept=".png ,.svg ,.jpeg ,.jpg"
+                accept=".png,.svg,.jpeg,.jpg"
+                multiple // Allow multiple file selection
               />
 
+              {/* Product Name */}
               <div className="relative mb-6 mt-5">
                 <input
                   type="text"
@@ -127,15 +170,17 @@ function AddProduct() {
                   className="peer w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent"
                 />
                 {ProductUpData.name ? (
-                  <label className=" absolute left-0 top-[-20px] text-sm text-gray-500">
+                  <label className="absolute left-0 top-[-20px] text-sm text-gray-500 ">
                     Product Name
                   </label>
                 ) : (
-                  <label className="absolute left-0 top-2 text-lg text-gray-500 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
+                  <label className="absolute left-0 top-2 text-lg text-gray-500 peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
                     Product Name
                   </label>
                 )}
               </div>
+
+              {/* Product Price */}
               <div className="relative mb-6">
                 <input
                   type="number"
@@ -146,15 +191,17 @@ function AddProduct() {
                   className="peer w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent"
                 />
                 {ProductUpData.price ? (
-                  <label className=" absolute left-0 top-[-20px] text-sm text-gray-500">
+                  <label className="absolute left-0 top-[-20px] text-sm text-gray-500 ">
                     Product Price
                   </label>
                 ) : (
-                  <label className="absolute left-0 top-2 text-lg text-gray-500 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
-                    Product price
+                  <label className="absolute left-0 top-2 text-lg text-gray-500 peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
+                    Product Price
                   </label>
                 )}
               </div>
+
+              {/* Product Description */}
               <div className="relative mb-6">
                 <textarea
                   onChange={handelUserInput}
@@ -164,16 +211,17 @@ function AddProduct() {
                   className="peer resize-none overflow-y-auto h-[250px] w-full pl-2 border-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent"
                 />
                 {ProductUpData.description ? (
-                  <label className="pl-2 absolute left-0 top-[-20px] text-sm text-gray-500">
+                  <label className="absolute left-0 pl-2 top-[-20px] text-sm text-gray-500">
                     Product Description
                   </label>
                 ) : (
-                  <label className="absolute left-0 pl-2 top-2 text-lg text-gray-500 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
+                  <label className="absolute left-0 pl-2 top-2 text-lg text-gray-500 peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
                     Product Description
                   </label>
                 )}
               </div>
 
+              {/* Submit Button */}
               <div onClick={handleCreate}>
                 <LoadingButton
                   loading={loading}
@@ -189,4 +237,5 @@ function AddProduct() {
     </Layout>
   );
 }
+
 export default AddProduct;

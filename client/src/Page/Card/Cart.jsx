@@ -23,7 +23,7 @@ const Cart = () => {
     });
     setQuantities(initialQuantities);
   };
-
+  console.log(cart);
   const minQuantity = (productId) => {
     setQuantities((prev) => {
       const updatedQuantities = { ...prev };

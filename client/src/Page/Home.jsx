@@ -17,7 +17,8 @@ function HomePage() {
   const ProductLoad = async () => {
     await dispatch(getAllProduct());
   };
-
+  console.log(product);
+  const CheckJWT = () => {};
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % celebrities.length);
@@ -25,6 +26,7 @@ function HomePage() {
 
     return () => clearInterval(interval);
   }, [celebrities.length]);
+
   useEffect(() => {
     ProductLoad();
   }, []);

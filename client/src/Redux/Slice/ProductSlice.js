@@ -7,6 +7,8 @@ const initialState = {
 };
 export const getAllProduct = createAsyncThunk("/product", async () => {
   try {
+    console.log("joo");
+
     const res = axiosInstance.get("/api/v3/Product/");
     toast.promise(res, {
       loading: "please wait! loading product..",
@@ -160,6 +162,7 @@ const productRedux = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(getAllProduct.fulfilled, (state, action) => {
+      console.log(action);
       state.product = action?.payload?.data;
     });
   },

@@ -71,6 +71,7 @@ function CheckoutPage() {
     const { name, value } = e.target;
     setShippingInfo({ ...shippingInfo, [name]: value });
   };
+  console.log(cart);
 
   const handelPlaceOrder = async () => {
     setLoading(true);
@@ -108,7 +109,6 @@ function CheckoutPage() {
       setMessage("Something want Wrong try again..");
       return;
     }
-
     const orderData = {
       userId: UserId,
       products: cart,
@@ -118,6 +118,7 @@ function CheckoutPage() {
       totalAmount: totalPrice,
     };
     async function OrderPlaceNew() {
+      console.log(orderData);
       const res = await dispatch(PlaceOrder(orderData));
       setLoading(false);
       setError(false);
@@ -188,9 +189,13 @@ function CheckoutPage() {
       setTotalPrice(Total);
     }
   }, [cart]);
+
   useEffect(() => {
     loadProfile();
     if (!ProductDetails) {
+      navigate(-1);
+    }
+    if (cart.length == 0) {
       navigate(-1);
     }
   }, [ProductDetails]);
