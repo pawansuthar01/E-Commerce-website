@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Footer from "../Components/footer";
 import LoadingButton from "../constants/LoadingBtn";
 import { useEffect, useState } from "react";
-import { LogoutAccount } from "../Redux/Slice/authSlice";
+import { CheckJWT, LogoutAccount } from "../Redux/Slice/authSlice";
 import { useTheme } from "../Components/ThemeContext";
 import { NotificationGet } from "../Redux/Slice/notification.Slice";
 import NotificationCart from "../Page/notification/notification";
@@ -56,6 +56,13 @@ function Layout({ children }) {
   };
   const handelNotificationLoad = async () => {
     const res = await dispatch(NotificationGet());
+    if (isLoggedIn) {
+      const response = await dispatch(CheckJWT());
+      if (!response?.payload?.valid) {
+        await dispatch(LogoutAccount());
+        navigate("/login");
+      }
+    }
 
     if (res?.payload?.data) {
       const notificationsArray = Array.isArray(res.payload.data)
@@ -68,6 +75,32 @@ function Layout({ children }) {
 
   useEffect(() => {
     handelNotificationLoad();
+  }, []);
+  // ////
+  useEffect(() => {
+    const checkNetworkSpeed = () => {
+      const connection =
+        navigator.connection ||
+        navigator.mozConnection ||
+        navigator.webkitConnection;
+
+      if (connection) {
+        const slowConnectionTypes = ["slow-2g", "2g"];
+        if (slowConnectionTypes.includes(connection.effectiveType)) {
+          navigate("/SlowInternetPage");
+        }
+      }
+    };
+
+    // Initial check
+    checkNetworkSpeed();
+
+    // Listen for network changes
+    navigator.connection?.addEventListener("change", checkNetworkSpeed);
+
+    return () => {
+      navigator.connection?.removeEventListener("change", checkNetworkSpeed);
+    };
   }, []);
   return (
     <div
@@ -224,6 +257,12 @@ function Layout({ children }) {
                 (role === "AUTHOR" && (
                   <li onClick={hideSide} className="pt-5">
                     <Link to="/AddProduct">Add Product</Link>
+                  </li>
+                ))}
+              {role === "ADMIN" ||
+                (role === "AUTHOR" && (
+                  <li onClick={hideSide} className="pt-5">
+                    <Link to="/DashBoard">ADMIN DashBoard</Link>
                   </li>
                 ))}
 

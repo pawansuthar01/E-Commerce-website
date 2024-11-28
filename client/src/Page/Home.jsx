@@ -7,17 +7,19 @@ import CarouselSlide from "../Components/CarouselSlice";
 import { celebrities } from "../constants/Homecarousellist";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProduct } from "../Redux/Slice/ProductSlice";
+import SlowInternetPage from "../helper/CheckInternet";
 
 function HomePage() {
+  const [isSlow, setIsSlow] = useState(false);
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
   const dispatch = useDispatch();
   const UserId = useSelector((state) => state?.auth?.data?._id);
   const { product } = useSelector((state) => state.product);
   const ProductLoad = async () => {
-    await dispatch(getAllProduct());
+    const res = await dispatch(getAllProduct());
+    console.log(res);
   };
-  console.log(product);
   const CheckJWT = () => {};
   useEffect(() => {
     const interval = setInterval(() => {
@@ -29,6 +31,35 @@ function HomePage() {
 
   useEffect(() => {
     ProductLoad();
+  }, []);
+  //
+
+  useEffect(() => {
+    const checkNetworkSpeed = () => {
+      const connection =
+        navigator.connection ||
+        navigator.mozConnection ||
+        navigator.webkitConnection;
+
+      if (connection) {
+        const slowConnectionTypes = ["slow-2g", "2g"];
+        if (slowConnectionTypes.includes(connection.effectiveType)) {
+          setIsSlow(true);
+        } else {
+          setIsSlow(false);
+        }
+      }
+    };
+
+    // Initial check
+    checkNetworkSpeed();
+
+    // Listen for network changes
+    navigator.connection?.addEventListener("change", checkNetworkSpeed);
+
+    return () => {
+      navigator.connection?.removeEventListener("change", checkNetworkSpeed);
+    };
   }, []);
 
   return (

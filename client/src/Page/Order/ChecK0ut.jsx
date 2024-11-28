@@ -195,9 +195,6 @@ function CheckoutPage() {
     if (!ProductDetails) {
       navigate(-1);
     }
-    if (cart.length == 0) {
-      navigate(-1);
-    }
   }, [ProductDetails]);
 
   return (

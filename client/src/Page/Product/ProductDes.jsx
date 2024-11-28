@@ -22,7 +22,7 @@ function ProductDescription() {
       (item.product && item.product.toString() === state._id) || state.product
   );
   const dispatch = useDispatch();
-
+  console.log(state);
   async function LoadProfile() {
     await dispatch(LoadAccount());
   }
@@ -86,9 +86,11 @@ function ProductDescription() {
                 {/* Display the current image from carousel */}
                 <img
                   src={
-                    state?.images && state?.images[currentImageIndex]
-                      ? state?.images[currentImageIndex].secure_url
-                      : state?.image?.secure_url
+                    state?.images
+                      ? state?.images[currentImageIndex]
+                        ? state?.images[currentImageIndex].secure_url
+                        : state?.image?.secure_url
+                      : state.image
                   }
                   alt="product_image"
                   className="object-contain  h-full w-full transform transition-transform duration-500 ease-in-out group-hover:scale-150"
@@ -118,7 +120,7 @@ function ProductDescription() {
             </div>
 
             {/* Details Section */}
-            <div className=" sm:w-full space-y-1  text-xl max-sm:mb-2">
+            <div className=" sm:w-full space-y-1  text-xl max-sm:mb-2 p-10">
               <h1 className="text-3xl font-bold dark:text-white text-black capitalize mb-1">
                 {state?.name}
               </h1>

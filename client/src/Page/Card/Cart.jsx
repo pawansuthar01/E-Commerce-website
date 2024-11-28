@@ -107,7 +107,7 @@ const Cart = () => {
                     >
                       <td className="p-4">
                         <img
-                          src={product.image.secure_url}
+                          src={product.image  .secure_url}
                           alt={product.name}
                           className="max-w-20"
                         />

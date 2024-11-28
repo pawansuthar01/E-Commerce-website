@@ -12,7 +12,7 @@ import {
 } from "../../Redux/Slice/OrderSlice";
 import { MdCurrencyRupee, MdEmail, MdPhone } from "react-icons/md";
 import LoadingButton from "../../constants/LoadingBtn";
-import { FaArrowLeft } from "react-icons/fa6";
+import { FaArrowLeft, FaUser } from "react-icons/fa6";
 import toast from "react-hot-toast";
 import { isEmail, isPhoneNumber } from "../../helper/regexMatch";
 
@@ -139,7 +139,7 @@ function Profile() {
     <Layout>
       <div className="min-h-[100vh] w-full ">
         <div className=" flex flex-col justify-center mt-1 items-center gap-2  border-b-4 border-s-orange-100 ">
-          <div className="w-full  h-[200px] ">
+          <div className="w-full   h-[200px] ">
             <h2 className=" absolute text-white font-bold text-center w-full mt-10 sm:text-3xl max-sm:text-2xl">
               My Profile
             </h2>
@@ -149,19 +149,33 @@ function Profile() {
               className="w-full object-start   h-full"
             />
           </div>
-          <div className="relative bottom-20 flex flex-col gap-3 justify-center items-center w-full ">
-            <div className="  w-[150px] h-[150px] ">
-              <img
-                src={UserData?.data?.avatar?.secure_url}
-                className="w-full h-full rounded-full border-2 border-black"
-                alt=""
-              />
+          <div className=" relative bottom-10  flex flex-col gap-3 justify-center items-center w-full ">
+            <div className=" rounded-l-[18%]  items-center rounded-md flex dark:text-white dark:bg-[#111827] shadow-[0_0_1px_black]  dark:shadow-[0_0_1px_white] bg-white h-[100px] max-sm:h-[70px] w-[360px] max-sm:w-[290px]">
+              <div className=" w-[125px]  ">
+                <img
+                  src={UserData?.data?.avatar?.secure_url}
+                  className="w-full relative  h-full left-[-20px]  rounded-full border-2 border-black"
+                  alt=""
+                />
+              </div>
+              <div>
+                <p className="flex items-center gap-1">
+                  <FaUser size={"15px"} className="text-red-700" /> {"  "}
+                  {UserData?.data?.fullName}
+                </p>
+                <p>📞 {UserData?.data?.phoneNumber}</p>
+                <p className="max-sm:text-sm max-sm:pr-8 ">
+                  {UserData?.data?.email}
+                </p>
+              </div>
             </div>
+
             <div className="text-xl flex items-center  gap-2">
               <h1 className="text-black dark:text-white text-xl font-medium">
                 {UserData?.data?.userName}
               </h1>
               <FiEdit
+                onClick={() => navigate("/UpdateProfile")}
                 size={"26px"}
                 className=" cursor-pointer text-red-400 hover:text-red-300"
               />
@@ -260,13 +274,16 @@ function Profile() {
                     Delivery address
                   </h3>
                   <div className="text-gray-700 max-sm:py-3 dark:text-white">
-                    <p className="w-[70%] text-sm">
+                    <p className="text-sm"> {order.shippingAddress.name} </p>
+                    <p className="text-sm">
                       {" "}
-                      {order.shippingAddress.name},{" "}
                       {order.shippingAddress.address},
-                      {order.shippingAddress.city},{" "}
+                      {order.shippingAddress.city}{" "}
+                    </p>
+                    <p className="text-sm line-clamp-5 ">
+                      {" "}
                       {order.shippingAddress.state},
-                      {order.shippingAddress.postalCode}
+                      {order.shippingAddress.postalCode},
                     </p>
                     <p className="text-sm">
                       {order.shippingAddress.phoneNumber}
@@ -381,13 +398,13 @@ function Profile() {
           ))
         )}
         {show && (
-          <div className="fixed inset-0 flex  overflow-y-auto  justify-center   items-center bg-gray-800 bg-opacity-50 z-50">
+          <div className="fixed inset-0 flex  overflow-y-auto  justify-center dark:bg-[#111827]   items-center bg-gray-800 bg-opacity-50 z-50">
             <div className=" px-4 mb-5 md:mb-0 sm:my-10  max-sm:h-[90%]  ">
               <h2 className="text-2xl mb-3 font-bold text-black dark:text-white">
                 Billing Details
               </h2>
 
-              <div className="p-5 border bg-white dark:bg-black">
+              <div className="p-5 border bg-white dark:bg-[#111827] ">
                 <button
                   onClick={() => setShow(false)}
                   className=" text-black  dark:text-white px-2  flex text-2xl rounded-lg"
@@ -408,7 +425,7 @@ function Profile() {
                     value={shippingInfo.country}
                     name="country"
                     id="country"
-                    className="form-control mt-1 w-full border p-2 rounded"
+                    className="form-control mt-1 w-full dark:bg-[#111827]   border p-2 rounded"
                   />
                 </div>
 
@@ -426,7 +443,7 @@ function Profile() {
                       value={shippingInfo.name}
                       name="name"
                       id="name"
-                      className="form-control mt-1 w-full border p-2 rounded"
+                      className="form-control mt-1 w-full dark:bg-[#111827]   border p-2 rounded"
                     />
                   </div>
                 </div>
@@ -446,7 +463,7 @@ function Profile() {
                     id="address"
                     name="address"
                     placeholder="Street address"
-                    className="form-control mt-1 w-full border p-2 rounded"
+                    className="form-control mt-1 w-full dark:bg-[#111827]   border p-2 rounded"
                   />
                 </div>
 
@@ -457,7 +474,7 @@ function Profile() {
                     onChange={handelUserInput}
                     value={shippingInfo.address2}
                     placeholder="Apartment, suite, unit etc. (optional)"
-                    className="form-control mt-1 w-full border p-2 rounded"
+                    className="form-control mt-1 w-full dark:bg-[#111827]   border p-2 rounded"
                   />
                 </div>
 
@@ -475,7 +492,7 @@ function Profile() {
                       name="city"
                       type="text"
                       id="city"
-                      className="form-control mt-1 w-full border p-2 rounded"
+                      className="form-control mt-1 w-full dark:bg-[#111827]   border p-2 rounded"
                     />
                   </div>
                   <div className="w-full md:w-1/2 pr-2 mb-4 md:mb-0">
@@ -491,7 +508,7 @@ function Profile() {
                       name="state"
                       type="text"
                       id="state"
-                      className="form-control mt-1 w-full border p-2 rounded"
+                      className="form-control mt-1 w-full dark:bg-[#111827]   border p-2 rounded"
                     />
                   </div>
                   <div className="w-full md:w-1/2 pl-2">
@@ -507,7 +524,7 @@ function Profile() {
                       value={shippingInfo.postalCode}
                       name="postalCode"
                       id="postalCode"
-                      className="form-control mt-1 w-full border p-2 rounded"
+                      className="form-control mt-1 w-full dark:bg-[#111827]   border p-2 rounded"
                     />
                   </div>
                 </div>
@@ -526,7 +543,7 @@ function Profile() {
                       name="email"
                       type="email"
                       id="email"
-                      className="form-control mt-1 w-full border p-2 rounded"
+                      className="form-control mt-1 w-full dark:bg-[#111827]   border p-2 rounded"
                     />
                   </div>
                   <div className="w-full md:w-1/2 pl-2 mb-2">
@@ -543,7 +560,7 @@ function Profile() {
                       type="number"
                       id="phoneNumber"
                       placeholder="Phone Number"
-                      className="form-control mt-1 w-full border p-2 rounded"
+                      className="form-control mt-1 w-full dark:bg-[#111827]   border p-2 rounded"
                     />
                   </div>
                   <LoadingButton

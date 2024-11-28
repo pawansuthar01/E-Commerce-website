@@ -50,6 +50,7 @@ export const NotificationRead = createAsyncThunk(
     }
   }
 );
+
 const NotificationSliceRedux = createSlice({
   name: "notification",
   initialState,

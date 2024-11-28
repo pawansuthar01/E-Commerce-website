@@ -141,7 +141,7 @@ function AddProduct() {
                         key={index}
                         src={img}
                         alt="preview"
-                        className="h-20 w-20 object-cover"
+                        className="h-20 w-20 object-contain bg-white dark:bg-[#111827] dark:shadow-[0_0_1px_white]  shadow-[0_0_1px_black] "
                       />
                     ))}
                   </div>

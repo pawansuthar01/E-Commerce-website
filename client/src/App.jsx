@@ -17,6 +17,9 @@ import Cart from "./Page/Card/Cart";
 import CheckoutForm from "./Page/Order/ChecK0ut";
 import { ThemeProvider } from "./Components/ThemeContext";
 import ThankYou from "./Page/Order/Thankyou";
+import UpdateProfile from "./Page/User/Update";
+import SlowInternetPage from "./helper/CheckInternet";
+import AdminDashboard from "./Page/ADMIN/Dashboard";
 function App() {
   return (
     <ThemeProvider>
@@ -25,6 +28,10 @@ function App() {
           <Route path="/" element={<HomePage />}></Route>
           <Route path="/Login" element={<Login />}></Route>
           <Route path="/Signup" element={<SignUp />}></Route>
+          <Route
+            path="/SlowInternetPage"
+            element={<SlowInternetPage />}
+          ></Route>
           <Route path="/Search" element={<Product />}></Route>
           <Route path="/AllProduct" element={<Product />}></Route>
           <Route path="/Contact" element={<Contact />}></Route>
@@ -34,6 +41,7 @@ function App() {
             <Route path="/Profile" element={<Profile />}></Route>
             <Route path="/CheckoutForm" element={<CheckoutForm />}></Route>
             <Route path="/ThankYou" element={<ThankYou />}></Route>
+            <Route path="/UpdateProfile" element={<UpdateProfile />}></Route>
             <Route path="/Cart" element={<Cart />}></Route>
 
             <Route path="/Blog" element={<Blog />}></Route>
@@ -47,6 +55,7 @@ function App() {
           </Route>
           <Route element={<RequireAuth allowedRole={["ADMIN", "AUTHOR"]} />}>
             <Route path="/AddProduct" element={<AddProduct />}></Route>
+            <Route path="/DashBoard" element={<AdminDashboard />}></Route>
           </Route>
           <Route path="/Denied" element={<Denied />}></Route>
           <Route path="*" element={<NotFoundPage />}></Route>

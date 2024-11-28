@@ -13,7 +13,7 @@ export const paymentCreate = createAsyncThunk(
         totalAmount: data,
       });
       toast.promise(res, {
-        loading: "please wait! remove  product..",
+        loading: "please wait! payment ..",
         success: (data) => {
           return data?.data?.message;
         },
