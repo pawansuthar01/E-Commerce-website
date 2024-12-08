@@ -1,6 +1,6 @@
 import express from "express";
 import cookieParser from "cookie-parser";
-import dataBaseConnection from "./config/dbconncetion.js";
+
 import UserRouter from "./routers/userRouter.js";
 import morgan from "morgan";
 import cors from "cors";
@@ -11,6 +11,7 @@ import ProductRouter from "./routers/Product.router.js";
 import CardRouter from "./routers/Card.Router.js";
 import OrderRouter from "./routers/Order.rouder.js";
 import NotificationRouter from "./routers/Notification.router.js";
+import dataBaseConnection from "./config/dbConncetion.js";
 
 const app = express();
 
@@ -32,7 +33,6 @@ app.use("/ping", (req, res, next) => {
   res.status(200).send("server is updated");
 });
 
-//
 app.use("/api/v3/user", UserRouter);
 app.use("/api/v3/User/Notification", NotificationRouter);
 app.use("/api/v3/Content", ContentRouter);

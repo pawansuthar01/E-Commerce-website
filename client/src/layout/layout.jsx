@@ -55,21 +55,20 @@ function Layout({ children }) {
     setNotificationShow(!NotificationShow);
   };
   const handelNotificationLoad = async () => {
-    const res = await dispatch(NotificationGet());
     if (isLoggedIn) {
+      const res = await dispatch(NotificationGet());
       const response = await dispatch(CheckJWT());
       if (!response?.payload?.valid) {
         await dispatch(LogoutAccount());
         navigate("/login");
       }
-    }
+      if (res?.payload?.data) {
+        const notificationsArray = Array.isArray(res.payload.data)
+          ? res.payload.data
+          : [res.payload.data];
 
-    if (res?.payload?.data) {
-      const notificationsArray = Array.isArray(res.payload.data)
-        ? res.payload.data
-        : [res.payload.data];
-
-      setNotification(notificationsArray);
+        setNotification(notificationsArray);
+      }
     }
   };
 

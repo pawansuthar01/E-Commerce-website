@@ -114,7 +114,7 @@ function SignUp() {
     formData.append("phoneNumber", SignUpData.phoneNumber);
     formData.append("avatar", SignUpData.avatar);
     formData.append("password", SignUpData.password);
-
+    console.log(formData);
     const response = await dispatch(CreateAccount(formData));
     if (response) {
       setLoading(false);
@@ -143,7 +143,7 @@ function SignUp() {
             <h1 className="text-center text-3xl font-semibold mb-6 text-[#9e6748] dark:text-[#f5d9b1]">
               Create Your Account
             </h1>
-            <form>
+            <form noValidate onSubmit={handleCreate}>
               <label htmlFor="image_uploads" className="cursor-pointer">
                 {previewImage ? (
                   <div>
@@ -282,9 +282,11 @@ function SignUp() {
               </div>
               <div className="flex justify-center mt-5">
                 <LoadingButton
-                  text={loading ? "Creating..." : "Create Account"}
                   handleClick={handleCreate}
-                  width="w-[300px]"
+                  loading={loading}
+                  message={"Loading"}
+                  name={"SinUp"}
+                  color={"bg-green-500"}
                 />
               </div>
             </form>
