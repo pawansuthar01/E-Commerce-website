@@ -1,40 +1,45 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Layout from "../../layout/layout";
 import {
   AddProductCard,
+  getSearchProduct,
   RemoveProductCard,
 } from "../../Redux/Slice/ProductSlice";
 import LoadingButton from "../../constants/LoadingBtn";
 import { LoadAccount } from "../../Redux/Slice/authSlice";
 import { MdCurrencyRupee } from "react-icons/md";
+import ProductCard from "../../Components/productCard";
 
 function ProductDescription() {
-  const [loading, setLoading] = useState("");
-  const [transformOrigin, setTransformOrigin] = useState("center center");
-  const [currentImageIndex, setCurrentImageIndex] = useState(0); // Track the current image in the carousel
   const navigate = useNavigate();
-  const { state } = useLocation();
+  const [loading, setLoading] = useState(false);
+  const [transformOrigin, setTransformOrigin] = useState("center center");
+  const [Search, setSearch] = useState([]);
+  const ProductDetails = useLocation().state;
+  const [Image, setImage] = useState(ProductDetails?.images[0]?.secure_url);
+
   const { data } = useSelector((state) => state.auth);
   const productExists = data?.walletAddProducts?.some(
     (item) =>
-      (item.product && item.product.toString() === state._id) || state.product
+      (item.product && item.product.toString() === ProductDetails?._id) ||
+      ProductDetails?.product
   );
   const dispatch = useDispatch();
-  console.log(state);
-  async function LoadProfile() {
+
+  const LoadProfile = async () => {
     await dispatch(LoadAccount());
-  }
+  };
 
   const ProductAddCard = async (productId) => {
     setLoading(true);
     const res = await dispatch(AddProductCard(productId));
 
     if (res) {
-      LoadProfile();
-      setLoading(false);
+      await LoadProfile();
     }
+    setLoading(false);
   };
 
   const ProductRemoveCard = async (productId) => {
@@ -42,9 +47,9 @@ function ProductDescription() {
     const res = await dispatch(RemoveProductCard(productId));
 
     if (res) {
-      LoadProfile();
-      setLoading(false);
+      await LoadProfile();
     }
+    setLoading(false);
   };
 
   const handleMouseMove = (event) => {
@@ -59,109 +64,117 @@ function ProductDescription() {
     setTransformOrigin(`${originX}% ${originY}%`);
   };
 
-  // Functions to navigate through the images in the carousel
-  const goToNextImage = () => {
-    if (state?.images && currentImageIndex < state.images.length - 1) {
-      setCurrentImageIndex(currentImageIndex + 1);
+  // Handle search for related products
+  useEffect(() => {
+    if (!ProductDetails) {
+      navigate(-1);
     }
-  };
+  }, [ProductDetails, navigate]);
 
-  const goToPreviousImage = () => {
-    if (currentImageIndex > 0) {
-      setCurrentImageIndex(currentImageIndex - 1);
-    }
-  };
+  useEffect(() => {
+    const fetchSearch = async () => {
+      if (ProductDetails?.name) {
+        const res = await dispatch(getSearchProduct(ProductDetails.name));
+        setSearch(res.payload?.data || []); // Default to empty array
+      }
+      console.log(Search);
+    };
+    fetchSearch();
+  }, [ProductDetails?.name, dispatch]);
 
   return (
     <Layout>
-      <div className="min-h-[90vh] text-white bg-[#F5F5F5] dark:bg-[#1F2937] flex flex-col justify-center items-center">
+      <div className="min-h-[90vh] text-white bg-[#F5F5F5] dark:bg-[#1F2937] flex flex-col">
         <div className="w-full rounded-sm">
-          <div className="flex gap-10   max-sm:flex-col justify-center max-sm:items-center ">
+          <div className="grid sm:grid-cols-2">
             {/* Image Section */}
-            <div className="w-full h-full     space-y-6 group max-sm:w-full flex justify-center items-center">
-              <div
-                className=" overflow-hidden relative cursor-pointer   h-[500px] w-[500px] rounded-sm"
-                onMouseMove={handleMouseMove}
-              >
-                {/* Display the current image from carousel */}
+            <div className="max-sm:flex flex-row-reverse">
+              <div className="overflow-hidden group shadow-[0_0_1px_black] cursor-pointer my-2 ml-1 w-full h-[350px] rounded-sm">
                 <img
                   src={
-                    state?.images
-                      ? state?.images[currentImageIndex]
-                        ? state?.images[currentImageIndex].secure_url
-                        : state?.image?.secure_url
-                      : state.image
+                    Image
+                      ? Image
+                      : ProductDetails?.images
+                      ? ProductDetails?.images[0]
+                        ? ProductDetails?.images[0].secure_url
+                        : ProductDetails?.image?.secure_url
+                      : ProductDetails?.image
                   }
+                  onMouseMove={handleMouseMove}
                   alt="product_image"
-                  className="object-contain  h-full w-full transform transition-transform duration-500 ease-in-out group-hover:scale-150"
+                  className="h-full w-full transform transition-transform duration-500 ease-in-out group-hover:scale-150"
                   style={{
                     transformOrigin,
                   }}
                 />
-
-                <button
-                  onClick={goToPreviousImage}
-                  className="absolute left-2 bottom-0 transform -translate-y-1/2 bg-black text-white p-3 px-5 rounded-full hover:bg-gray-700 transition"
-                  disabled={currentImageIndex === 0}
-                >
-                  &#8249;
-                </button>
-                <button
-                  onClick={goToNextImage}
-                  className="absolute right-2 bottom-0 transform -translate-y-1/2 bg-black text-white p-3 px-5 rounded-full hover:bg-gray-700 transition"
-                  disabled={
-                    state?.images &&
-                    currentImageIndex === state.images.length - 1
-                  }
-                >
-                  &#8250;
-                </button>
+              </div>
+              <div className="flex w-40 h-40 gap-2 max-sm:flex-col max-sm:mt-6 ml-1">
+                {ProductDetails?.images?.map((productImage, index) => (
+                  <img
+                    onClick={() => setImage(productImage.secure_url)}
+                    key={index}
+                    src={productImage.secure_url}
+                    alt="images"
+                    className={`rounded-sm shadow-sm cursor-pointer ${
+                      Image === productImage.secure_url &&
+                      `border-[8px] border-gray-500`
+                    }`}
+                  />
+                ))}
               </div>
             </div>
 
             {/* Details Section */}
-            <div className=" sm:w-full space-y-1  text-xl max-sm:mb-2 p-10">
+            <div className="sm:w-full space-y-1 text-xl max-sm:mb-2 p-10">
               <h1 className="text-3xl font-bold dark:text-white text-black capitalize mb-1">
-                {state?.name}
+                {ProductDetails?.name}
               </h1>
               <h1 className="text-xl flex items-center font-bold dark:text-white text-gray-500 capitalize mb-5">
-                price: <MdCurrencyRupee /> {state?.price}/-
+                Price: <MdCurrencyRupee /> {ProductDetails?.price}/-
               </h1>
               <p className="text-black dark:text-white text-2xl">
                 Product Description 👇
               </p>
-              <p className="text-black dark:text-white">{state?.description}</p>
+              <p className="text-black dark:text-white">
+                {ProductDetails?.description}
+              </p>
               <div className="w-full flex gap-10 pt-10">
                 {!productExists ? (
-                  <div className="w-1/2">
-                    <LoadingButton
-                      onClick={() => ProductAddCard(state._id)}
-                      name={"Add To Card "}
-                      color={"bg-green-500"}
-                      message={"Loading..."}
-                      loading={loading}
-                      width={"w-[150px]"}
-                    />
-                  </div>
+                  <LoadingButton
+                    onClick={() => ProductAddCard(ProductDetails._id)}
+                    name={"Add To Cart"}
+                    color={"bg-green-500"}
+                    message={"Loading..."}
+                    loading={loading}
+                    width={"w-[150px]"}
+                  />
                 ) : (
-                  <div className="w-1/2">
-                    <LoadingButton
-                      onClick={() => ProductRemoveCard(state._id)}
-                      name={" Remove To Card "}
-                      color={"bg-red-500"}
-                      message={"Loading..."}
-                      loading={loading}
-                      width={"w-[150px]"}
-                    />
-                  </div>
+                  <LoadingButton
+                    onClick={() => ProductRemoveCard(ProductDetails._id)}
+                    name={"Remove From Cart"}
+                    color={"bg-red-500"}
+                    message={"Loading..."}
+                    loading={loading}
+                    width={"w-[150px]"}
+                  />
                 )}
-                {data.role === "ADMIN" ||
-                  (data.role === "AUTHOR" && (
-                    <button className="bg-red-500 text-xl rounded-md font-bold px-5 py-2 w-[100px] hover:bg-red-700 transition-all duration-300">
-                      Delete
-                    </button>
-                  ))}
+                {(data.role === "ADMIN" || data.role === "AUTHOR") && (
+                  <button className="bg-red-500 text-xl rounded-md font-bold px-5 py-2 w-[100px] hover:bg-red-700 transition-all duration-300">
+                    Delete
+                  </button>
+                )}
               </div>
+            </div>
+          </div>
+          <div>
+            <h1 className="dark:text-white text-black text-2xl">
+              More Related Products:
+            </h1>
+            <div className=" flex flex-wrap  max-sm:justify-center justify-evenly  gap-10 my-20">
+              {Array.isArray(Search) &&
+                Search.map((product, ind) => (
+                  <ProductCard data={product} key={ind} />
+                ))}
             </div>
           </div>
         </div>

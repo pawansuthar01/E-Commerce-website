@@ -75,7 +75,7 @@ function Layout({ children }) {
   useEffect(() => {
     handelNotificationLoad();
   }, []);
-  // ////
+
   useEffect(() => {
     const checkNetworkSpeed = () => {
       const connection =

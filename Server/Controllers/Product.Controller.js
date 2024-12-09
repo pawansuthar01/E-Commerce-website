@@ -133,6 +133,30 @@ export const productDelete = async (req, res, next) => {
     return next(new AppError(error.message, 400));
   }
 };
+export const getSearchProduct = async (req, res, next) => {
+  const { name } = req.params;
+  console.log(req.params);
+  if (!name) {
+    return next(new AppError("product Search for   required name  ...", 400));
+  }
+  try {
+    const products = await Product.find({
+      name: { $regex: name, $options: "i" },
+    });
+    if (!products) {
+      return next(
+        new AppError(" product failed  to get.., Please try again..", 400)
+      );
+    }
+    res.status(200).json({
+      success: true,
+      data: products,
+      message: " search product successfully get...",
+    });
+  } catch (error) {
+    return next(new AppError(error.message, 400));
+  }
+};
 export const getProduct = async (req, res, next) => {
   const { id } = req.params;
   if (!id) {

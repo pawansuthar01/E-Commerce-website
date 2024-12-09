@@ -25,6 +25,28 @@ export const getAllProduct = createAsyncThunk("/product", async () => {
     toast.error(e?.response?.message);
   }
 });
+export const getSearchProduct = createAsyncThunk(
+  "/product/get",
+  async (data) => {
+    console.log(data);
+    try {
+      const res = axiosInstance.get(`/api/v3/Product/Search/${data}`, data);
+      toast.promise(res, {
+        loading: "please wait! Search product..",
+        success: (data) => {
+          return data?.data?.message;
+        },
+
+        error: (data) => {
+          return data?.response?.data?.message;
+        },
+      });
+      return (await res).data;
+    } catch (e) {
+      toast.error(e?.response?.message);
+    }
+  }
+);
 export const getProduct = createAsyncThunk("/product/get", async (id) => {
   try {
     const res = axiosInstance.get(`/api/v3/Product/${id}`);
