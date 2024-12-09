@@ -1,6 +1,5 @@
 import express from "express";
 import cookieParser from "cookie-parser";
-
 import UserRouter from "./routers/userRouter.js";
 import morgan from "morgan";
 import cors from "cors";
@@ -24,7 +23,7 @@ app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: [process.env.FRONTEND_URL],
+    origin: process.env.FRONTEND_URL,
     credentials: true,
   })
 );
@@ -33,6 +32,7 @@ app.use("/ping", (req, res, next) => {
   res.status(200).send("server is updated");
 });
 
+//
 app.use("/api/v3/user", UserRouter);
 app.use("/api/v3/User/Notification", NotificationRouter);
 app.use("/api/v3/Content", ContentRouter);

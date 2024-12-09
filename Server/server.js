@@ -2,6 +2,7 @@ import { config } from "dotenv";
 config();
 
 import app from "./app.js";
+import Razorpay from "razorpay";
 import { v2 } from "cloudinary";
 
 const PORT = process.env.PORT || 5005;
@@ -12,10 +13,10 @@ v2.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// export const razorpay = new Razorpay({
-//   key_id: process.env.KEY_ID,
-//   key_secret: process.env.SECRET_ID,
-// });
+export const razorpay = new Razorpay({
+  key_id: process.env.KEY_ID,
+  key_secret: process.env.SECRET_ID,
+});
 
 //socket listen//
 //sever listen//

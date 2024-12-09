@@ -1,8 +1,16 @@
 import Order from "../module/Order.module.js";
 import Product from "../module/Product.module.js";
 import AppError from "../utils/AppError.js";
+import { config } from "dotenv";
+config();
+
 import Razorpay from "razorpay";
 import crypto from "crypto";
+
+export const razorpay = new Razorpay({
+  key_id: process.env.KEY_ID,
+  key_secret: process.env.SECRET_ID,
+});
 
 export const CreateOrder = async (req, res, next) => {
   const {
@@ -63,11 +71,6 @@ export const CreateOrder = async (req, res, next) => {
     data: newOrder,
   });
 };
-
-const razorpay = new Razorpay({
-  key_id: process.env.KEY_ID,
-  key_secret: process.env.SECRET_ID,
-});
 
 export const createOrderPayment = async (req, res, next) => {
   try {
