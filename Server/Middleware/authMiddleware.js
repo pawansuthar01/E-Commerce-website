@@ -1,24 +1,21 @@
 import JWT from "jsonwebtoken";
 import AppError from "../utils/AppError.js";
-
+import { config } from "dotenv";
+config();
 export const isLoggedIn = async (req, res, next) => {
   try {
     const { token } = req.cookies;
+
     if (!token) {
       return next(new AppError("Unauthenticated,please login ", 500));
     }
 
-    const UserDetails = await JWT.verify(token, process.env.JWT_SECRET);
-
-    if (!UserDetails) {
-      return next(new AppError("Token is not valid please login..", 400));
-    }
-
+    const userDetails = await JWT.verify(token, process.env.JWT_SECRET);
     req.user = {
-      id: UserDetails.id,
-      userName: UserDetails.userName,
-      email: UserDetails.email,
-      role: UserDetails.role,
+      id: userDetails.id,
+      userName: userDetails.userName,
+      email: userDetails.email,
+      role: userDetails.role,
     };
   } catch (error) {
     return next(new AppError(error.message, 400));

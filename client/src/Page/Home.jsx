@@ -18,13 +18,11 @@ function HomePage() {
   const { product } = useSelector((state) => state.product);
   const ProductLoad = async () => {
     const res = await dispatch(getAllProduct());
-    console.log(res);
   };
-  const CheckJWT = () => {};
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % celebrities.length);
-    }, 3000); // Slide changes every 3 seconds
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [celebrities.length]);
@@ -78,7 +76,7 @@ function HomePage() {
               />
             ))}
         </div>
-        <div className=" flex flex-wrap  max-sm:justify-center justify-evenly  gap-20 my-20">
+        <div className=" flex flex-wrap  max-sm:justify-center justify-evenly  gap-10 my-20">
           {list &&
             list.map((product, ind) => (
               <ProductCard data={product} key={ind} />
