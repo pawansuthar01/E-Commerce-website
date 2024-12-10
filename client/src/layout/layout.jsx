@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Footer from "../Components/footer";
 import LoadingButton from "../constants/LoadingBtn";
 import { useEffect, useState } from "react";
-import { CheckJWT, LogoutAccount } from "../Redux/Slice/authSlice";
+import { LogoutAccount } from "../Redux/Slice/authSlice";
 import { useTheme } from "../Components/ThemeContext";
 import { NotificationGet } from "../Redux/Slice/notification.Slice";
 import NotificationCart from "../Page/notification/notification";
@@ -57,11 +57,7 @@ function Layout({ children }) {
   const handelNotificationLoad = async () => {
     if (isLoggedIn) {
       const res = await dispatch(NotificationGet());
-      const response = await dispatch(CheckJWT());
-      if (!response?.payload?.valid) {
-        await dispatch(LogoutAccount());
-        navigate("/login");
-      }
+
       if (res?.payload?.data) {
         const notificationsArray = Array.isArray(res.payload.data)
           ? res.payload.data

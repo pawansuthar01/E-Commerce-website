@@ -7,7 +7,7 @@ const initialState = {
   role: localStorage.getItem("role") || "",
   userName: localStorage.getItem("userName") || "",
   data:
-    localStorage.getItem("data") !== undefined
+    localStorage.getItem("data") !== null
       ? JSON.parse(localStorage.getItem("data"))
       : {},
 };
@@ -109,28 +109,7 @@ export const LoadAccount = createAsyncThunk("/auth/getProfile", async () => {
     toast.error(e?.response?.message);
   }
 });
-export const CheckJWT = createAsyncThunk("/Auth/check", async () => {
-  try {
-    const response = await axiosInstance.get("/api/v3/user/checkJWT");
 
-    if (response.status === 200) {
-      console.log("JWT is valid!");
-      return { valid: true, expired: false };
-    } else {
-      return { valid: false, expired: false };
-    }
-  } catch (error) {
-    if (error.response && error.response.status === 401) {
-      toast.error("Session expired. Please log in again!");
-
-      return { valid: false, expired: true };
-    }
-
-    console.error("Error during JWT Check:", error);
-    toast.error("Something went wrong during session check!");
-    return { valid: false, expired: false };
-  }
-});
 const authSliceRedux = createSlice({
   name: "auth",
   initialState,

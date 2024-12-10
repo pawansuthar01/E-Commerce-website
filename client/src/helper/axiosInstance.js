@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const basic_uri = "http://localhost:5000";
+const basic_uri = "https://e-commerce-website-2-2u9q.onrender.com";
 const axiosInstance = axios.create();
 
 axiosInstance.defaults.baseURL = basic_uri;
