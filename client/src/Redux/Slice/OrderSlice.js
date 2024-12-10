@@ -88,7 +88,7 @@ export const CancelOrder = createAsyncThunk("Order/updateOrder", async (id) => {
 
 export const AllOrder = createAsyncThunk("Order/Orders", async () => {
   try {
-    const res = axiosInstance.post(`/api/v3/Order/`);
+    const res = axiosInstance.get(`/api/v3/Admin/Order`);
     toast.promise(res, {
       loading: "please wait ! Orders loading...",
       success: (data) => {

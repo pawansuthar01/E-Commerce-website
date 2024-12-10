@@ -1,22 +1,45 @@
-import { useNavigate } from "react-router-dom";
-import Layout from "../layout/layout";
-import list from "../constants/productlist";
-import ProductCard from "../Components/productCard";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { getAllProduct } from "../Redux/Slice/ProductSlice";
 
-function Product() {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { product } = useSelector((state) => state.product);
+import { useEffect, useState } from "react";
+import ProductCard from "../Components/productCard";
+import Layout from "../layout/layout";
 
-  const ProductLoad = async () => {
-    await dispatch(getAllProduct());
+function Product() {
+  const [products, setProducts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+
+  const fetchProducts = async (page) => {
+    setLoading(true);
+
+    try {
+      const response = await dispatch(
+        getAllProduct({ page, limit: window.innerWidth > 760 ? "50" : "25" })
+      );
+      const { data, totalPages } = response.payload;
+      setProducts(data); // Assuming response.payload has `data` and `totalPages`
+      setTotalPages(totalPages);
+      setCurrentPage(page);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    } finally {
+      setLoading(false); // Hide loader
+    }
   };
+
   useEffect(() => {
-    ProductLoad();
+    fetchProducts(1); // Load the first page initially
   }, []);
+
+  const handlePageChange = (page) => {
+    if (page !== currentPage) {
+      fetchProducts(page);
+    }
+  };
+
   return (
     <Layout>
       <div className="min-h-[100vh] ">
@@ -60,16 +83,54 @@ function Product() {
             </button>
           </div>
         </div>
+        <div className="container mx-auto ">
+          {loading ? (
+            <div className="text-center py-8">Loading products...</div>
+          ) : products.length > 0 ? (
+            <>
+              <div className=" flex flex-wrap  max-sm:justify-center justify-evenly  gap-10 my-10">
+                {products.map((product) => (
+                  <ProductCard key={product._id} data={product} />
+                ))}
+              </div>
 
-        <div className=" flex flex-wrap   max-sm:justify-center justify-evenly  gap-20 my-20">
-          {list &&
-            list.map((product, ind) => (
-              <ProductCard data={product} key={ind} />
-            ))}
-          {product &&
-            product.map((product, ind) => (
-              <ProductCard data={product} key={ind} />
-            ))}
+              {/* Pagination */}
+              <div className="flex flex-wrap justify-center  space-x-2 space-y-2 mb-2">
+                {currentPage > 1 && (
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    className="px-4 py-2 border rounded bg-white text-blue-500 border-blue-500"
+                  >
+                    Previous
+                  </button>
+                )}
+                {[...Array(totalPages)].map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handlePageChange(index + 1)}
+                    className={`px-4 py-2 border rounded ${
+                      index + 1 === currentPage
+                        ? "bg-blue-500 text-white"
+                        : "bg-white text-blue-500 border-blue-500"
+                    }`}
+                    disabled={index + 1 === currentPage}
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+                {currentPage < totalPages && (
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    className="px-4 py-2 border rounded bg-white text-blue-500 border-blue-500"
+                  >
+                    Next
+                  </button>
+                )}
+              </div>
+            </>
+          ) : (
+            <div className="text-center py-8">No products found.</div>
+          )}
         </div>
       </div>
     </Layout>

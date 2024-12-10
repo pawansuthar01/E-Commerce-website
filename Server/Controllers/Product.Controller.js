@@ -180,22 +180,32 @@ export const getProduct = async (req, res, next) => {
 };
 export const getAllProduct = async (req, res, next) => {
   try {
-    const product = await Product.find({});
+    const page = parseInt(req.query.page) || 1; // Default to page 1
+    const limit = parseInt(req.query.limit) || 50; // Default to 50 products per page
+    const skip = (page - 1) * limit;
 
-    if (!product) {
+    const products = await Product.find({}).skip(skip).limit(limit);
+    const totalProducts = await Product.countDocuments();
+
+    if (!products) {
       return next(
-        new AppError(" product failed  to get.., Please try again..", 400)
+        new AppError("Products failed to load. Please try again.", 400)
       );
     }
+
     res.status(200).json({
       success: true,
-      data: product,
-      message: "product  successfully get all...",
+      data: products,
+      message: "Products successfully retrieved.",
+      totalPages: Math.ceil(totalProducts / limit),
+      totalProducts,
+      currentPage: page,
     });
   } catch (error) {
     return next(new AppError(error.message, 400));
   }
 };
+
 // // product like and dislike Api//
 export const LikeAndDisLikeProduct = async (req, res, next) => {
   const { id } = req.params;

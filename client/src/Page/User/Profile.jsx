@@ -10,11 +10,11 @@ import {
   getOrder,
   UpdateOrder,
 } from "../../Redux/Slice/OrderSlice";
-import { MdCurrencyRupee, MdEmail, MdPhone } from "react-icons/md";
 import LoadingButton from "../../constants/LoadingBtn";
 import { FaArrowLeft, FaUser } from "react-icons/fa6";
 import toast from "react-hot-toast";
 import { isEmail, isPhoneNumber } from "../../helper/regexMatch";
+import { OrderShow } from "../../Components/ShowOrder";
 
 function Profile() {
   const navigate = useNavigate();
@@ -33,21 +33,24 @@ function Profile() {
     postalCode: "",
   });
   const [orderStats, setOrderStatus] = useState("");
+
   const [UserId, setUserID] = useState("");
   const [OrderId, setOrderId] = useState("");
   const [Orders, setOrder] = useState([]);
   const [show, setShow] = useState(false);
+  const [Role, setRole] = useState("");
+  const [paymentStatus, setPaymentStatus] = useState("");
+  const [editShow, setEditShow] = useState(false);
   const UserData = useSelector((state) => state?.auth);
 
   const loadProfile = async () => {
     const res = await dispatch(LoadAccount());
     setUserID(res?.payload?.data?._id);
+    setRole(res?.payload?.data?.role);
   };
-  console.log(Orders);
 
   const loadOrders = async (UserId) => {
     const res = await dispatch(getOrder(UserId ? UserId : UserData?.data._id));
-    console.log(res);
     setOrder(res?.payload?.data);
   };
   const handelUserInput = (e) => {
@@ -128,7 +131,6 @@ function Profile() {
 
     trackingOrder();
   }, [Orders]);
-  console.log(orderStats);
   useEffect(() => {
     loadProfile();
 
@@ -223,180 +225,97 @@ function Profile() {
             </button>
           </div>
         ) : (
-          Orders?.map((order, index) => (
-            <div
-              key={index}
-              className="bg-white dark:bg-[#111827] dark:text-white shadow-[0_0_2px_black] mt-2 rounded-lg p-6 max-w-2xl max-sm:mx-4 mx-auto mb-4  flex flex-col"
-            >
-              <h2 className="text-lg flex justify-between dark:text-white font-semibold mb-4 max-sm:text-sm">
-                Order ID: {order._id}
-                {orderStats[order._id] === "Canceled" ? (
-                  <p className="text-red-500 text-sm  cursor-pointer hover:underline">
-                    Canceled
+          <div className="flex flex-wrap gap-1">
+            <OrderShow
+              Role={Role}
+              Orders={Orders}
+              orderStats={orderStats}
+              handelOrderCancel={(id) => handelOrderCancel(id)}
+              setShow={setShow}
+              setEditShow={setEditShow}
+              setOrderId={setOrderId}
+              setPaymentStatus={setPaymentStatus}
+            />
+          </div>
+        )}
+        {editShow && (
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-70 dark:bg-opacity-80 z-50">
+            <div className="bg-white dark:bg-[#1f2937] dark:text-white w-[90%] max-w-lg p-6 rounded-lg shadow-lg">
+              {/* Close Button */}
+              <div className="flex justify-start">
+                <button
+                  onClick={() => setEditShow(false)}
+                  className="text-gray-600 dark:text-gray-300 hover:text-red-500 focus:ring-2 focus:ring-red-300 p-2 rounded-lg"
+                  aria-label="Close"
+                >
+                  <FaArrowLeft size={20} />
+                </button>
+              </div>
+
+              {/* Content */}
+              <div className="mt-4 space-y-6">
+                {orderStats[OrderId] === "Canceled" ? (
+                  <p className="text-red-500 text-lg font-semibold text-center">
+                    This order has been canceled.
                   </p>
+                ) : Role === "AUTHOR" || Role === "ADMIN" ? (
+                  <div className="space-y-6">
+                    {/* Change Order Status */}
+                    <div>
+                      <p className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Change Order Status
+                      </p>
+                      <select
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm cursor-pointer focus:ring-2 focus:ring-green-400 focus:outline-none"
+                        value={orderStats[OrderId]}
+                        onChange={(e) =>
+                          handleOrderUpdate(OrderId, {
+                            orderStats: e.target.value,
+                          })
+                        }
+                        disabled={orderStats[OrderId] === "Canceled"}
+                      >
+                        <option value="Processing">Processing</option>
+                        <option value="Shipping">Shipping</option>
+                        <option value="Delivered">Delivered</option>
+                        <option value="Canceled">Canceled</option>
+                      </select>
+                    </div>
+
+                    {/* Change Payment Status */}
+                    <div>
+                      <p className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Change Payment Status
+                      </p>
+                      <select
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm cursor-pointer focus:ring-2 focus:ring-green-400 focus:outline-none"
+                        value={paymentStatus}
+                        onChange={(e) =>
+                          handleOrderUpdate(OrderId, {
+                            paymentStatus: e.target.value,
+                          })
+                        }
+                        disabled={orderStats[OrderId] === "Canceled"}
+                      >
+                        <option value="Pending">Pending</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Failed">Failed</option>
+                      </select>
+                    </div>
+                  </div>
                 ) : (
                   <p
-                    onClick={() => handelOrderCancel(order._id)}
-                    className="text-red-500 text-sm cursor-pointer hover:underline"
+                    onClick={() => handelOrderCancel(OrderId)}
+                    className="text-red-500 text-lg font-semibold text-center cursor-pointer hover:underline"
                   >
-                    Cancel
+                    Cancel Order
                   </p>
                 )}
-              </h2>
-              {order.products.map((product, productIndex) => (
-                <div key={productIndex} className="flex space-x-4 mb-4">
-                  <img
-                    src={product?.productDetails?.image?.secure_url}
-                    alt={product.productDetails.name}
-                    className="w-24 h-24 object-contain rounded"
-                  />
-                  <div>
-                    <h2 className="text-lg font-semibold dark:text-white">
-                      {product.productDetails.name}
-                    </h2>
-                    <p className="text-gray-500 dark:text-white flex items-center">
-                      <MdCurrencyRupee />
-                      {product.productDetails.price.toFixed(2)}
-                    </p>
-                    <p className="text-gray-500 text-sm dark:text-white">
-                      quantity :{product.quantity}
-                    </p>
-                    <p className="mt-2 text-gray-700 dark:text-white">
-                      {product.productDetails.description}
-                    </p>
-                  </div>
-                </div>
-              ))}
-
-              <div className="mt-6 sm:grid grid-cols-2 gap-4 dark:text-white">
-                <div>
-                  <h3 className="text-sm font-bold mb-2 dark:text-white">
-                    Delivery address
-                  </h3>
-                  <div className="text-gray-700 max-sm:py-3 dark:text-white">
-                    <p className="text-sm"> {order.shippingAddress.name} </p>
-                    <p className="text-sm">
-                      {" "}
-                      {order.shippingAddress.address},
-                      {order.shippingAddress.city}{" "}
-                    </p>
-                    <p className="text-sm line-clamp-5 ">
-                      {" "}
-                      {order.shippingAddress.state},
-                      {order.shippingAddress.postalCode},
-                    </p>
-                    <p className="text-sm">
-                      {order.shippingAddress.phoneNumber}
-                    </p>
-                    <p className="w-[60%] text-sm ">
-                      {order.shippingAddress.email}
-                    </p>
-                    <p
-                      onClick={() => {
-                        setOrderId(order._id), setShow(true);
-                      }}
-                      className="text-sm text-blue-600 hover:underline cursor-pointer"
-                    >
-                      Edit
-                    </p>
-                  </div>
-                </div>
-                <div>
-                  <h3 className="text-sm font-bold mb-2 dark:text-white">
-                    Order Details
-                  </h3>
-                  <p className="text-gray-700 dark:text-white">
-                    Payment Method: {order.PaymentMethod}
-                  </p>
-                  <p className="text-gray-700 dark:text-white flex items-center">
-                    Total Amount: <MdCurrencyRupee />
-                    {order.totalAmount.toFixed(2)}
-                  </p>
-                  <p className="text-gray-700  dark:text-white">
-                    Status: {order.orderStats}
-                  </p>
-                  <p className="text-gray-700 dark:text-white">
-                    Payment Status: {order.paymentStatus}
-                  </p>
-                </div>
               </div>
-              {orderStats[order._id] === "Canceled" ? (
-                <div className="flex flex-col items-center mt-10">
-                  <h3 className="text-sm text-gray-600 mb-2 dark:text-white">
-                    Order placed on{" "}
-                    {new Date(order.createdAt).toLocaleDateString()}
-                  </h3>
-                  <h1 className="text-red-500">Canceled</h1>
-                </div>
-              ) : (
-                <div className="mt-6">
-                  <div className="flex justify-between">
-                    <h3 className="text-sm text-gray-600 mb-2 dark:text-white">
-                      Order placed on{" "}
-                      {new Date(order.createdAt).toLocaleDateString()}
-                    </h3>
-                    <h3 className="text-sm text-gray-600 mb-2 dark:text-white">
-                      Order Delivery on{" "}
-                      {new Date(order.deliveryDate).toLocaleDateString()}
-                    </h3>
-                  </div>
-
-                  <div className="w-full bg-gray-200 dark:bg-black h-1 rounded-full">
-                    <div
-                      className="bg-blue-600 h-1 rounded-full"
-                      style={{
-                        width: `${
-                          orderStats[order._id] === "Processing"
-                            ? "40%"
-                            : orderStats[order._id] === "Shipped"
-                            ? "70%"
-                            : orderStats[order._id] === "Delivered"
-                            ? "10%"
-                            : "10%"
-                        }`,
-                      }}
-                    ></div>
-                  </div>
-                  <div className="flex justify-between text-xs text-gray-600 mt-2 dark:text-white">
-                    <span
-                      className="
-                   text-blue-600 font-medium "
-                    >
-                      Order placed
-                    </span>
-                    <span
-                      className={` ${
-                        orderStats[order._id] === "Processing"
-                          ? `text-blue-600`
-                          : `text-black dark:text-white`
-                      }  font-medium `}
-                    >
-                      Processing
-                    </span>
-                    <span
-                      className={`${
-                        orderStats[order._id] === "Shipped"
-                          ? `text-blue-600`
-                          : `text-black dark:text-white`
-                      }   font-medium `}
-                    >
-                      Shipped
-                    </span>
-                    <span
-                      className={`${
-                        orderStats[order._id] === "Delivered"
-                          ? `text-blue-600`
-                          : `text-black dark:text-white`
-                      }   font-medium  mb-5`}
-                    >
-                      Delivered
-                    </span>
-                  </div>
-                </div>
-              )}
             </div>
-          ))
+          </div>
         )}
+
         {show && (
           <div className="fixed inset-0 flex  overflow-y-auto  justify-center dark:bg-[#111827]   items-center bg-gray-800 bg-opacity-50 z-50">
             <div className=" px-4 mb-5 md:mb-0 sm:my-10  max-sm:h-[90%]  ">

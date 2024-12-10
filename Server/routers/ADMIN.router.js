@@ -18,6 +18,7 @@ import {
   productUpdate,
   ProductUpload,
 } from "../Controllers/Product.Controller.js";
+import { AllOrder, allOrderPayments } from "../Controllers/Order.Controller.js";
 const ADMINRouter = Router();
 ADMINRouter.get(
   "/User",
@@ -25,6 +26,20 @@ ADMINRouter.get(
   authorizeRoles("ADMIN", "AUTHOR"),
   getAllDate
 );
+ADMINRouter.get(
+  "/Order",
+  isLoggedIn,
+  authorizeRoles("ADMIN", "AUTHOR"),
+  AllOrder
+);
+
+ADMINRouter.get(
+  "/Payment",
+  isLoggedIn,
+  authorizeRoles("ADMIN", "AUTHOR"),
+  allOrderPayments
+);
+
 ADMINRouter.route("/Post")
   .get(isLoggedIn, authorizeRoles("ADMIN", "AUTHOR"), getAllPost)
   .post(

@@ -16,7 +16,7 @@ const upload = multer({
   }),
   fileFilter: (req, file, cd) => {
     const ext = path.extname(file.originalname).toLowerCase();
-    const allowedExts = [".jpg", ".svg", ".jpeg", ".png", ".webp", ".mp4"];
+    const allowedExts = [".jpg", ".svg", ".jpeg", ".png", ".webp", ".mp4", "*"];
     if (!allowedExts.includes(ext)) {
       return cd(new AppError("Unsupported file type...", 400), false);
     }

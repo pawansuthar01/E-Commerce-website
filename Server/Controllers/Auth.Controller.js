@@ -16,16 +16,21 @@ const cookieOption = {
 export const RegisterUser = async (req, res, next) => {
   const { userName, fullName, email, password, phoneNumber } = req.body;
   if (!fullName || !email || !password || !userName || !phoneNumber) {
-    return next(new AppError(" All felids is required", 400));
+    return next(new AppError("All fields are required", 400));
   }
+
   try {
     const userNameExit = await User.findOne({ userName });
     if (userNameExit) {
-      return next(new AppError(" userName is already exist", 400));
+      return next(new AppError("Username already exists", 400));
     }
     const userExist = await User.findOne({ email });
     if (userExist) {
-      return next(new AppError(" email is already exist", 400));
+      if (req.file) {
+        await fs.rm(req.file.path, { force: true });
+      }
+
+      return next(new AppError("Email already exists", 400));
     }
 
     const avatar = {
@@ -33,6 +38,7 @@ export const RegisterUser = async (req, res, next) => {
       secure_url:
         "https://res.cloudinary.com/du9jzqlpt/image/upload/v1674647316/avatar_drzgxv.jpg",
     };
+
     if (req.file) {
       try {
         const avatarUpload = await cloudinary.v2.uploader.upload(
@@ -50,12 +56,15 @@ export const RegisterUser = async (req, res, next) => {
           avatar.secure_url = avatarUpload.secure_url;
         }
 
-        fs.rm(`uploads/${req.file.filename}`);
+        await fs.rm(req.file.path, { force: true });
       } catch (error) {
-        fs.rm(`uploads/${req.file.filename}`);
-        return next(new AppError(` ${error.message}`, 400));
+        await fs.rm(req.file.path, { force: true });
+        return next(
+          new AppError(`Cloudinary upload failed: ${error.message}`, 400)
+        );
       }
     }
+
     const user = await User.create({
       userName,
       fullName,
@@ -64,23 +73,30 @@ export const RegisterUser = async (req, res, next) => {
       password,
       avatar,
     });
+
     if (!user) {
       return next(
-        new AppError(" User registration is failed , Please try again..", 400)
+        new AppError("User registration failed. Please try again.", 400)
       );
     }
-    await user.save();
+
     const token = await user.generateJWTToken();
     user.password = undefined;
-    res.cookie("token", token, cookieOption);
-    console.log(token);
     res.cookie("token", token, cookieOption);
     res.status(200).json({
       success: true,
       data: user,
-      Message: "successfully register...",
+      message: "Successfully registered.",
     });
   } catch (error) {
+    if (req.file) {
+      await fs.rm(req.file.path, { force: true });
+    }
+    if (req.files) {
+      await Promise.all(
+        req.files.map((file) => fs.rm(file.path, { force: true }))
+      );
+    }
     return next(new AppError(error.message, 400));
   }
 };

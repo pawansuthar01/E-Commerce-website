@@ -1,15 +1,9 @@
 import Order from "../module/Order.module.js";
 import Product from "../module/Product.module.js";
+import { razorpay } from "../server.js";
 import AppError from "../utils/AppError.js";
-import { config } from "dotenv";
-config();
-import Razorpay from "razorpay";
-import crypto from "crypto";
 
-export const razorpay = new Razorpay({
-  key_id: process.env.KEY_ID,
-  key_secret: process.env.SECRET_ID,
-});
+import crypto from "crypto";
 
 export const CreateOrder = async (req, res, next) => {
   const {
@@ -213,5 +207,62 @@ export const AllOrder = async (req, res, next) => {
     });
   } catch (error) {
     return next(new AppError(error.message, 400));
+  }
+};
+export const allOrderPayments = async (req, res, next) => {
+  const { count = 10, skip = 0 } = req.query;
+
+  try {
+    const allPayments = await razorpay.payments.all({
+      count: parseInt(count, 10),
+      skip: parseInt(skip, 10),
+    });
+
+    // Month names and initial monthly record object
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    const finalMonths = monthNames.reduce((acc, month) => {
+      acc[month] = 0;
+      return acc;
+    }, {});
+
+    // Calculate total amount and aggregate monthly payments
+    let totalAmount = 0;
+    allPayments.items.forEach((payment) => {
+      const paymentDate = new Date(payment.created_at * 1000); // Convert timestamp to date
+      const monthName = monthNames[paymentDate.getMonth()];
+
+      totalAmount += payment.amount / 100; // Convert from paise to currency
+
+      if (monthName) {
+        finalMonths[monthName] += 1;
+      }
+    });
+
+    // Generate the monthly sales record array
+    const monthlySalesRecord = monthNames.map((month) => finalMonths[month]);
+
+    res.status(200).json({
+      success: true,
+      message: "All payments fetched successfully",
+      allPayments,
+      totalAmount, // Include total amount
+      finalMonths,
+      monthlySalesRecord,
+    });
+  } catch (error) {
+    return next(new AppError(error.message, 500));
   }
 };

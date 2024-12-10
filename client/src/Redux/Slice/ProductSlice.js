@@ -5,32 +5,36 @@ import toast from "react-hot-toast";
 const initialState = {
   product: [],
 };
-export const getAllProduct = createAsyncThunk("/product", async () => {
-  try {
-    console.log("joo");
-
-    const res = axiosInstance.get("/api/v3/Product/");
-    toast.promise(res, {
-      loading: "please wait! loading product..",
-      success: (data) => {
-        return data?.data?.message;
-      },
-
-      error: (data) => {
-        return data?.response?.data?.message;
-      },
-    });
-    return (await res).data;
-  } catch (e) {
-    toast.error(e?.response?.message);
+export const getAllProduct = createAsyncThunk(
+  "/product",
+  async ({ page = 1, limit = 50 }) => {
+    try {
+      const res = axiosInstance.get(
+        `/api/v3/Product?page=${page}&limit=${limit}`
+      );
+      toast.promise(res, {
+        loading: "Loading products...",
+        success: (data) => {
+          return data?.data?.message;
+        },
+        error: (data) => {
+          return data?.response?.data?.message;
+        },
+      });
+      return (await res).data;
+    } catch (e) {
+      toast.error(e?.response?.message || "Failed to load products.");
+      throw e; // Re-throw the error to handle it in components if needed
+    }
   }
-});
+);
+
 export const getSearchProduct = createAsyncThunk(
   "/product/get",
   async (data) => {
     console.log(data);
     try {
-      const res = axiosInstance.get(`/api/v3/Product/Search/${data}`, data);
+      const res = axiosInstance.get(`/api/v3/Product/Search/${data}`);
       toast.promise(res, {
         loading: "please wait! Search product..",
         success: (data) => {

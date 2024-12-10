@@ -102,26 +102,28 @@ function ProductDescription() {
                   }
                   onMouseMove={handleMouseMove}
                   alt="product_image"
-                  className="h-full w-full transform transition-transform duration-500 ease-in-out group-hover:scale-150"
+                  className="h-full object-contain w-full transform transition-transform duration-500 ease-in-out group-hover:scale-150"
                   style={{
                     transformOrigin,
                   }}
                 />
               </div>
-              <div className="flex w-40 h-40 gap-2 max-sm:flex-col max-sm:mt-6 ml-1">
-                {ProductDetails?.images?.map((productImage, index) => (
-                  <img
-                    onClick={() => setImage(productImage.secure_url)}
-                    key={index}
-                    src={productImage.secure_url}
-                    alt="images"
-                    className={`rounded-sm shadow-sm cursor-pointer ${
-                      Image === productImage.secure_url &&
-                      `border-[8px] border-gray-500`
-                    }`}
-                  />
-                ))}
-              </div>
+              {ProductDetails?.images.length > 1 && (
+                <div className="flex w-40 h-40 gap-2 max-sm:flex-col max-sm:mt-6 ml-1">
+                  {ProductDetails?.images?.map((productImage, index) => (
+                    <img
+                      onClick={() => setImage(productImage.secure_url)}
+                      key={index}
+                      src={productImage.secure_url}
+                      alt="images"
+                      className={`rounded-sm shadow-sm cursor-pointer ${
+                        Image === productImage.secure_url &&
+                        `border-[8px] border-gray-500`
+                      }`}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Details Section */}
@@ -132,12 +134,7 @@ function ProductDescription() {
               <h1 className="text-xl flex items-center font-bold dark:text-white text-gray-500 capitalize mb-5">
                 Price: <MdCurrencyRupee /> {ProductDetails?.price}/-
               </h1>
-              <p className="text-black dark:text-white text-2xl">
-                Product Description 👇
-              </p>
-              <p className="text-black dark:text-white">
-                {ProductDetails?.description}
-              </p>
+
               <div className="w-full flex gap-10 pt-10">
                 {!productExists ? (
                   <LoadingButton
@@ -165,6 +162,14 @@ function ProductDescription() {
                 )}
               </div>
             </div>
+          </div>
+          <div className=" px-5 gap-2 flex flex-col mb-1">
+            <p className="text-black dark:text-white text-2xl">
+              Product Description 👇
+            </p>
+            <p className="text-black dark:text-white text-xl tracking-[1px]">
+              {ProductDetails?.description}
+            </p>
           </div>
           <div>
             <h1 className="dark:text-white text-black text-2xl">
