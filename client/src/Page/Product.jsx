@@ -90,7 +90,11 @@ function Product() {
             <>
               <div className=" flex flex-wrap  max-sm:justify-center justify-evenly  gap-10 my-10">
                 {products.map((product) => (
-                  <ProductCard key={product._id} data={product} />
+                  <ProductCard
+                    key={product._id}
+                    data={product}
+                    loadProduct={() => fetchProducts()}
+                  />
                 ))}
               </div>
 

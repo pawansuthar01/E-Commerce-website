@@ -57,9 +57,7 @@ const NotificationSliceRedux = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(NotificationGet.fulfilled, (state, action) => {
-      console.log(action);
       if (action.payload) {
-        console.log(action);
         state.Notification = action.payload.data;
       }
     });

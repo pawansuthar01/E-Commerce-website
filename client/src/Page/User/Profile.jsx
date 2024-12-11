@@ -39,7 +39,7 @@ function Profile() {
   const [Orders, setOrder] = useState([]);
   const [show, setShow] = useState(false);
   const [Role, setRole] = useState("");
-  const [paymentStatus, setPaymentStatus] = useState("");
+  const [PaymentStatus, setPaymentStatus] = useState("");
   const [editShow, setEditShow] = useState(false);
   const UserData = useSelector((state) => state?.auth);
 
@@ -47,6 +47,13 @@ function Profile() {
     const res = await dispatch(LoadAccount());
     setUserID(res?.payload?.data?._id);
     setRole(res?.payload?.data?.role);
+  };
+  const trackingOrder = () => {
+    const statusMap = Orders?.reduce((acc, Order) => {
+      acc[Order._id] = Order.orderStats;
+      return acc;
+    }, {});
+    setOrderStatus(statusMap);
   };
 
   const loadOrders = async (UserId) => {
@@ -57,17 +64,72 @@ function Profile() {
     const { name, value } = e.target;
     setShippingInfo({ ...shippingInfo, [name]: value });
   };
-  const handelOrderCancel = async (id) => {
-    if (!id) {
-      setLoading(false);
-      toast.error("Something want Wrong try again..");
+  const handleOrderUpdate = async (
+    id,
+    paymentStatus = null,
+    orderStats = null
+  ) => {
+    if (orderStats === "Delivered") {
+      toast.error("You cannot update or cancel a delivered order.");
       return;
     }
+
+    if (orderStats !== null && PaymentStatus !== "Completed") {
+      toast.error("Payment must be completed before updating the order.");
+      return;
+    }
+
+    if (!id) {
+      toast.error("Something went wrong. Please try again.");
+      return;
+    }
+
+    if (paymentStatus !== null) {
+      const res = await dispatch(UpdateOrder({ id, data: paymentStatus }));
+      if (res?.payload?.success) {
+        setEditShow(false);
+
+        toast.success("Payment Status updated successfully!");
+        loadOrders();
+        trackingOrder();
+      } else {
+        toast.error(
+          res?.payload?.message || "Failed to update payment status."
+        );
+      }
+    }
+
+    if (orderStats !== null) {
+      const res = await dispatch(UpdateOrder({ id, data: orderStats }));
+      if (res?.payload?.success) {
+        setEditShow(false);
+        toast.success("Order Status updated successfully!");
+        loadOrders(); // Reload orders to reflect the change
+        trackingOrder(); // Update order status tracking
+      } else {
+        toast.error(res?.payload?.message || "Failed to update order status.");
+      }
+    }
+  };
+
+  const handelOrderCancel = async (id) => {
+    // Prevent cancellation if the order is already delivered
+    if (orderStats[OrderId] === "Delivered") {
+      toast.error("You cannot cancel a delivered order.");
+      return;
+    }
+
+    if (!id) {
+      setLoading(false);
+      toast.error("Something went wrong. Try again.");
+      return;
+    }
+
     const res = await dispatch(CancelOrder(id));
     setLoading(false);
     setShow(false);
     if (res?.payload?.success) {
-      loadOrders();
+      loadOrders(); // Reload orders after canceling
     }
   };
 
@@ -109,7 +171,6 @@ function Profile() {
     const orderData = {
       shippingAddress: shippingInfo,
     };
-    console.log(orderData);
     const res = await dispatch(
       UpdateOrder({ id: OrderId, shippingAddress: orderData })
     );
@@ -121,14 +182,6 @@ function Profile() {
   };
 
   useEffect(() => {
-    const trackingOrder = () => {
-      const statusMap = Orders?.reduce((acc, Order) => {
-        acc[Order._id] = Order.orderStats;
-        return acc;
-      }, {});
-      setOrderStatus(statusMap);
-    };
-
     trackingOrder();
   }, [Orders]);
   useEffect(() => {
@@ -190,14 +243,6 @@ function Profile() {
                     WellCome{" "}
                     <span className=" font-semibold">{UserData.role}</span>
                   </h1>
-                  <div className="flex flex-col">
-                    <h3></h3>
-                    <p></p>
-                  </div>
-                  <div>
-                    <h3></h3>
-                    <p></p>
-                  </div>
                 </div>
               ))}
             <div className="text-center text-black dark:text-white text-xl border-2 shadow-[0_0_2px_black] p-2 rounded-xl">
@@ -254,11 +299,20 @@ function Profile() {
 
               {/* Content */}
               <div className="mt-4 space-y-6">
+                {orderStats[OrderId] === "Delivered" && (
+                  <p className="text-center text-red-400">
+                    The order has been delivered. No further updates are
+                    allowed.
+                  </p>
+                )}
+
+                {/* If Order is Canceled */}
                 {orderStats[OrderId] === "Canceled" ? (
                   <p className="text-red-500 text-lg font-semibold text-center">
                     This order has been canceled.
                   </p>
                 ) : Role === "AUTHOR" || Role === "ADMIN" ? (
+                  // Author or Admin Controls
                   <div className="space-y-6">
                     {/* Change Order Status */}
                     <div>
@@ -273,7 +327,10 @@ function Profile() {
                             orderStats: e.target.value,
                           })
                         }
-                        disabled={orderStats[OrderId] === "Canceled"}
+                        disabled={
+                          orderStats[OrderId] === "Canceled" ||
+                          orderStats[OrderId] === "Delivered"
+                        }
                       >
                         <option value="Processing">Processing</option>
                         <option value="Shipping">Shipping</option>
@@ -289,13 +346,16 @@ function Profile() {
                       </p>
                       <select
                         className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm cursor-pointer focus:ring-2 focus:ring-green-400 focus:outline-none"
-                        value={paymentStatus}
+                        value={PaymentStatus}
                         onChange={(e) =>
                           handleOrderUpdate(OrderId, {
                             paymentStatus: e.target.value,
                           })
                         }
-                        disabled={orderStats[OrderId] === "Canceled"}
+                        disabled={
+                          PaymentStatus === "Completed" ||
+                          PaymentStatus === "Failed"
+                        }
                       >
                         <option value="Pending">Pending</option>
                         <option value="Completed">Completed</option>

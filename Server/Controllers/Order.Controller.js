@@ -1,5 +1,7 @@
+import Notification from "../module/Notification.module.js";
 import Order from "../module/Order.module.js";
 import Product from "../module/Product.module.js";
+import User from "../module/use.module.js";
 import { razorpay } from "../server.js";
 import AppError from "../utils/AppError.js";
 
@@ -15,8 +17,6 @@ export const CreateOrder = async (req, res, next) => {
     totalAmount,
   } = req.body;
 
-  console.log(products);
-  console.log(PaymentMethod, paymentStatus);
   if (!userId || !products || !shippingAddress || !totalAmount) {
     return next(new AppError("All fields are required.", 400));
   }
@@ -57,6 +57,16 @@ export const CreateOrder = async (req, res, next) => {
   }
 
   await newOrder.save();
+  const adminAndAuthors = await User.find({
+    role: { $in: ["ADMIN", "AUTHOR"] },
+  });
+  const notifications = adminAndAuthors.map((user) => ({
+    userId: user._id,
+    message: `A new order has been placed with Order ID: ${newOrder._id}.`,
+    type: "New Order",
+  }));
+
+  await Notification.insertMany(notifications);
 
   res.status(200).json({
     message: "Order placed successfully.",
@@ -123,20 +133,48 @@ export const PaymentVerify = async (req, res, next) => {
 
 export const UpdateOrder = async (req, res, next) => {
   try {
+    const { role } = req.user;
     const { id } = req.params;
-    console.log(req.body);
-    if (!id) {
-      return next(new AppError("all  filed required ", 400));
+    const { data } = req.body;
+    console.log(data);
+    if (!id || !data) {
+      return next(new AppError("Order ID and update data are required.", 400));
     }
+    if (data.shippingAddress && role !== "USER") {
+      return next(
+        new AppError("Only users can edit the shipping address.", 403)
+      );
+    }
+    if (
+      (data.orderStats || data.paymentStatus) &&
+      !(role === "ADMIN" || role === "AUTHOR")
+    ) {
+      return next(
+        new AppError("Only ADMIN or AUTHOR can edit order status.", 403)
+      );
+    }
+    const updateData = {};
+    if (data.shippingAddress && role === "USER") {
+      updateData.shippingAddress = data.shippingAddress;
+    }
+
+    if (data.orderStats && (role === "ADMIN" || role === "AUTHOR")) {
+      updateData.orderStats = data.orderStats;
+    }
+
+    if (data.paymentStatus && (role === "ADMIN" || role === "AUTHOR")) {
+      updateData.paymentStatus = data.paymentStatus;
+    }
+
     const order = await Order.findOneAndUpdate(
       { _id: id },
-      { $set: req.body },
+      { $set: updateData },
       { new: true }
     );
     if (!order) {
       return next(new AppError("order is does not found..", 400));
     }
-
+    console.log(order);
     res.status(200).json({
       success: true,
       message: "update Order...",

@@ -4,119 +4,102 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   AddProductCard,
-  getAllProduct,
-  getProduct,
   LikeAndDisLike,
+  RemoveProductCard,
 } from "../Redux/Slice/ProductSlice";
 import { MdCurrencyRupee } from "react-icons/md";
-import { LoadAccount } from "../Redux/Slice/authSlice";
 import { AiOutlineDelete } from "react-icons/ai";
-
-let isLike;
+import toast from "react-hot-toast";
+import { LoadAccount } from "../Redux/Slice/authSlice";
 
 function ProductCard({ data }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [response, SetResponse] = useState("");
-  const [imageUrl, setImageUrl] = useState(""); // State to hold image URL
-  const { userName } = useSelector((state) => state?.auth);
-  const Data = useSelector((state) => state?.auth);
+  const [isLike, setIsLike] = useState(false);
+  const [productExists, setProductExists] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
+  const { userName, role, data: userData } = useSelector((state) => state.auth);
 
-  const productExists = Data?.data?.walletAddProducts?.some(
-    (item) => item.product && item.product.toString() === data._id
-  );
+  useEffect(() => {
+    setIsLike(
+      data?.ProductLikes?.some(
+        (item) => item.userName && item.userName.toString() === userName
+      )
+    );
 
-  async function loadProfile() {
-    await dispatch(LoadAccount());
-  }
+    setProductExists(
+      userData?.walletAddProducts?.some(
+        (item) => item.product && item.product.toString() === data._id
+      )
+    );
 
-  async function LoadProduct() {
-    await dispatch(getAllProduct());
-  }
+    setImageUrl(
+      data.image?.secure_url ||
+        (data.images && data.images.length > 0 && data.images[0]?.secure_url) ||
+        data.image
+    );
+  }, [data, userName, userData]);
+  const loadProfile = async () => {
+    const res = await dispatch(LoadAccount());
+  };
+  const handleLikeDislike = async (id) => {
+    !isLike ? toast.success("like") : toast.success("dislike");
 
-  async function handelLikeDisLike(id) {
-    const res = await dispatch(LikeAndDisLike(id));
-    if (res) {
-      LoadProduct();
-      ProductGet();
+    setIsLike((prev) => !prev);
+    loadProfile();
+    await dispatch(LikeAndDisLike(id));
+  };
+
+  const handleAddToCart = async (productId) => {
+    if (!productExists) {
+      setProductExists(true);
+
+      await dispatch(AddProductCard(productId));
       loadProfile();
-    }
-  }
-
-  const ProductAddCard = async (productId) => {
-    const res = await dispatch(AddProductCard(productId));
-
-    if (res) {
-      LoadProduct();
+    } else {
+      setProductExists(false);
+      await dispatch(RemoveProductCard(productId));
       loadProfile();
     }
   };
 
-  async function ProductGet() {
-    if (data.product) {
-      SetResponse(await dispatch(getProduct(data.product)));
-      if (response) {
-        LoadProduct();
-      }
-    }
-  }
-
-  if (data.product) {
-    isLike = response?.payload?.data?.ProductLikes?.some(
-      (item) => item.userName && item.userName.toString() === userName
-    );
-  } else {
-    isLike = data?.ProductLikes?.some(
-      (item) => item.userName && item.userName.toString() === userName
-    );
-  }
-
-  useEffect(() => {
-    ProductGet();
-    // Set the initial image URL
-    setImageUrl(
-      data.image?.secure_url
-        ? data.image.secure_url
-        : data.images && data.images.length > 0
-        ? data.images[0]?.secure_url
-        : data.image
-    );
-  }, [data]);
-
-  // Handle image hover
   const handleMouseEnter = () => {
     if (data.images && data.images.length > 1) {
-      setImageUrl(data.images[0]?.secure_url); // Use second image (or alternate image)
+      setImageUrl(data.images[1]?.secure_url);
     }
   };
 
   const handleMouseLeave = () => {
     setImageUrl(
-      data.image?.secure_url
-        ? data.image.secure_url
-        : data.images && data.images.length > 0
-        ? data.images[1]?.secure_url
-        : data.image
+      data.image?.secure_url ||
+        (data.images && data.images.length > 0 && data.images[0]?.secure_url) ||
+        data.image
     );
   };
 
   return (
     <div className="w-[260px] max-sm:w-[150px] flex flex-col cursor-pointer sm:h-[400px] bg-white border border-gray-200 rounded-lg shadow p-2 dark:bg-gray-800 dark:border-gray-700">
-      {Data.role == "ADMIN" ||
-        (Data.role == "AUTHOR" && (
-          <AiOutlineDelete
-            size={36}
-            className="text-red-400"
-            onClick={() => {}}
-          />
-        ))}
+      {(role === "ADMIN" || role === "AUTHOR") && (
+        <AiOutlineDelete
+          size={36}
+          className="text-red-400"
+          onClick={() => {
+            // Add delete logic
+          }}
+        />
+      )}
       <section className="relative h-full flex justify-center rounded-lg p-5 w-[100%] group overflow-hidden">
         <img
-          src={imageUrl} // Display the current image URL from state
+          src={imageUrl}
           alt="product_image"
           className="rounded-xl transition-transform duration-500 ease-in-out group-hover:scale-110"
-          onMouseEnter={handleMouseEnter} // Trigger when mouse enters
-          onMouseLeave={handleMouseLeave} // Trigger when mouse leaves
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onClick={() =>
+            navigate("/Description", {
+              state: { ...data },
+            })
+          }
         />
       </section>
 
@@ -129,19 +112,19 @@ function ProductCard({ data }) {
       </p>
       <div className="flex justify-between w-full rounded-sm gap-1 border-2 dark:border-white border-black">
         <button
-          title="add to cart"
-          onClick={() => ProductAddCard(data._id)}
+          title="Add to Cart"
+          onClick={() => handleAddToCart(data._id)}
           className={`dark:text-white text-2xl text-black w-1/3 flex justify-center dark:hover:text-green-500 hover:text-green-300`}
         >
           <FiShoppingCart
             className={`${
-              productExists ? `text-green-300 dark:text-green-400` : ``
+              productExists ? "text-green-300 dark:text-green-400" : ""
             } p-2 max-sm:h-[32px] max-sm:w-[32px]`}
             size={36}
           />
         </button>
         <button
-          title="more..."
+          title="More..."
           className="text-white text-2xl w-1/3 flex justify-center"
         >
           <FiEye
@@ -155,15 +138,13 @@ function ProductCard({ data }) {
           />
         </button>
         <button
-          title="Like..."
-          onClick={() =>
-            handelLikeDisLike(data.product ? data.product : data._id)
-          }
-          className={`text-black text-2xl w-1/3 flex justify-center`}
+          title="Like"
+          onClick={() => handleLikeDislike(data._id)}
+          className="text-black text-2xl w-1/3 flex justify-center"
         >
           <FiHeart
             className={`${
-              isLike ? `text-red-500 dark:text-red-500 ` : `dark:text-white`
+              isLike ? "text-red-500 dark:text-red-500" : "dark:text-white"
             } p-2 dark:hover:text-red-500 hover:text-red-300`}
             size={36}
           />

@@ -132,7 +132,6 @@ export const CheckJWT = createAsyncThunk("/Auth/check", async () => {
     const response = await axiosInstance.get("/api/v3/user/checkJWT");
 
     if (response.status === 200) {
-      console.log("JWT is valid!");
       return { valid: true, expired: false };
     } else {
       return { valid: false, expired: false };
@@ -144,7 +143,6 @@ export const CheckJWT = createAsyncThunk("/Auth/check", async () => {
       return { valid: false, expired: true };
     }
 
-    console.error("Error during JWT Check:", error);
     toast.error("Something went wrong during session check!");
     return { valid: false, expired: false };
   }

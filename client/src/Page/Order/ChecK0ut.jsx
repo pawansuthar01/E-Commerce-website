@@ -22,12 +22,14 @@ function CheckoutPage() {
   const [totalPrice, setTotalPrice] = useState(0);
   const [loading, setLoading] = useState(false);
   const [UserId, setUserId] = useState("");
-  const [data, setData] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [name, setName] = useState("");
   const ProductDetails = useLocation().state;
   const [shippingInfo, setShippingInfo] = useState({
-    name: "",
-    email: "",
-    phoneNumber: "",
+    name: name,
+    email: email,
+    phoneNumber: phone,
     address: "",
     address2: "",
     country: "",
@@ -35,13 +37,13 @@ function CheckoutPage() {
     city: "",
     postalCode: "",
   });
-
+  console.log(shippingInfo);
   const [paymentMethod, setPaymentMethod] = useState("razorpay");
   const [paymentStatus, setPaymentStatus] = useState("Pending");
   const [error, setError] = useState(false);
   const [message, setMessage] = useState("");
   const { darkMode } = useTheme();
-  console.log();
+
   const handlePaymentMethodChange = (event) => {
     setPaymentMethod(event.target.value);
   };
@@ -49,6 +51,11 @@ function CheckoutPage() {
   const loadProfile = async () => {
     const res = await dispatch(LoadAccount());
     setUserId(res?.payload?.data?._id);
+
+    setEmail(res?.payload?.data?.email);
+    setPhone(res?.payload?.data?.phoneNumber);
+    setName(res?.payload?.data?.fullName);
+
     const updatedCart = res?.payload?.data?.walletAddProducts?.map(
       (product) => {
         const productQuantity = ProductDetails[product.product] || 1;
@@ -71,7 +78,6 @@ function CheckoutPage() {
     const { name, value } = e.target;
     setShippingInfo({ ...shippingInfo, [name]: value });
   };
-  console.log(cart);
 
   const handelPlaceOrder = async () => {
     setLoading(true);
@@ -118,7 +124,6 @@ function CheckoutPage() {
       totalAmount: totalPrice,
     };
     async function OrderPlaceNew() {
-      console.log(orderData);
       const res = await dispatch(PlaceOrder(orderData));
       setLoading(false);
       setError(false);
@@ -135,7 +140,7 @@ function CheckoutPage() {
         setLoading(true);
 
         const orderResponse = await dispatch(paymentCreate(totalPrice));
-        console.log(orderResponse);
+
         const { orderId, currency, amount } = orderResponse?.payload;
         const options = {
           key: "rzp_live_tQdXshnQ0yJCfk",
@@ -196,6 +201,14 @@ function CheckoutPage() {
       navigate(-1);
     }
   }, [ProductDetails]);
+  useEffect(() => {
+    setShippingInfo({
+      ...shippingInfo,
+      name: name,
+      email: email,
+      phoneNumber: phone,
+    });
+  }, [name, email, phone]);
 
   return (
     <Layout>

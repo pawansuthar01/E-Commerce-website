@@ -17,8 +17,9 @@ function HomePage() {
   const UserId = useSelector((state) => state?.auth?.data?._id);
   const { product } = useSelector((state) => state.product);
   const ProductLoad = async () => {
-    const res = await dispatch(getAllProduct());
+    const res = await dispatch(getAllProduct({ page: 1, limit: 25 }));
   };
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % celebrities.length);
@@ -77,10 +78,6 @@ function HomePage() {
             ))}
         </div>
         <div className=" flex flex-wrap  max-sm:justify-center justify-evenly  gap-10 my-20">
-          {list &&
-            list.map((product, ind) => (
-              <ProductCard data={product} key={ind} />
-            ))}
           {product &&
             product.map((product, ind) => (
               <ProductCard data={product} key={ind} />

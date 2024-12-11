@@ -32,7 +32,6 @@ export const getAllProduct = createAsyncThunk(
 export const getSearchProduct = createAsyncThunk(
   "/product/get",
   async (data) => {
-    console.log(data);
     try {
       const res = axiosInstance.get(`/api/v3/Product/Search/${data}`);
       toast.promise(res, {
@@ -188,7 +187,6 @@ const productRedux = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(getAllProduct.fulfilled, (state, action) => {
-      console.log(action);
       state.product = action?.payload?.data;
     });
   },

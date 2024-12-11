@@ -46,10 +46,7 @@ export const UpdateOrder = createAsyncThunk(
   "Order/updateOrder",
   async (data) => {
     try {
-      const res = axiosInstance.put(
-        `/api/v3/Order/${data.id}`,
-        data.shippingAddress
-      );
+      const res = axiosInstance.put(`/api/v3/Order/${data.id}`, data);
       toast.promise(res, {
         loading: "please wait ! Order get...",
         success: (data) => {

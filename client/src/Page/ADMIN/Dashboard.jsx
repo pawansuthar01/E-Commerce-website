@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllUsers, LoadAccount } from "../../Redux/Slice/authSlice";
 import { getPaymentRecord } from "../../Redux/Slice/paymentSlice";
-import { AllOrder } from "../../Redux/Slice/OrderSlice";
+import { AllOrder, UpdateOrder } from "../../Redux/Slice/OrderSlice";
 import { getAllProduct } from "../../Redux/Slice/ProductSlice";
 import { Bar, Pie } from "react-chartjs-2";
 import {
@@ -59,7 +59,7 @@ const AdminDashboard = () => {
   const [showPayment, setShowPayment] = useState(false);
   const [editShow, setEditShow] = useState(false);
   const [Role, setRole] = useState("");
-  const [paymentStatus, setPaymentStatus] = useState("");
+  const [PaymentStatus, setPaymentStatus] = useState("");
   const [orderStats, setOrderStatus] = useState("");
 
   // Fetch All Data
@@ -83,6 +83,55 @@ const AdminDashboard = () => {
   const loadProfile = async () => {
     const res = await dispatch(LoadAccount());
     setRole(res?.payload?.data?.role);
+  };
+  const handleOrderUpdate = async (
+    id,
+    paymentStatus = null,
+    orderStats = null
+  ) => {
+    if (orderStats === "Delivered") {
+      toast.error("You cannot update or cancel a delivered order.");
+      return;
+    }
+
+    if (orderStats !== null && PaymentStatus !== "Completed") {
+      toast.error("Payment must be completed before updating the order.");
+      return;
+    }
+
+    if (!id) {
+      toast.error("Something went wrong. Please try again.");
+      return;
+    }
+
+    if (paymentStatus !== null) {
+      const res = await dispatch(UpdateOrder({ id, data: paymentStatus }));
+      if (res?.payload?.success) {
+        setEditShow(false);
+        const ordersRes = await dispatch(AllOrder());
+        setOrders(ordersRes.payload.data);
+
+        toast.success("Payment Status updated successfully!");
+        loadOrders();
+      } else {
+        toast.error(
+          res?.payload?.message || "Failed to update payment status."
+        );
+      }
+    }
+
+    if (orderStats !== null) {
+      const res = await dispatch(UpdateOrder({ id, data: orderStats }));
+      if (res?.payload?.success) {
+        setEditShow(false);
+        toast.success("Order Status updated successfully!");
+
+        const ordersRes = await dispatch(AllOrder());
+        setOrders(ordersRes.payload.data);
+      } else {
+        toast.error(res?.payload?.message || "Failed to update order status.");
+      }
+    }
   };
   const fetchData = async () => {
     try {
@@ -550,11 +599,20 @@ const AdminDashboard = () => {
 
               {/* Content */}
               <div className="mt-4 space-y-6">
+                {orderStats[OrderId] === "Delivered" && (
+                  <p className="text-center text-red-400">
+                    The order has been delivered. No further updates are
+                    allowed.
+                  </p>
+                )}
+
+                {/* If Order is Canceled */}
                 {orderStats[OrderId] === "Canceled" ? (
                   <p className="text-red-500 text-lg font-semibold text-center">
-                    canceled.
+                    This order has been canceled.
                   </p>
                 ) : Role === "AUTHOR" || Role === "ADMIN" ? (
+                  // Author or Admin Controls
                   <div className="space-y-6">
                     {/* Change Order Status */}
                     <div>
@@ -569,7 +627,10 @@ const AdminDashboard = () => {
                             orderStats: e.target.value,
                           })
                         }
-                        disabled={orderStats[OrderId] === "Canceled"}
+                        disabled={
+                          orderStats[OrderId] === "Canceled" ||
+                          orderStats[OrderId] === "Delivered"
+                        }
                       >
                         <option value="Processing">Processing</option>
                         <option value="Shipping">Shipping</option>
@@ -585,13 +646,16 @@ const AdminDashboard = () => {
                       </p>
                       <select
                         className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm cursor-pointer focus:ring-2 focus:ring-green-400 focus:outline-none"
-                        value={paymentStatus}
+                        value={PaymentStatus}
                         onChange={(e) =>
                           handleOrderUpdate(OrderId, {
                             paymentStatus: e.target.value,
                           })
                         }
-                        disabled={orderStats[OrderId] === "Canceled"}
+                        disabled={
+                          PaymentStatus === "Completed" ||
+                          PaymentStatus === "Failed"
+                        }
                       >
                         <option value="Pending">Pending</option>
                         <option value="Completed">Completed</option>

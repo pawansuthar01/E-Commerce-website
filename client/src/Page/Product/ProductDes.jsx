@@ -77,7 +77,6 @@ function ProductDescription() {
         const res = await dispatch(getSearchProduct(ProductDetails.name));
         setSearch(res.payload?.data || []); // Default to empty array
       }
-      console.log(Search);
     };
     fetchSearch();
   }, [ProductDetails?.name, dispatch]);
@@ -88,8 +87,11 @@ function ProductDescription() {
         <div className="w-full rounded-sm">
           <div className="grid sm:grid-cols-2">
             {/* Image Section */}
-            <div className="max-sm:flex flex-row-reverse">
-              <div className="overflow-hidden group shadow-[0_0_1px_black] cursor-pointer my-2 ml-1 w-full h-[350px] rounded-sm">
+            <div className="">
+              <div
+                className="overflow-hidden group shadow-[0_0_1px_black] cursor-pointer my-2 ml-1 w-full h-[350px] rounded-sm"
+                onMouseMove={handleMouseMove}
+              >
                 <img
                   src={
                     Image
@@ -100,7 +102,6 @@ function ProductDescription() {
                         : ProductDetails?.image?.secure_url
                       : ProductDetails?.image
                   }
-                  onMouseMove={handleMouseMove}
                   alt="product_image"
                   className="h-full object-contain w-full transform transition-transform duration-500 ease-in-out group-hover:scale-150"
                   style={{
@@ -109,7 +110,7 @@ function ProductDescription() {
                 />
               </div>
               {ProductDetails?.images.length > 1 && (
-                <div className="flex w-40 h-40 gap-2 max-sm:flex-col max-sm:mt-6 ml-1">
+                <div className="flex  gap-2 w-20 h-20 max-sm:mt-6 ml-1">
                   {ProductDetails?.images?.map((productImage, index) => (
                     <img
                       onClick={() => setImage(productImage.secure_url)}
