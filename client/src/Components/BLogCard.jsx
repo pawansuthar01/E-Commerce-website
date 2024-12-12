@@ -98,7 +98,7 @@ function BlogCard({ data }) {
 
       {showCommentForm && (
         <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
-          <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg w-1/2 max-w-lg">
+          <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg max-sm:w-full w-1/2 max-w-lg">
             <h3 className="text-xl font-semibold mb-4 flex items-center gap-1 dark:text-white">
               <button
                 onClick={() => setShowCommentForm(false)}

@@ -20,7 +20,12 @@ function Product() {
         getAllProduct({ page, limit: window.innerWidth > 760 ? "50" : "25" })
       );
       const { data, totalPages } = response.payload;
-      setProducts(data); // Assuming response.payload has `data` and `totalPages`
+      console.log(
+        data.map((orderCount) => {
+          return orderCount.orderCount;
+        })
+      );
+      setProducts(data);
       setTotalPages(totalPages);
       setCurrentPage(page);
     } catch (error) {

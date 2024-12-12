@@ -5,10 +5,34 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KGS DOORS</title>
+
+    <!-- Preload Razorpay script -->
+    <link
+      rel="preload"
+      href="http://checkout.razorpay.com/v1/checkout.js"
+      as="script"
+    />
+
+    <!-- Meta tags for SEO -->
+    <meta name="description" content="KGS DOORS - Premium Quality Doors" />
+    <meta name="keywords" content="doors, wood doors, custom doors" />
+    <meta property="og:title" content="KGS DOORS" />
+    <meta
+      property="og:description"
+      content="Premium Quality Doors for your Home and Office"
+    />
+    <meta property="og:image" content="path/to/image.jpg" />
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
-    <script src="http://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <script src="http://checkout.razorpay.com/v1/checkout.js" defer></script>
+
+    <script>
+      if (typeof Razorpay === "undefined") {
+        console.error("Razorpay script not loaded");
+      }
+    </script>
   </body>
 </html>

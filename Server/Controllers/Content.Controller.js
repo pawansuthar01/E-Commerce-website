@@ -297,7 +297,7 @@ export const addCommentPost = async (req, res, next) => {
       return next(new AppError("enter valid user name,please try again", 400));
     }
     const post = await Post.findById(id);
-    console.log(post.userId);
+    console.log(post);
     if (!post) {
       return next(new AppError("post is does not exit,please try again", 400));
     }

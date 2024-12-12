@@ -6,11 +6,10 @@ function CarouselSlide({ image, title, slideNumber, description }) {
   return (
     <div
       id={`slide${slideNumber}`}
-      className="relative carousel-item max-sm:w-[100%] bg-[#f5f5f5] dark:bg-[#1a1a1a] w-full max-sm:h-[400px] h-[550px] justify-center flex flex-row-reverse transition-transform duration-800 ease-linear"
+      className="relative  max-sm:h-[400px] h-[calc(100vh-110px)]  carousel-item w-full max-sm:w-[100%] bg-[#fff5ee]  dark:bg-[#1f2937]  justify-center flex flex-row-reverse transition-transform duration-800 ease-linear"
     >
-      <div className="absolute max-sm:w-[150px] max-sm:h-[150px] w-[300px] h-[300px] max-sm:top-[30%] sm:top-[15%] sm:right-[25%] max-sm:right-[20%] rounded-full z-0 bg-[#e0e0e0] dark:bg-[#333]"></div>
       <div className="flex relative items-center justify-center mt-10 max-sm:h-[300px] w-1/2 px-5 z-999 rounded-r-3xl">
-        <img src={image} className="object-contain h-[300px]" />
+        <img src={image} className="" />
       </div>
       <div className="relative z-0 max-sm:mt-5 flex flex-col dark:text-white text-black items-start justify-center w-1/2 max-sm:pl-6 sm:pl-10 capitalize">
         <h1 className="max-sm:text-2xl sm:text-5xl tracking-[1px]">

@@ -9,7 +9,10 @@ import toast from "react-hot-toast";
 import LoadingButton from "../../constants/LoadingBtn";
 import { isEmail, isPhoneNumber } from "../../helper/regexMatch";
 import { PlaceOrder } from "../../Redux/Slice/OrderSlice";
-import { AllRemoveCardProduct } from "../../Redux/Slice/ProductSlice";
+import {
+  AllRemoveCardProduct,
+  updateProduct,
+} from "../../Redux/Slice/ProductSlice";
 import { checkPayment, paymentCreate } from "../../Redux/Slice/paymentSlice";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { useTheme } from "../../Components/ThemeContext";
@@ -37,9 +40,10 @@ function CheckoutPage() {
     city: "",
     postalCode: "",
   });
-  console.log(shippingInfo);
   const [paymentMethod, setPaymentMethod] = useState("razorpay");
   const [paymentStatus, setPaymentStatus] = useState("Pending");
+  const [showLoading, setShowLoading] = useState(true);
+
   const [error, setError] = useState(false);
   const [message, setMessage] = useState("");
   const { darkMode } = useTheme();
@@ -63,6 +67,7 @@ function CheckoutPage() {
       }
     );
     setCart(updatedCart || []);
+    setShowLoading(false);
   };
 
   const calculateTotalAmount = () => {
@@ -123,12 +128,25 @@ function CheckoutPage() {
       PaymentMethod: paymentMethod,
       totalAmount: totalPrice,
     };
+
     async function OrderPlaceNew() {
+      setShowLoading(true);
       const res = await dispatch(PlaceOrder(orderData));
+      setShowLoading(false);
       setLoading(false);
       setError(false);
       if (res?.payload?.success) {
         await dispatch(AllRemoveCardProduct(UserId));
+        for (const product of cart) {
+          console.log(product);
+          await dispatch(
+            updateProduct({
+              id: product.product,
+
+              orderCount: (product.orderCount || 0) + product.quantity,
+            })
+          );
+        }
         loadProfile();
         navigate("/ThankYou", { state: { data: res?.payload?.data } });
       }
@@ -150,7 +168,6 @@ function CheckoutPage() {
           description: "Order Description",
           order_id: orderId,
           handler: async function (response) {
-            console.log("Payment successful", response);
             toast.success("Payment Successful");
 
             const res = await dispatch(checkPayment(response));
@@ -181,8 +198,6 @@ function CheckoutPage() {
       } finally {
         setLoading(false);
       }
-
-      console.log(paymentMethod);
     } else {
       OrderPlaceNew();
     }
@@ -209,7 +224,25 @@ function CheckoutPage() {
       phoneNumber: phone,
     });
   }, [name, email, phone]);
-
+  if (showLoading) {
+    return (
+      <Layout>
+        <div
+          className={`flex flex-col items-center justify-center min-h-screen bg-gray-100  dark:bg-gray-900 ${
+            loading ? "fixed inset-0 bg-black bg-opacity-30 z-10" : ""
+          }`}
+        >
+          <div className="loader border-t-4 border-blue-500 rounded-full w-12 h-12 animate-spin"></div>
+          <p>
+            {" "}
+            {loading
+              ? "Please wait, your order is being placed..."
+              : "Loading..."}
+          </p>
+        </div>
+      </Layout>
+    );
+  }
   return (
     <Layout>
       <div className="pb-10 ">

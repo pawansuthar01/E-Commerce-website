@@ -1,6 +1,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.carousel-item {
+  flex-shrink: 0;
+  width: 100%;
+}
+.reverse {
+  animation: reverseSlide 0.7s ease-in-out;
+}
+
+@keyframes reverseSlide {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
 * {
   margin: 0;
   padding: 0;

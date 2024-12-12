@@ -14,7 +14,6 @@ export const getNotification = async (req, res, next) => {
       createdAt: -1,
     });
 
-    console.log(getNotification);
     if (!getNotification) {
       return next(new AppError("get notification fail ...", 400));
     }

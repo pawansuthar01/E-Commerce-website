@@ -85,33 +85,45 @@ export const ProductUpload = async (req, res, next) => {
 
 export const productUpdate = async (req, res, next) => {
   const { id } = req.params;
-  console.log(id);
+  const { data } = req.body;
+  console.log(data);
   if (!id) {
-    return next(new AppError("product update to id is required..", 400));
+    return next(new AppError("Product ID is required for update.", 400));
   }
+
   try {
-    const product = await Product.findByIdAndUpdate(
-      id,
-      {
-        $set: req.body,
-      },
-      {
-        runValidators: true,
+    if (data.orderCount) {
+      const currentProduct = await Product.findById(id);
+
+      if (!currentProduct) {
+        return next(new AppError("Product not found.", 404));
       }
+      data.orderCount = currentProduct.orderCount + data.orderCount;
+    }
+
+    // Update the product with the provided data
+    const updatedProduct = await Product.findByIdAndUpdate(
+      id,
+      { $set: data },
+      { new: true, runValidators: true } // Return updated document and validate inputs
     );
-    if (!product) {
+
+    if (!updatedProduct) {
       return next(
-        new AppError(" product failed  to update.., Please try again..", 400)
+        new AppError("Failed to update the product. Please try again.", 400)
       );
     }
+    console.log(updatedProduct);
     res.status(200).json({
       success: true,
-      message: "product successfully update...",
+      message: "Product successfully updated.",
+      data: updatedProduct,
     });
   } catch (error) {
-    return next(new AppError(error.message, 400));
+    return next(new AppError(error.message, 500));
   }
 };
+
 export const productDelete = async (req, res, next) => {
   const { id } = req.params;
   console.log(id);
@@ -185,6 +197,9 @@ export const getAllProduct = async (req, res, next) => {
     const skip = (page - 1) * limit;
 
     const products = await Product.find({}).skip(skip).limit(limit);
+    const popularProducts = await Product.find()
+      .sort({ orderCount: -1 })
+      .limit(5);
     const totalProducts = await Product.countDocuments();
 
     if (!products) {
@@ -199,6 +214,7 @@ export const getAllProduct = async (req, res, next) => {
       message: "Products successfully retrieved.",
       totalPages: Math.ceil(totalProducts / limit),
       totalProducts,
+      popularProducts,
       currentPage: page,
     });
   } catch (error) {

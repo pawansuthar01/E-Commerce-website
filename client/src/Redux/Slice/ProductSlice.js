@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 
 const initialState = {
   product: [],
+  topProducts: [],
 };
 export const getAllProduct = createAsyncThunk(
   "/product",
@@ -68,6 +69,28 @@ export const getProduct = createAsyncThunk("/product/get", async (id) => {
     toast.error(e?.response?.message);
   }
 });
+export const updateProduct = createAsyncThunk(
+  "/product/update",
+  async (data) => {
+    try {
+      console.log(data);
+      const res = axiosInstance.put(`/api/v3/Admin/Product/${data.id}`, data);
+      toast.promise(res, {
+        loading: "please wait! update product..",
+        success: (data) => {
+          return data?.data?.message;
+        },
+
+        error: (data) => {
+          return data?.response?.data?.message;
+        },
+      });
+      return (await res).data;
+    } catch (e) {
+      toast.error(e?.response?.message);
+    }
+  }
+);
 
 export const AddProductCard = createAsyncThunk(
   "/product/AddProduct",
@@ -188,6 +211,7 @@ const productRedux = createSlice({
   extraReducers: (builder) => {
     builder.addCase(getAllProduct.fulfilled, (state, action) => {
       state.product = action?.payload?.data;
+      state.topProducts = action?.payload?.popularProducts;
     });
   },
 });

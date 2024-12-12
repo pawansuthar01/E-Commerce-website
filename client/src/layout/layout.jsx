@@ -316,11 +316,13 @@ function Layout({ children }) {
         )}
 
         <div
-          className={`fixed top-0 right-0 h-full dark:bg-[#111827] bg-white shadow-lg max-sm:w-[60%] w-[30%] z-20 transition-transform duration-500 ease-in-out ${
+          role="dialog"
+          aria-label="Notification Panel"
+          className={`fixed top-0 right-0 h-full dark:bg-[#111827] bg-white shadow-lg max-sm:w-[90%] w-[40%] z-20 transition-transform duration-500 ease-in-out ${
             NotificationShow ? "translate-x-0" : "translate-x-full"
           }`}
         >
-          <div className="flex justify-between items-center dark:bg-[#111827]  bg-gray-100 p-4 border-b border-gray-300">
+          <div className="flex justify-between items-center dark:bg-[#111827]  bg-gray-100 p-4 border-b border-gray-300 ">
             <h2 className="text-xl font-bold dark:text-white text-gray-800">
               Notifications
             </h2>
@@ -332,7 +334,7 @@ function Layout({ children }) {
             </button>
           </div>
 
-          <div className="p-4 space-y-4 dark:text-white text-black">
+          <div className="p-4 space-y-4 dark:text-white text-black overflow-y-auto max-h-[calc(100vh-80px)] ">
             {notification && notification.length == 0 ? (
               <p className="text-center">No notification...</p>
             ) : (
@@ -340,7 +342,7 @@ function Layout({ children }) {
                 return (
                   <div
                     key={ind}
-                    className="p-3 bg-gray-100 dark:bg-[#111827] rounded-md shadow-[0_0_1px_white]"
+                    className="p-3 bg-gray-100 dark:bg-[#111827] rounded-md shadow-[0_0_1px_white] "
                   >
                     <NotificationCart
                       data={data}

@@ -50,6 +50,7 @@ const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [payments, setPayments] = useState([]);
   const [OrderId, setOrderId] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -151,6 +152,7 @@ const AdminDashboard = () => {
         orders: ordersRes.payload.data.length,
         totalPayments: paymentsRes.payload.totalAmount,
       });
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching admin data:", error);
     }
@@ -238,6 +240,17 @@ const AdminDashboard = () => {
 
     trackingOrder();
   }, [orders]);
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
+          <div className="loader border-t-4 border-blue-500 rounded-full w-12 h-12 animate-spin"></div>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       <div className="p-8 select-none">

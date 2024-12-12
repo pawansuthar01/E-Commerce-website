@@ -24,6 +24,10 @@ const ProductSchema = new Schema(
       type: Number,
       default: 0,
     },
+    orderCount: {
+      type: Number,
+      default: 0,
+    },
     ProductLikes: [
       {
         ProductLike: {

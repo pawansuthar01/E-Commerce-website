@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { BsPersonCircle } from "react-icons/bs";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import Layout from "../../layout/layout";
@@ -13,12 +13,26 @@ function AddProduct() {
   const navigate = useNavigate();
   const [previewImages, setPreviewImages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [showLoading, setShowLoading] = useState(false);
+
   const [ProductUpData, setProductUpData] = useState({
     name: "",
     price: "",
     description: "",
     images: [], // For multiple images
   });
+
+  // Disable scrolling when loading
+  useEffect(() => {
+    if (showLoading) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto"; // Cleanup on component unmount
+    };
+  }, [showLoading]);
 
   // Handle multiple image inputs with validation
   const handelImageInput = (e) => {
@@ -89,7 +103,7 @@ function AddProduct() {
     }
     if (ProductUpData.price < 1) {
       setLoading(false);
-      toast.error("Product price  should be at least 1 Rupees.");
+      toast.error("Product price should be at least 1 Rupee.");
       return;
     }
 
@@ -102,9 +116,10 @@ function AddProduct() {
     ProductUpData.images.forEach((image) => {
       formData.append("images", image);
     });
-
+    setShowLoading(true);
     const response = await dispatch(AddNewProduct(formData));
     if (response) {
+      setShowLoading(false);
       setLoading(false);
     }
 
@@ -121,6 +136,23 @@ function AddProduct() {
     }
   };
 
+  if (showLoading) {
+    return (
+      <Layout>
+        <div
+          className={`flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 ${
+            loading ? "fixed inset-0 bg-black bg-opacity-30 z-10" : ""
+          }`}
+        >
+          <div className="loader border-t-4 border-blue-500 rounded-full w-12 h-12 animate-spin"></div>
+          <p>
+            {loading ? "Please wait, product is uploading..." : "Loading..."}
+          </p>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       <div className="w-full">
@@ -130,6 +162,7 @@ function AddProduct() {
               Add Product
             </h1>
             <form>
+              {/* File Input for Images */}
               <label
                 htmlFor="image_uploads"
                 className="cursor-pointer justify-center flex"
@@ -141,7 +174,7 @@ function AddProduct() {
                         key={index}
                         src={img}
                         alt="preview"
-                        className="h-20 w-20 object-contain bg-white dark:bg-[#111827] dark:shadow-[0_0_1px_white]  shadow-[0_0_1px_black] "
+                        className="h-20 w-20 object-contain bg-white dark:bg-[#111827] dark:shadow-[0_0_1px_white] shadow-[0_0_1px_black]"
                       />
                     ))}
                   </div>
@@ -156,7 +189,7 @@ function AddProduct() {
                 name="image_uploads"
                 id="image_uploads"
                 accept=".png,.svg,.jpeg,.jpg"
-                multiple // Allow multiple file selection
+                multiple
               />
 
               {/* Product Name */}
@@ -170,7 +203,7 @@ function AddProduct() {
                   className="peer w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent"
                 />
                 {ProductUpData.name ? (
-                  <label className="absolute left-0 top-[-20px] text-sm text-gray-500 ">
+                  <label className="absolute left-0 top-[-20px] text-sm text-gray-500">
                     Product Name
                   </label>
                 ) : (
@@ -191,7 +224,7 @@ function AddProduct() {
                   className="peer w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent"
                 />
                 {ProductUpData.price ? (
-                  <label className="absolute left-0 top-[-20px] text-sm text-gray-500 ">
+                  <label className="absolute left-0 top-[-20px] text-sm text-gray-500">
                     Product Price
                   </label>
                 ) : (

@@ -102,8 +102,20 @@ export const OrderShow = ({
             <p className="text-sm">
               {order.shippingAddress.state}, {order.shippingAddress.postalCode}
             </p>
-            <p className="text-sm">{order.shippingAddress.phoneNumber}</p>
-            <p className="w-[60%] text-[11px]">{order.shippingAddress.email}</p>
+            <a
+              className="text-sm"
+              href={`tel:+${order.shippingAddress.phoneNumber}`}
+            >
+              {order.shippingAddress.phoneNumber}
+            </a>
+            <br />
+            <a
+              className=" text-[11px]"
+              href={`mailto:${order.shippingAddress.email}`}
+            >
+              {order.shippingAddress.email}
+            </a>
+
             {Role === "USER" && (
               <p
                 onClick={() => {
