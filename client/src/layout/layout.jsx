@@ -1,8 +1,7 @@
 import { AiFillCloseCircle } from "react-icons/ai";
-import { FiMenu, FiShoppingCart } from "react-icons/fi";
+import { FiMenu } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import { GiShoppingCart } from "react-icons/gi";
-import logo from "../assets/download-removebg-preview.png";
 import {
   FaBell,
   FaMagnifyingGlass,
@@ -14,11 +13,12 @@ import { useDispatch, useSelector } from "react-redux";
 import Footer from "../Components/footer";
 import LoadingButton from "../constants/LoadingBtn";
 import { useEffect, useState } from "react";
-import { CheckJWT, LogoutAccount } from "../Redux/Slice/authSlice";
+import { LoadAccount, LogoutAccount } from "../Redux/Slice/authSlice";
 import { useTheme } from "../Components/ThemeContext";
 import { NotificationGet } from "../Redux/Slice/notification.Slice";
 import NotificationCart from "../Page/notification/notification";
 import { getFeedback } from "../Redux/Slice/feedbackSlice";
+import toast from "react-hot-toast";
 
 function Layout({ children }) {
   const [loading, setLoading] = useState("");
@@ -28,14 +28,14 @@ function Layout({ children }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state?.auth?.isLoggedIn);
-  const role = useSelector((state) => state?.auth?.role);
+  const { role, exp } = useSelector((state) => state?.auth);
+
   const { data } = useSelector((state) => state?.auth);
   const { feedback } = useSelector((state) => state?.feedback);
   useEffect(() => {
     async function getfeedback() {
       if (feedback == undefined) {
         const data = await dispatch(getFeedback());
-        console.log(data);
       }
     }
     getfeedback();
@@ -67,11 +67,8 @@ function Layout({ children }) {
   const handelNotificationLoad = async () => {
     if (isLoggedIn) {
       const res = await dispatch(NotificationGet());
-      const response = await dispatch(CheckJWT());
-      if (!response?.payload?.valid) {
-        await dispatch(LogoutAccount());
-        navigate("/login");
-      }
+      const data = await dispatch(LoadAccount());
+      console.log(data?.payload);
       if (res?.payload?.data) {
         const notificationsArray = Array.isArray(res.payload.data)
           ? res.payload.data
@@ -81,6 +78,21 @@ function Layout({ children }) {
       }
     }
   };
+  useEffect(() => {
+    const currentTimestamp = Math.floor(Date.now() / 1000);
+    console.log("currentTimestamp", currentTimestamp);
+    console.log("exp", exp);
+    async function handelCheckJWT() {
+      if (exp != 0 && currentTimestamp > exp) {
+        console.log("Token has expired");
+        toast.error("Session expired. Please log in again!");
+        await dispatch(LogoutAccount());
+        navigate("/login");
+      }
+    }
+
+    handelCheckJWT();
+  }, []);
 
   useEffect(() => {
     handelNotificationLoad();

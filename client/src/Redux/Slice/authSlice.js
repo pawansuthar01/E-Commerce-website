@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 const initialState = {
   isLoggedIn: localStorage.getItem("isLoggedIn") || false,
   role: localStorage.getItem("role") || "",
+  exp: Number(localStorage.getItem("exp")) || 0,
   userName: localStorage.getItem("userName") || "",
   data:
     localStorage.getItem("data") !== null
@@ -127,26 +128,7 @@ export const getAllUsers = createAsyncThunk("/auth/User", async () => {
     toast.error(e?.response?.message);
   }
 });
-export const CheckJWT = createAsyncThunk("/Auth/check", async () => {
-  try {
-    const response = await axiosInstance.get("/api/v3/user/checkJWT");
 
-    if (response.status === 200) {
-      return { valid: true, expired: false };
-    } else {
-      return { valid: false, expired: false };
-    }
-  } catch (error) {
-    if (error.response && error.response.status === 401) {
-      toast.error("Session expired. Please log in again!");
-
-      return { valid: false, expired: true };
-    }
-
-    toast.error("Something went wrong during session check!");
-    return { valid: false, expired: false };
-  }
-});
 const authSliceRedux = createSlice({
   name: "auth",
   initialState,
@@ -154,43 +136,57 @@ const authSliceRedux = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(CreateAccount.fulfilled, (state, action) => {
-        localStorage.setItem("data", JSON.stringify(action?.payload?.data));
-        localStorage.setItem("isLoggedIn", true);
-        localStorage.setItem("role", action?.payload?.data?.role);
-        localStorage.setItem("userName", action?.payload?.data?.userName);
+        const { data, exp } = action.payload;
 
-        state.walletProduct = [...action?.payload?.data?.walletAddProducts];
+        localStorage.setItem("data", JSON.stringify(data));
+        localStorage.setItem("isLoggedIn", true);
+        localStorage.setItem("exp", Number(exp));
+        localStorage.setItem("role", data.role);
+        localStorage.setItem("userName", data.userName);
+
+        state.userName = data.userName;
+        state.walletProduct = [...data.walletAddProducts];
+        state.exp = Number(exp);
         state.isLoggedIn = true;
-        state.userName = action?.payload?.data.userName;
-        state.data = action?.payload?.data;
-        state.role = action?.payload?.data?.role;
+        state.data = data;
+        state.role = data.role;
       })
       .addCase(LoginAccount.fulfilled, (state, action) => {
-        localStorage.setItem("data", JSON.stringify(action?.payload?.data));
-        localStorage.setItem("userName", action?.payload?.data.userName);
+        const { data, exp } = action.payload;
+        console.log("login", exp);
+        localStorage.setItem("data", JSON.stringify(data));
         localStorage.setItem("isLoggedIn", true);
-        localStorage.setItem("role", action?.payload?.data?.role);
+        localStorage.setItem("exp", Number(exp));
+        localStorage.setItem("role", data.role);
+        localStorage.setItem("userName", data.userName);
 
-        state.walletProduct = [...action?.payload?.data?.walletAddProducts];
+        state.userName = data.userName;
+        state.walletProduct = [...data.walletAddProducts];
+        state.exp = Number(exp);
         state.isLoggedIn = true;
-        state.userName = action?.payload?.data.userName;
-        state.data = action?.payload?.data;
-        state.role = action?.payload?.data?.role;
+        state.data = data;
+        state.role = data.role;
       })
       .addCase(LoadAccount.fulfilled, (state, action) => {
-        localStorage.setItem("data", JSON.stringify(action?.payload?.data));
+        const { data, exp } = action.payload;
+        console.log("load", exp);
+        localStorage.setItem("data", JSON.stringify(data));
         localStorage.setItem("isLoggedIn", true);
-        localStorage.setItem("role", action?.payload?.data.role);
-        localStorage.setItem("userName", action?.payload?.data?.userName);
-        state.userName = action?.payload?.data.userName;
-        state.walletProduct = [...action?.payload?.data?.walletAddProducts];
+        localStorage.setItem("exp", Number(exp));
+        localStorage.setItem("role", data.role);
+        localStorage.setItem("userName", data.userName);
+
+        state.userName = data.userName;
+        state.walletProduct = [...data.walletAddProducts];
+        state.exp = Number(exp);
         state.isLoggedIn = true;
-        state.data = action?.payload?.data;
-        state.role = action?.payload?.data?.role;
+        state.data = data;
+        state.role = data.role;
       })
       .addCase(LogoutAccount.fulfilled, (state) => {
         localStorage.clear();
         state.userName = "";
+        state.exp = 0;
         state.isLoggedIn = false;
         state.data = {};
         state.role = "";

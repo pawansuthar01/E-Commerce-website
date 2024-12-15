@@ -4,12 +4,12 @@ import cloudinary from "cloudinary";
 import fs from "fs/promises";
 import crypto from "crypto";
 import SendEmail from "../utils/SendEmial.js";
-import JWT from "jsonwebtoken";
 const cookieOption = {
   maxAge: 7 * 24 * 60 * 60 * 1000,
   httpOnly: true,
   sameSite: "None",
-  secure: process.env.NODE_ENV === "production",
+  secure: true,
+  path: "/",
 };
 
 export const RegisterUser = async (req, res, next) => {
@@ -85,6 +85,7 @@ export const RegisterUser = async (req, res, next) => {
     res.status(200).json({
       success: true,
       data: user,
+      exp: Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60,
       message: "Successfully registered.",
     });
   } catch (error) {
@@ -97,34 +98,6 @@ export const RegisterUser = async (req, res, next) => {
       );
     }
     return next(new AppError(error.message, 400));
-  }
-};
-
-export const checkJWT = async (req, res, next) => {
-  try {
-    const { token } = req.cookies;
-
-    if (!token) {
-      return next(new AppError("Unauthenticated, please login.", 401));
-    }
-
-    const decoded = JWT.verify(token, process.env.JWT_SECRET);
-    return res
-      .status(200)
-      .json({ valid: true, expired: false, message: "Token is verify/..." });
-  } catch (err) {
-    if (err.name === "TokenExpiredError") {
-      return res.status(401).json({
-        valid: false,
-        expired: true,
-        message: "Token expired, please login again.",
-      });
-    }
-    return res.status(401).json({
-      valid: false,
-      expired: false,
-      message: "Invalid token, please login again.",
-    });
   }
 };
 
@@ -148,6 +121,7 @@ export const login = async (req, res, next) => {
     res.status(200).json({
       success: true,
       data: userExist,
+      exp: Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60,
       Message: "successfully login...",
     });
   } catch (error) {
@@ -156,7 +130,6 @@ export const login = async (req, res, next) => {
 };
 
 export const logout = async (req, res, next) => {
-  console.log("yes");
   try {
     res.cookie("token", null, {
       maxAge: 0,
@@ -175,6 +148,7 @@ export const logout = async (req, res, next) => {
 };
 export const getProfile = async (req, res, next) => {
   try {
+    const { exp } = req.user;
     const userExist = await User.findById(req.user.id);
     if (!userExist) {
       return next(new AppError(" please login..", 400));
@@ -182,6 +156,7 @@ export const getProfile = async (req, res, next) => {
     res.status(200).json({
       success: true,
       data: userExist,
+      exp: exp,
       Message: "successfully getProfile...",
     });
   } catch (error) {

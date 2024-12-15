@@ -94,7 +94,6 @@ export const createOrderPayment = async (req, res, next) => {
     if (!order) {
       return next(new AppError("Failed to create Razorpay order", 500));
     }
-    console.log(order.id);
 
     res.status(200).json({
       success: true,
@@ -136,7 +135,6 @@ export const UpdateOrder = async (req, res, next) => {
     const { role } = req.user;
     const { id } = req.params;
     const { data } = req.body;
-    console.log(data);
     if (!id || !data) {
       return next(new AppError("Order ID and update data are required.", 400));
     }

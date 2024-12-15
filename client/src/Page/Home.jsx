@@ -22,7 +22,7 @@ function HomePage() {
   const { product, topProducts } = useSelector((state) => state.product);
 
   const ProductLoad = async () => {
-    setLoading(true); // Start loading
+    setLoading(true);
     await dispatch(getAllProduct({ page: 1, limit: 25 }));
     setLoading(false); // End loading
   };
@@ -165,7 +165,7 @@ function HomePage() {
               ))}
           </div>
         </div>
-        <div className="w-full  ">
+        <div className="w-full mb-10 ">
           <hr className="h-1 bg-slate-200" />
           <h1 className="text-2xl font-bold mb-4 ml-10 text-start dark:text-white text-black">
             feedback Section

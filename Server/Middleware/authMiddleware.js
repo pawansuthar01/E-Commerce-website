@@ -5,7 +5,6 @@ config();
 export const isLoggedIn = async (req, res, next) => {
   try {
     const { token } = req.cookies;
-
     if (!token) {
       return next(new AppError("Unauthenticated,please login ", 500));
     }
@@ -16,7 +15,9 @@ export const isLoggedIn = async (req, res, next) => {
       userName: userDetails.userName,
       email: userDetails.email,
       role: userDetails.role,
+      exp: userDetails.exp,
     };
+    console.log(userDetails.exp);
   } catch (error) {
     return next(new AppError(error.message, 400));
   }
