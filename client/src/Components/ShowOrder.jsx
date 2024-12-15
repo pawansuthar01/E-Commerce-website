@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { MdCurrencyRupee } from "react-icons/md";
 import { FiEdit } from "react-icons/fi";
 import { useDispatch } from "react-redux";
 import { UpdateOrder } from "../Redux/Slice/OrderSlice";
 import toast from "react-hot-toast";
+import { useReactToPrint } from "react-to-print";
 
 export const OrderShow = ({
   Orders,
@@ -20,6 +21,15 @@ export const OrderShow = ({
   // Function to handle order update (status or paymentStatus)
 
   // Helper to render progress bar width
+  const printContentRef = useRef();
+
+  const handlePrint = useReactToPrint({
+    content: () => {
+      console.log(printContentRef.current); // Check if this returns the expected content
+      return printContentRef.current;
+    },
+  });
+
   const renderOrderProgress = (status) => {
     const progressWidth = {
       Processing: "40%",
@@ -36,6 +46,12 @@ export const OrderShow = ({
       key={index}
       className="bg-white dark:bg-[#111827] sm:w-[45%] dark:text-white shadow-[0_0_2px_black] mt-2 rounded-lg p-6 max-w-2xl mx-auto mb-4 flex flex-col"
     >
+      <button
+        onClick={handlePrint}
+        className="text-white bg-blue-600 hover:bg-blue-500 p-2 rounded"
+      >
+        Print Order Details
+      </button>
       <h2 className="text-lg flex justify-between dark:text-white font-semibold mb-4 max-sm:text-sm gap-2">
         Order ID: {order._id}
         {orderStats[order._id] === "Canceled" ? (

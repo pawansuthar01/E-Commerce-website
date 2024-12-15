@@ -34,10 +34,9 @@ function NotificationCart({ data, onUpdate }) {
       <p>{data.message}</p>
       <button
         onClick={() => handelClickBtn(data._id)}
-        className="text-red-500 text-lg font-bold cursor-pointer"
+        className=" text-red-500 text-lg font-bold cursor-pointer text-end"
       >
-        {" "}
-        <IoCloseCircleOutline size={20} />
+        <IoCloseCircleOutline size={26} />
       </button>
     </div>
   );

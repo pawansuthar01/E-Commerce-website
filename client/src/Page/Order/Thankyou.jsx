@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import Layout from "../../layout/layout";
 import { useLocation } from "react-router-dom";
 import { MdCurrencyRupee } from "react-icons/md";
+import FeedbackForm from "../../Components/feedbackfrom";
+import FeedbackList from "../../Components/feedbackList";
 
 const ThankYou = () => {
   const { state } = useLocation();
@@ -117,6 +119,15 @@ const ThankYou = () => {
             <p>📞 {state.data.shippingAddress.phoneNumber}</p>
             <p>📧 {state.data.shippingAddress.email}</p>
           </div>
+        </div>
+        {/* feedback section */}
+        <div className="w-full  ">
+          <hr className="h-1 bg-slate-200" />
+          <h1 className="text-2xl font-bold mb-4 ml-10 text-start dark:text-white text-black">
+            feedback Section
+          </h1>
+          <FeedbackForm />
+          <FeedbackList />
         </div>
       </div>
     </Layout>

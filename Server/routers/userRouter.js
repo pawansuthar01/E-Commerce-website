@@ -12,9 +12,15 @@ import {
 } from "../Controllers/Auth.Controller.js";
 import upload from "../Middleware/multerMiddleware.js";
 import { isLoggedIn } from "../Middleware/authMiddleware.js";
+import {
+  getFeedback,
+  SubmitFeedback,
+} from "../Controllers/feedback.Controller.js";
 const UserRouter = Router();
 UserRouter.post("/register", upload.single("avatar"), RegisterUser);
 UserRouter.post("/login", login);
+UserRouter.post("/SubmitFeedback", SubmitFeedback);
+UserRouter.get("/getFeedback", getFeedback);
 UserRouter.get("/logout", logout);
 UserRouter.get("/checkJWT", checkJWT);
 UserRouter.get("/getProfile", isLoggedIn, getProfile);

@@ -108,7 +108,7 @@ function BlogCard({ data }) {
               </button>
               Comment..
             </h3>
-            <div className="max-h-[500px] overflow-x-auto">
+            <div className="max-h-[500px] overflow-x-auto hide-scrollbar">
               <CommentCard data={data} onAddComment={handleCommentAdded} />
             </div>
           </div>

@@ -16,6 +16,8 @@ import {
 import { checkPayment, paymentCreate } from "../../Redux/Slice/paymentSlice";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { useTheme } from "../../Components/ThemeContext";
+import FeedbackForm from "../../Components/feedbackfrom";
+import FeedbackList from "../../Components/feedbackList";
 
 function CheckoutPage() {
   const navigate = useNavigate();
@@ -516,6 +518,15 @@ function CheckoutPage() {
               </div>
             </div>
           </div>
+        </div>
+        {/* feedback section */}
+        <div className="w-full  ">
+          <hr className="h-1 bg-slate-200" />
+          <h1 className="text-2xl font-bold mb-4 ml-10 text-start dark:text-white text-black">
+            feedback Section
+          </h1>
+          <FeedbackForm />
+          <FeedbackList />
         </div>
       </div>
     </Layout>

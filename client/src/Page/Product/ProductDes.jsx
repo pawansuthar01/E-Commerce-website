@@ -11,6 +11,8 @@ import LoadingButton from "../../constants/LoadingBtn";
 import { LoadAccount } from "../../Redux/Slice/authSlice";
 import { MdCurrencyRupee } from "react-icons/md";
 import ProductCard from "../../Components/productCard";
+import FeedbackForm from "../../Components/feedbackfrom";
+import FeedbackList from "../../Components/feedbackList";
 
 function ProductDescription() {
   const navigate = useNavigate();
@@ -178,6 +180,15 @@ function ProductDescription() {
                 <ProductCard data={product} key={ind} />
               ))}
           </div>
+        </div>
+        {/* feedback section */}
+        <div className="w-full  ">
+          <hr className="h-1 bg-slate-200" />
+          <h1 className="text-2xl font-bold mb-4 ml-10 text-start dark:text-white text-black">
+            feedback Section
+          </h1>
+          <FeedbackForm />
+          <FeedbackList />
         </div>
       </div>
     </Layout>

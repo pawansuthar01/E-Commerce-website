@@ -18,6 +18,7 @@ import { CheckJWT, LogoutAccount } from "../Redux/Slice/authSlice";
 import { useTheme } from "../Components/ThemeContext";
 import { NotificationGet } from "../Redux/Slice/notification.Slice";
 import NotificationCart from "../Page/notification/notification";
+import { getFeedback } from "../Redux/Slice/feedbackSlice";
 
 function Layout({ children }) {
   const [loading, setLoading] = useState("");
@@ -29,7 +30,16 @@ function Layout({ children }) {
   const isLoggedIn = useSelector((state) => state?.auth?.isLoggedIn);
   const role = useSelector((state) => state?.auth?.role);
   const { data } = useSelector((state) => state?.auth);
-
+  const { feedback } = useSelector((state) => state?.feedback);
+  useEffect(() => {
+    async function getfeedback() {
+      if (feedback == undefined) {
+        const data = await dispatch(getFeedback());
+        console.log(data);
+      }
+    }
+    getfeedback();
+  }, []);
   function changeWight() {
     const drawerSide = document.getElementsByClassName("drawer-side");
     drawerSide[0].style.width = "auto";
@@ -203,9 +213,11 @@ function Layout({ children }) {
               </div>
             </Link>
 
-            <div className="cursor-pointer hover:text-green-400 dark:text-white">
-              <FaUser size={"20px"} onClick={() => navigate("/Profile")} />
-            </div>
+            {isLoggedIn && (
+              <div className="cursor-pointer hover:text-green-400 dark:text-white">
+                <FaUser size={"20px"} onClick={() => navigate("/Profile")} />
+              </div>
+            )}
 
             <button
               onClick={toggleDarkMode}

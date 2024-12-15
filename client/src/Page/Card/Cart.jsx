@@ -6,6 +6,8 @@ import { LoadAccount } from "../../Redux/Slice/authSlice";
 import { RemoveProductCard } from "../../Redux/Slice/ProductSlice";
 import LoadingButton from "../../constants/LoadingBtn"; // Ensure this component is present in your codebase
 import { MdCurrencyRupee } from "react-icons/md";
+import FeedbackForm from "../../Components/feedbackfrom";
+import FeedbackList from "../../Components/feedbackList";
 
 const Cart = () => {
   const [cart, setCart] = useState([]);
@@ -212,6 +214,15 @@ const Cart = () => {
             )}
           </>
         )}
+        {/* feedback section */}
+        <div className="w-full  ">
+          <hr className="h-1 bg-slate-200" />
+          <h1 className="text-2xl font-bold mb-4 ml-10 text-start dark:text-white text-black">
+            feedback Section
+          </h1>
+          <FeedbackForm />
+          <FeedbackList />
+        </div>
       </div>
     </Layout>
   );

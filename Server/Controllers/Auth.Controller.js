@@ -6,11 +6,10 @@ import crypto from "crypto";
 import SendEmail from "../utils/SendEmial.js";
 import JWT from "jsonwebtoken";
 const cookieOption = {
-  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  maxAge: 7 * 24 * 60 * 60 * 1000,
   httpOnly: true,
   sameSite: "None",
-  secure: true,
-  path: "/",
+  secure: process.env.NODE_ENV === "production",
 };
 
 export const RegisterUser = async (req, res, next) => {

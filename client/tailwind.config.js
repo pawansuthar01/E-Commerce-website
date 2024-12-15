@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+const plugin = require("tailwindcss/plugin");
 export default {
   darkMode: "class",
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
@@ -8,6 +9,9 @@ export default {
         "max-sm": { max: "800px" },
         sm: { min: "800px" },
       },
+      // scrollbar: {
+      //   "scrollbar-width": { scrollbar-width:  "10px" },
+      // },
 
       animation: {
         "carousel-slide": "carousel 0.8s ease-in-out",
@@ -21,5 +25,21 @@ export default {
       },
     },
   },
-  plugins: [require("daisyui"), require("@tailwindcss/line-clamp")],
+  plugins: [
+    require("daisyui"),
+    require("@tailwindcss/line-clamp"),
+    plugin(function ({ addUtilities }) {
+      addUtilities({
+        ".hide-scrollbar": {
+          /* For webkit-based browsers */
+          "-webkit-overflow-scrolling": "touch",
+          "-ms-overflow-style": "none", // For IE and Edge
+          "scrollbar-width": "none", // For Firefox
+        },
+        ".hide-scrollbar::-webkit-scrollbar": {
+          display: "none", // For Chrome, Safari, and Edge
+        },
+      });
+    }),
+  ],
 };

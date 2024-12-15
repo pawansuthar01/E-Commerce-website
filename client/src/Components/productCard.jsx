@@ -78,7 +78,7 @@ function ProductCard({ data }) {
   };
 
   return (
-    <div className="w-[260px] max-sm:w-[150px] flex flex-col cursor-pointer sm:h-[400px] bg-white border border-gray-200 rounded-lg shadow p-2 dark:bg-gray-800 dark:border-gray-700">
+    <div className="w-[260px] flex-shrink-0 max-sm:w-[150px] flex flex-col cursor-pointer sm:h-[400px] bg-white border border-gray-200 rounded-lg shadow p-2 dark:bg-gray-800 dark:border-gray-700">
       {(role === "ADMIN" || role === "AUTHOR") && (
         <AiOutlineDelete
           size={36}
