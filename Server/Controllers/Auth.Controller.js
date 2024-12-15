@@ -4,11 +4,13 @@ import cloudinary from "cloudinary";
 import fs from "fs/promises";
 import crypto from "crypto";
 import SendEmail from "../utils/SendEmial.js";
+import { config } from "dotenv";
+config();
 const cookieOption = {
-  maxAge: 7 * 24 * 60 * 60 * 1000,
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   httpOnly: true,
   sameSite: "None",
-  secure: true,
+  secure: process.env.NODE_ENV === "production",
   path: "/",
 };
 

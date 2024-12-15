@@ -1,6 +1,6 @@
-import { config } from "dotenv";
-config();
-
+// import { config } from "dotenv";
+// config();
+console.log("po", process.env.NODE_ENV);
 import app from "./app.js";
 import Razorpay from "razorpay";
 import { v2 } from "cloudinary";
