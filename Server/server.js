@@ -1,6 +1,3 @@
-// import { config } from "dotenv";
-// config();
-console.log("po", process.env.NODE_ENV);
 import app from "./app.js";
 import Razorpay from "razorpay";
 import { v2 } from "cloudinary";
@@ -18,8 +15,6 @@ export const razorpay = new Razorpay({
   key_secret: process.env.SECRET_ID,
 });
 
-//socket listen//
-//sever listen//
 app.listen(PORT, () => {
   console.log(`server is listen http://localhost:${PORT}`);
 });

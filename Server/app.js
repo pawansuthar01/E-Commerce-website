@@ -21,14 +21,22 @@ dataBaseConnection();
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));
-
-app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
     origin: process.env.FRONTEND_URL,
     credentials: true,
   })
 );
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", process.env.FRONTEND_URL);
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, X-Requested-With, Set-Cookie"
+  );
+  next();
+});
 
 app.use("/ping", (req, res, next) => {
   res.status(200).send("server is updated");
