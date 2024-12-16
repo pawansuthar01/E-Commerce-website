@@ -19,6 +19,7 @@ function SignUp() {
   const navigate = useNavigate();
   const [previewImage, setPreviewImage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showLoading, setShowLoading] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false); // Dark mode state
   const [SignUpData, setSignUpData] = useState({
     fullName: "",
@@ -107,6 +108,7 @@ function SignUp() {
       toast.error("Password and Confirm Password do not match..");
       return;
     }
+    setShowLoading(true);
     const formData = new FormData();
     formData.append("fullName", SignUpData.fullName);
     formData.append("email", SignUpData.email);
@@ -118,6 +120,7 @@ function SignUp() {
     const response = await dispatch(CreateAccount(formData));
     if (response) {
       setLoading(false);
+      setShowLoading(false);
     }
 
     if (response?.payload?.success) {
@@ -140,6 +143,20 @@ function SignUp() {
       <div className="w-full">
         <div className="relative top-[-64px] justify-center flex items-center">
           <div className="bg-white dark:bg-gray-800 dark:text-gray-200 max-sm:mt-20 mt-44 mb-10 w-[400px] rounded-lg shadow-[0_0_5px_black] p-8 max-sm:m-9">
+            {showLoading && (
+              <div
+                className={`flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 ${
+                  loading ? "fixed inset-0 bg-black bg-opacity-30 z-10" : ""
+                }`}
+              >
+                <div className="loader border-t-4 border-blue-500 rounded-full w-12 h-12 animate-spin"></div>
+                <p>
+                  {loading
+                    ? "Please wait,  Creating Your Account..."
+                    : "Loading..."}
+                </p>
+              </div>
+            )}
             <h1 className="text-center text-3xl font-semibold mb-6 text-[#9e6748] dark:text-[#f5d9b1]">
               Create Your Account
             </h1>

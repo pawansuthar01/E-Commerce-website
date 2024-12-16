@@ -136,134 +136,133 @@ function AddProduct() {
     }
   };
 
-  if (showLoading) {
-    return (
-      <Layout>
-        <div
-          className={`flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 ${
-            loading ? "fixed inset-0 bg-black bg-opacity-30 z-10" : ""
-          }`}
-        >
-          <div className="loader border-t-4 border-blue-500 rounded-full w-12 h-12 animate-spin"></div>
-          <p>
-            {loading ? "Please wait, product is uploading..." : "Loading..."}
-          </p>
-        </div>
-      </Layout>
-    );
-  }
-
   return (
     <Layout>
       <div className="w-full">
         <div className="relative justify-center flex items-center">
           <div className="bg-white dark:bg-[#111827] mt-44 mb-10 w-[400px] rounded-lg shadow-[0_0_5px_black] p-8">
-            <h1 className="text-center text-3xl font-semibold mb-6 text-[#9e6748]">
-              Add Product
-            </h1>
-            <form>
-              {/* File Input for Images */}
-              <label
-                htmlFor="image_uploads"
-                className="cursor-pointer justify-center flex"
+            {showLoading && (
+              <div
+                className={`flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 ${
+                  loading ? "fixed inset-0 bg-black bg-opacity-30 z-10" : ""
+                }`}
               >
-                {previewImages.length > 0 ? (
-                  <div className="grid grid-cols-3 gap-2">
-                    {previewImages.map((img, index) => (
-                      <img
-                        key={index}
-                        src={img}
-                        alt="preview"
-                        className="h-20 w-20 object-contain bg-white dark:bg-[#111827] dark:shadow-[0_0_1px_white] shadow-[0_0_1px_black]"
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  <FiEdit className="w-full" size={"100px"} />
-                )}
-              </label>
-              <input
-                type="file"
-                onChange={handelImageInput}
-                className="hidden"
-                name="image_uploads"
-                id="image_uploads"
-                accept=".png,.svg,.jpeg,.jpg"
-                multiple
-              />
-
-              {/* Product Name */}
-              <div className="relative mb-6 mt-5">
+                <div className="loader border-t-4 border-blue-500 rounded-full w-12 h-12 animate-spin"></div>
+                <p>
+                  {loading
+                    ? "Please wait, product is uploading..."
+                    : "Loading..."}
+                </p>
+              </div>
+            )}
+            <>
+              <h1 className="text-center text-3xl font-semibold mb-6 text-[#9e6748]">
+                Add Product
+              </h1>
+              <form>
+                {/* File Input for Images */}
+                <label
+                  htmlFor="image_uploads"
+                  className="cursor-pointer justify-center flex"
+                >
+                  {previewImages.length > 0 ? (
+                    <div className="grid grid-cols-3 gap-2">
+                      {previewImages.map((img, index) => (
+                        <img
+                          key={index}
+                          src={img}
+                          alt="preview"
+                          className="h-20 w-20 object-contain bg-white dark:bg-[#111827] dark:shadow-[0_0_1px_white] shadow-[0_0_1px_black]"
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <FiEdit className="w-full" size={"100px"} />
+                  )}
+                </label>
                 <input
-                  type="text"
-                  onChange={handelUserInput}
-                  value={ProductUpData.name}
-                  name="name"
-                  required
-                  className="peer w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent"
+                  type="file"
+                  onChange={handelImageInput}
+                  className="hidden"
+                  name="image_uploads"
+                  id="image_uploads"
+                  accept=".png,.svg,.jpeg,.jpg"
+                  multiple
                 />
-                {ProductUpData.name ? (
-                  <label className="absolute left-0 top-[-20px] text-sm text-gray-500">
-                    Product Name
-                  </label>
-                ) : (
-                  <label className="absolute left-0 top-2 text-lg text-gray-500 peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
-                    Product Name
-                  </label>
-                )}
-              </div>
 
-              {/* Product Price */}
-              <div className="relative mb-6">
-                <input
-                  type="number"
-                  onChange={handelUserInput}
-                  value={ProductUpData.price}
-                  name="price"
-                  required
-                  className="peer w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent"
-                />
-                {ProductUpData.price ? (
-                  <label className="absolute left-0 top-[-20px] text-sm text-gray-500">
-                    Product Price
-                  </label>
-                ) : (
-                  <label className="absolute left-0 top-2 text-lg text-gray-500 peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
-                    Product Price
-                  </label>
-                )}
-              </div>
+                {/* Product Name */}
+                <div className="relative mb-6 mt-5">
+                  <input
+                    type="text"
+                    onChange={handelUserInput}
+                    value={ProductUpData.name}
+                    name="name"
+                    required
+                    className="peer w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent"
+                  />
+                  {ProductUpData.name ? (
+                    <label className="absolute left-0 top-[-20px] text-sm text-gray-500">
+                      Product Name
+                    </label>
+                  ) : (
+                    <label className="absolute left-0 top-2 text-lg text-gray-500 peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
+                      Product Name
+                    </label>
+                  )}
+                </div>
 
-              {/* Product Description */}
-              <div className="relative mb-6">
-                <textarea
-                  onChange={handelUserInput}
-                  value={ProductUpData.description}
-                  name="description"
-                  required
-                  className="peer resize-none overflow-y-auto h-[250px] w-full pl-2 border-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent"
-                />
-                {ProductUpData.description ? (
-                  <label className="absolute left-0 pl-2 top-[-20px] text-sm text-gray-500">
-                    Product Description
-                  </label>
-                ) : (
-                  <label className="absolute left-0 pl-2 top-2 text-lg text-gray-500 peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
-                    Product Description
-                  </label>
-                )}
-              </div>
+                {/* Product Price */}
+                <div className="relative mb-6">
+                  <input
+                    type="number"
+                    onChange={handelUserInput}
+                    value={ProductUpData.price}
+                    name="price"
+                    required
+                    className="peer w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent"
+                  />
+                  {ProductUpData.price ? (
+                    <label className="absolute left-0 top-[-20px] text-sm text-gray-500">
+                      Product Price
+                    </label>
+                  ) : (
+                    <label className="absolute left-0 top-2 text-lg text-gray-500 peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
+                      Product Price
+                    </label>
+                  )}
+                </div>
 
-              {/* Submit Button */}
-              <div onClick={handleCreate}>
-                <LoadingButton
-                  loading={loading}
-                  color={"bg-green-600"}
-                  message={"Loading..."}
-                  name={"Add Product"}
-                />
-              </div>
-            </form>
+                {/* Product Description */}
+                <div className="relative mb-6">
+                  <textarea
+                    onChange={handelUserInput}
+                    value={ProductUpData.description}
+                    name="description"
+                    required
+                    className="peer resize-none overflow-y-auto h-[250px] w-full pl-2 border-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent"
+                  />
+                  {ProductUpData.description ? (
+                    <label className="absolute left-0 pl-2 top-[-20px] text-sm text-gray-500">
+                      Product Description
+                    </label>
+                  ) : (
+                    <label className="absolute left-0 pl-2 top-2 text-lg text-gray-500 peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
+                      Product Description
+                    </label>
+                  )}
+                </div>
+
+                {/* Submit Button */}
+                <div onClick={handleCreate}>
+                  <LoadingButton
+                    loading={loading}
+                    color={"bg-green-600"}
+                    message={"Loading..."}
+                    name={"Add Product"}
+                  />
+                </div>
+              </form>
+            </>
           </div>
         </div>
       </div>

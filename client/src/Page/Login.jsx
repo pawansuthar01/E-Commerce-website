@@ -13,6 +13,7 @@ function Login() {
   const dispatch = useDispatch();
   const { darkMode } = useTheme(); // Access the dark mode state
   const [loading, setLoading] = useState(false);
+  const [showLoading, setShowLoading] = useState(false);
 
   const [LoginData, setLoginData] = useState({
     email: "",
@@ -36,8 +37,10 @@ function Login() {
       toast.error("All fields are required...");
       return;
     }
+    setShowLoading(true);
     const res = await dispatch(LoginAccount(LoginData));
     if (res) {
+      setShowLoading(false);
       setLoading(false);
     }
     if (res?.payload?.success) {
@@ -58,6 +61,20 @@ function Login() {
               darkMode ? "bg-gray-800 text-white" : "bg-white text-black"
             }`}
           >
+            {showLoading && (
+              <div
+                className={`flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 ${
+                  loading ? "fixed inset-0 bg-black bg-opacity-30 z-10" : ""
+                }`}
+              >
+                <div className="loader border-t-4 border-blue-500 rounded-full w-12 h-12 animate-spin"></div>
+                <p>
+                  {loading
+                    ? "Please wait,  Login Your Account..."
+                    : "Loading..."}
+                </p>
+              </div>
+            )}
             <h1 className="text-center text-3xl font-semibold mb-6">LOGIN</h1>
             <form>
               <div className="relative mb-6">
