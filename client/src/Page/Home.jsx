@@ -93,7 +93,7 @@ function HomePage() {
                 title={celebrities[celebrities.length - 1].title}
                 description={celebrities[celebrities.length - 1].description}
               />
-              {celebrities.map((slide, index) => (
+              {celebrities?.map((slide, index) => (
                 <CarouselSlide
                   key={index}
                   image={slide.image}
@@ -111,7 +111,7 @@ function HomePage() {
           </div>
 
           <div className="flex w-full justify-center gap-2 py-2 flex-wrap">
-            {celebrities.map((_, index) => (
+            {celebrities?.map((_, index) => (
               <button
                 key={index}
                 className={`btn btn-xs dark:bg-gray-800 bg-white dark:text-white ${
@@ -137,8 +137,8 @@ function HomePage() {
           </h2>
           <div className="flex justify-evenly overflow-y-scroll hide-scrollbar  scrollbar-width-thin flex-shrink gap-6 w-full">
             {Array.isArray(topProducts) &&
-              topProducts.length > 0 &&
-              topProducts.map((product, ind) => (
+              topProducts?.length > 0 &&
+              topProducts?.map((product, ind) => (
                 <ProductCard
                   data={product}
                   key={ind}
@@ -155,8 +155,8 @@ function HomePage() {
           </h2>
           <div className="flex flex-wrap justify-evenly gap-6 my-6 w-full">
             {Array.isArray(product) &&
-              product.length > 0 &&
-              product.map((product, ind) => (
+              product?.length > 0 &&
+              product?.map((product, ind) => (
                 <ProductCard
                   data={product}
                   key={ind}

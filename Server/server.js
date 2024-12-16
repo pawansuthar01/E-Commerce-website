@@ -1,10 +1,13 @@
+import { config } from "dotenv";
+config();
 import app from "./app.js";
 import Razorpay from "razorpay";
-import { v2 } from "cloudinary";
+import cloudinaryPkg from "cloudinary";
+const { v2: cloudinary } = cloudinaryPkg;
 
 const PORT = process.env.PORT || 5005;
 
-v2.config({
+cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,

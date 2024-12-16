@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import { SubmitFeedback } from "../Redux/Slice/feedbackSlice";
+import { getFeedback, SubmitFeedback } from "../Redux/Slice/feedbackSlice";
 
 const FeedbackForm = () => {
   const [rating, setRating] = useState(0);
@@ -20,8 +20,9 @@ const FeedbackForm = () => {
     setIsSubmitting(true);
     await dispatch(SubmitFeedback({ rating, comment, userName }));
     setIsSubmitting(false);
-    rating(0);
-    setComment("");
+    await dispatch(getFeedback());
+    setRating(0);
+    setComment(" ");
   };
 
   return (

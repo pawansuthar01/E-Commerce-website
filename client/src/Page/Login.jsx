@@ -64,6 +64,7 @@ function Login() {
                 <input
                   type="email"
                   name="email"
+                  id="email"
                   onChange={handelUserInput}
                   value={LoginData.email}
                   required
@@ -72,11 +73,17 @@ function Login() {
                   } focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent`}
                 />
                 {LoginData.email ? (
-                  <label className="absolute left-0 top-[-20px] text-sm text-gray-500">
+                  <label
+                    htmlFor="email"
+                    className="absolute left-0 top-[-20px] text-sm text-gray-500"
+                  >
                     Email
                   </label>
                 ) : (
-                  <label className="absolute left-0 top-2 text-lg text-gray-500 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
+                  <label
+                    htmlFor="email"
+                    className="absolute left-0 top-2 text-lg text-gray-500 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm"
+                  >
                     Email
                   </label>
                 )}
@@ -85,6 +92,7 @@ function Login() {
                 <input
                   type="password"
                   name="password"
+                  id="password"
                   onChange={handelUserInput}
                   value={LoginData.password}
                   required
@@ -93,11 +101,17 @@ function Login() {
                   } focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent`}
                 />
                 {LoginData.password ? (
-                  <label className="absolute left-0 top-[-20px] text-sm text-gray-500">
+                  <label
+                    htmlFor="password"
+                    className="absolute left-0 top-[-20px] text-sm text-gray-500"
+                  >
                     Password
                   </label>
                 ) : (
-                  <label className="absolute left-0 top-2 text-lg text-gray-500 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
+                  <label
+                    htmlFor="password"
+                    className="absolute left-0 top-2 text-lg text-gray-500 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm"
+                  >
                     Password
                   </label>
                 )}

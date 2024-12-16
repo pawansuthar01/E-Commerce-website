@@ -172,15 +172,22 @@ function SignUp() {
                   onChange={handelUserInput}
                   value={SignUpData.userName}
                   name="userName"
+                  id="userName"
                   required
                   className="peer w-full border-b-2 border-gray-300  focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent  dark:text-gray-200"
                 />
                 {SignUpData.userName ? (
-                  <label className=" absolute left-0 top-[-20px] text-sm text-gray-500 dark:text-gray-300">
+                  <label
+                    htmlFor="userName"
+                    className=" absolute left-0 top-[-20px] text-sm text-gray-500 dark:text-gray-300"
+                  >
                     UserName
                   </label>
                 ) : (
-                  <label className="absolute left-0 top-2 text-lg text-gray-500 dark:text-gray-300 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
+                  <label
+                    htmlFor="userName"
+                    className="absolute left-0 top-2 text-lg text-gray-500 dark:text-gray-300 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm"
+                  >
                     UserName
                   </label>
                 )}
@@ -191,15 +198,22 @@ function SignUp() {
                   onChange={handelUserInput}
                   value={SignUpData.fullName}
                   name="fullName"
+                  id="fullName"
                   required
                   className="peer w-full border-b-2 border-gray-300  focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent  dark:text-gray-200"
                 />
                 {SignUpData.fullName ? (
-                  <label className=" absolute left-0 top-[-20px] text-sm text-gray-500 dark:text-gray-300">
+                  <label
+                    htmlFor="fullName"
+                    className=" absolute left-0 top-[-20px] text-sm text-gray-500 dark:text-gray-300"
+                  >
                     FullName
                   </label>
                 ) : (
-                  <label className="absolute left-0 top-2 text-lg text-gray-500 dark:text-gray-300 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
+                  <label
+                    htmlFor="fullName"
+                    className="absolute left-0 top-2 text-lg text-gray-500 dark:text-gray-300 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm"
+                  >
                     FullName
                   </label>
                 )}
@@ -210,15 +224,22 @@ function SignUp() {
                   value={SignUpData.email}
                   type="email"
                   name="email"
+                  id="email"
                   required
                   className="peer w-full border-b-2 border-gray-300  focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent  dark:text-gray-200"
                 />
                 {SignUpData.email ? (
-                  <label className=" absolute left-0 top-[-20px] text-sm text-gray-500 dark:text-gray-300">
+                  <label
+                    htmlFor="email"
+                    className=" absolute left-0 top-[-20px] text-sm text-gray-500 dark:text-gray-300"
+                  >
                     Email
                   </label>
                 ) : (
-                  <label className="absolute left-0 top-2 text-lg text-gray-500 dark:text-gray-300 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
+                  <label
+                    htmlFor="email"
+                    className="absolute left-0 top-2 text-lg text-gray-500 dark:text-gray-300 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm"
+                  >
                     Email
                   </label>
                 )}
@@ -229,15 +250,22 @@ function SignUp() {
                   value={SignUpData.phoneNumber}
                   type="number"
                   name="phoneNumber"
+                  id="phoneNumber"
                   required
                   className="peer w-full border-b-2 border-gray-300  focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent dark:text-gray-200"
                 />
                 {SignUpData.phoneNumber ? (
-                  <label className=" absolute left-0 top-[-20px] text-sm text-gray-500 dark:text-gray-300">
+                  <label
+                    htmlFor="phoneNumber"
+                    className=" absolute left-0 top-[-20px] text-sm text-gray-500 dark:text-gray-300"
+                  >
                     Phone Number
                   </label>
                 ) : (
-                  <label className="absolute left-0 top-2 text-lg text-gray-500 dark:text-gray-300 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
+                  <label
+                    htmlFor="phoneNumber"
+                    className="absolute left-0 top-2 text-lg text-gray-500 dark:text-gray-300 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm"
+                  >
                     Phone Number
                   </label>
                 )}
@@ -248,15 +276,22 @@ function SignUp() {
                   value={SignUpData.password}
                   type="password"
                   name="password"
+                  id="password"
                   required
                   className="peer w-full border-b-2 border-gray-300  focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent  dark:text-gray-200"
                 />
                 {SignUpData.password ? (
-                  <label className=" absolute left-0 top-[-20px] text-sm text-gray-500 dark:text-gray-300">
+                  <label
+                    htmlFor="password"
+                    className=" absolute left-0 top-[-20px] text-sm text-gray-500 dark:text-gray-300"
+                  >
                     Password
                   </label>
                 ) : (
-                  <label className="absolute left-0 top-2 text-lg text-gray-500 dark:text-gray-300 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
+                  <label
+                    htmlFor="password"
+                    className="absolute left-0 top-2 text-lg text-gray-500 dark:text-gray-300 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm"
+                  >
                     Password
                   </label>
                 )}
@@ -267,15 +302,22 @@ function SignUp() {
                   value={SignUpData.ConfirmPassword}
                   type="password"
                   name="ConfirmPassword"
+                  id="ConfirmPassword"
                   required
                   className="peer w-full border-b-2 border-gray-300  focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent  dark:text-gray-200"
                 />
                 {SignUpData.ConfirmPassword ? (
-                  <label className=" absolute left-0 top-[-20px] text-sm text-gray-500 dark:text-gray-300">
+                  <label
+                    htmlFor="ConfirmPassword"
+                    className=" absolute left-0 top-[-20px] text-sm text-gray-500 dark:text-gray-300"
+                  >
                     Confirm Password
                   </label>
                 ) : (
-                  <label className="absolute left-0 top-2 text-lg text-gray-500 dark:text-gray-300 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
+                  <label
+                    htmlFor="ConfirmPassword"
+                    className="absolute left-0 top-2 text-lg text-gray-500 dark:text-gray-300 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm"
+                  >
                     Confirm Password
                   </label>
                 )}
