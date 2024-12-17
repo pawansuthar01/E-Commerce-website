@@ -2,18 +2,20 @@ import React, { useEffect, useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { FaArrowLeft } from "react-icons/fa6";
 import { FiEdit } from "react-icons/fi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getFeedback } from "../Redux/Slice/feedbackSlice";
 
 const FeedbackList = () => {
-  const [feedbacks, setFeedbacks] = useState([]);
+  const dispatch = useDispatch();
   const { Feedback } = useSelector((state) => state?.feedback);
   const { userName } = useSelector((state) => state?.auth);
 
   useEffect(() => {
     const fetchFeedbacks = async () => {
-      setFeedbacks(Feedback);
+      if (Feedback.length == 0) {
+        await dispatch(getFeedback());
+      }
     };
-
     fetchFeedbacks();
   }, []);
 
@@ -23,7 +25,7 @@ const FeedbackList = () => {
         User Feedbacks
       </h2>
       <div className="space-y-6">
-        {feedbacks.map((feedback, index) => (
+        {Feedback?.map((feedback, index) => (
           <div
             key={index}
             className="w-full p-6 bg-white dark:bg-gray-800 border border-gray-200 rounded-lg shadow-md hover:shadow-xl transition-all"

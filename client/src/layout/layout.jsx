@@ -18,9 +18,9 @@ import { useTheme } from "../Components/ThemeContext";
 import { NotificationGet } from "../Redux/Slice/notification.Slice";
 import NotificationCart from "../Page/notification/notification";
 import { getFeedback } from "../Redux/Slice/feedbackSlice";
-import toast from "react-hot-toast";
+import SearchBar from "../Components/SearchBar";
 
-function Layout({ children }) {
+function Layout({ children, load }) {
   const [loading, setLoading] = useState("");
   const [NotificationShow, setNotificationShow] = useState(false);
   const [notification, setNotification] = useState([]);
@@ -31,15 +31,7 @@ function Layout({ children }) {
   const { role, exp } = useSelector((state) => state?.auth);
 
   const { data } = useSelector((state) => state?.auth);
-  const { feedback } = useSelector((state) => state?.feedback);
-  useEffect(() => {
-    async function getfeedback() {
-      if (feedback == undefined) {
-        const data = await dispatch(getFeedback());
-      }
-    }
-    getfeedback();
-  }, []);
+
   function changeWight() {
     const drawerSide = document.getElementsByClassName("drawer-side");
     drawerSide[0].style.width = "auto";
@@ -66,26 +58,35 @@ function Layout({ children }) {
   };
   const handelNotificationLoad = async () => {
     if (isLoggedIn) {
-      const res = await dispatch(NotificationGet());
-      const data = await dispatch(LoadAccount());
-      console.log(data?.payload);
-      if (res?.payload?.data) {
-        const notificationsArray = Array.isArray(res.payload.data)
-          ? res.payload.data
-          : [res.payload.data];
+      if (
+        notification == undefined ||
+        notification == null ||
+        notification == ""
+      ) {
+        const res = await dispatch(NotificationGet());
+        await dispatch(LoadAccount());
+        if (res?.payload?.data) {
+          const notificationsArray = Array.isArray(res.payload.data)
+            ? res.payload.data
+            : [res.payload.data];
 
-        setNotification(notificationsArray);
+          setNotification(notificationsArray);
+        }
       }
     }
   };
+
+  const handleSearch = async (query) => {
+    try {
+      navigate("AllProduct", { state: query });
+    } catch (e) {}
+  };
+
   useEffect(() => {
     const currentTimestamp = Math.floor(Date.now() / 1000);
-    console.log("currentTimestamp", currentTimestamp);
-    console.log("exp", exp);
+
     async function handelCheckJWT() {
       if (exp != 0 && currentTimestamp > exp) {
-        console.log("Token has expired");
-        toast.error("Session expired. Please log in again!");
         await dispatch(LogoutAccount());
         navigate("/login");
       }
@@ -113,7 +114,6 @@ function Layout({ children }) {
       }
     };
 
-    // Initial check
     checkNetworkSpeed();
 
     // Listen for network changes
@@ -144,56 +144,7 @@ function Layout({ children }) {
               }`}
             />
           </label>
-          <div className="max-sm:hidden flex w-full justify-center">
-            <label
-              htmlFor="default-search"
-              className={`mb-2 text-sm font-medium ${
-                darkMode ? "text-white" : "text-gray-900"
-              } sr-only`}
-            >
-              Search
-            </label>
-            <div className="relative w-1/2">
-              <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                <svg
-                  className={`w-4 h-4 ${
-                    darkMode ? "text-gray-400" : "text-gray-400"
-                  }`}
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                  />
-                </svg>
-              </div>
-              <input
-                type="search"
-                id="default-search"
-                className={`w-full p-4 ps-10 text-sm outline-none ${
-                  darkMode
-                    ? "text-white bg-gray-700 border-gray-600"
-                    : "text-gray-900 bg-gray-50 border-gray-300"
-                } rounded-lg focus:ring-blue-500 focus:border-blue-500`}
-                placeholder="Search Mockups, Logos..."
-                required
-              />
-              <button
-                type="submit"
-                className={`text-white absolute end-2.5 bottom-2.5 ${
-                  darkMode ? "bg-blue-600" : "bg-blue-700"
-                } border-blue-700 hover:bg-transparent hover:text-blue-700 hover:border-2 font-medium rounded-lg text-sm px-4 py-2`}
-              >
-                Search
-              </button>
-            </div>
-          </div>
+          {!load && <SearchBar onSearch={handleSearch} />}
           <div className="flex gap-5 font-bold text-black items-center">
             <div className="max-sm:hidden flex">
               {!isLoggedIn && (
@@ -215,8 +166,8 @@ function Layout({ children }) {
               />
               <p className="absolute text-green-600 font-serif text-sm top-[-12px] right-[-5px]">
                 {notification &&
-                  notification.length >= 1 &&
-                  notification.length}
+                  notification?.length >= 1 &&
+                  notification?.length}
               </p>
             </div>
             <Link to="/Search">
@@ -283,6 +234,9 @@ function Layout({ children }) {
                   </li>
                   <li onClick={hideSide}>
                     <Link to="/DashBoard">ADMIN Dashboard</Link>
+                  </li>
+                  <li onClick={hideSide}>
+                    <Link to="/CarouselUpload">CarouselUpload</Link>
                   </li>
                 </>
               )}

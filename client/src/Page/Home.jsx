@@ -9,31 +9,48 @@ import { ProductCarousel } from "../Components/CarouselProduct";
 import LoginPrompt from "../Components/loginProment";
 import FeedbackForm from "../Components/feedbackfrom";
 import FeedbackList from "../Components/feedbackList";
+import { getAllCarousel } from "../Redux/Slice/CarouselSlice";
 
 function HomePage() {
   const [currentSlide, setCurrentSlide] = useState(1); // Start from 1 (middle of the duplicated slides)
   const [isAnimating, setIsAnimating] = useState(true); // Control animation
   const [loading, setLoading] = useState(true); // Loader state
   const [show, setShow] = useState(false);
-  const [time, settime] = useState(10000);
+  const [oneTime, setOneTime] = useState(true);
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state?.auth?.isLoggedIn);
 
   const { product, topProducts } = useSelector((state) => state.product);
+  const [products, setProducts] = useState(product);
+  const [topProduct, setTopProduct] = useState(topProducts);
+  const Carousel = useSelector((state) => state.carousel.Carousel);
 
   const ProductLoad = async () => {
     setLoading(true);
-    await dispatch(getAllProduct({ page: 1, limit: 25 }));
-    setLoading(false); // End loading
+    if (Carousel?.length == 0) {
+      await dispatch(getAllCarousel());
+    }
+    if (product.length == 0) {
+      const res = await dispatch(getAllProduct({ page: 1, limit: 25 }));
+      console.log(res.payload);
+    }
+    setLoading(false);
   };
+  const handleProductDelete = (productId) => {
+    console.log(productId);
+    setProducts((prev) => prev.filter((product) => product._id !== productId));
+    setTopProduct((prevProducts) =>
+      prevProducts.filter((product) => product._id !== productId)
+    );
+  };
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!isLoggedIn) {
+    setTimeout(() => {
+      if (oneTime && !isLoggedIn) {
         setShow(true);
-        settime(4000);
+        setOneTime(false);
       }
-      return () => clearTimeout(timer);
-    }, time);
+    }, 10000);
   }, [show]);
 
   useEffect(() => {
@@ -49,9 +66,9 @@ function HomePage() {
     if (currentSlide === 0) {
       setTimeout(() => {
         setIsAnimating(false);
-        setCurrentSlide(celebrities.length);
+        setCurrentSlide(Carousel?.length);
       }, 700);
-    } else if (currentSlide === celebrities.length + 1) {
+    } else if (currentSlide === Carousel?.length + 1) {
       setTimeout(() => {
         setIsAnimating(false);
         setCurrentSlide(1);
@@ -89,29 +106,29 @@ function HomePage() {
             >
               <CarouselSlide
                 key="last-duplicate"
-                image={celebrities[celebrities.length - 1].image}
-                title={celebrities[celebrities.length - 1].title}
-                description={celebrities[celebrities.length - 1].description}
+                image={Carousel[Carousel?.length - 1]?.images[0]?.secure_url}
+                title={Carousel[Carousel?.length - 1]?.name}
+                description={Carousel[Carousel?.length - 1]?.description}
               />
-              {celebrities?.map((slide, index) => (
+              {Carousel?.map((slide, index) => (
                 <CarouselSlide
                   key={index}
-                  image={slide.image}
-                  title={slide.title}
-                  description={slide.description}
+                  image={slide?.images[0]?.secure_url}
+                  title={slide?.name}
+                  description={slide?.description}
                 />
               ))}
               <CarouselSlide
                 key="first-duplicate"
-                image={celebrities[0].image}
-                title={celebrities[0].title}
-                description={celebrities[0].description}
+                image={Carousel[0]?.images[0].secure_url}
+                title={Carousel[0]?.name}
+                description={Carousel[0]?.description}
               />
             </div>
           </div>
 
           <div className="flex w-full justify-center gap-2 py-2 flex-wrap">
-            {celebrities?.map((_, index) => (
+            {Carousel?.map((_, index) => (
               <button
                 key={index}
                 className={`btn btn-xs dark:bg-gray-800 bg-white dark:text-white ${
@@ -136,13 +153,14 @@ function HomePage() {
             Popular Products
           </h2>
           <div className="flex justify-evenly overflow-y-scroll hide-scrollbar  scrollbar-width-thin flex-shrink gap-6 w-full">
-            {Array.isArray(topProducts) &&
-              topProducts?.length > 0 &&
-              topProducts?.map((product, ind) => (
+            {Array.isArray(topProduct) &&
+              topProduct?.length > 0 &&
+              topProduct?.map((product, ind) => (
                 <ProductCard
                   data={product}
                   key={ind}
                   className="relative group w-full"
+                  onProductDelete={handleProductDelete}
                 />
               ))}
           </div>
@@ -154,20 +172,21 @@ function HomePage() {
             More Products
           </h2>
           <div className="flex flex-wrap justify-evenly gap-6 my-6 w-full">
-            {Array.isArray(product) &&
-              product?.length > 0 &&
-              product?.map((product, ind) => (
+            {Array.isArray(products) &&
+              products?.length > 0 &&
+              products?.map((product, ind) => (
                 <ProductCard
                   data={product}
                   key={ind}
                   className="relative group"
+                  onProductDelete={handleProductDelete}
                 />
               ))}
           </div>
         </div>
         <div className="w-full mb-10 ">
           <hr className="h-1 bg-slate-200" />
-          <h1 className="text-2xl font-bold mb-4 ml-10 text-start dark:text-white text-black">
+          <h1 className="text-2xl mt-10 font-bold mb-4 ml-10 text-start dark:text-white text-black">
             feedback Section
           </h1>
           <FeedbackForm />

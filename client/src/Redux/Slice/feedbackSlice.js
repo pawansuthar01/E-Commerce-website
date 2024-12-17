@@ -4,6 +4,8 @@ import axiosInstance from "../../helper/axiosInstance";
 
 const initialState = {
   Feedback: [],
+  TotalFeedbackCount: 1000,
+  happyCustomers: 500,
 };
 export const SubmitFeedback = createAsyncThunk(
   "feedback/Submit",
@@ -52,7 +54,11 @@ const FeedbackRedux = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder.addCase(getFeedback.fulfilled, (state, action) => {
-      state.Feedback = action?.payload?.data;
+      if (action?.payload?.success) {
+        state.Feedback = action?.payload?.data;
+        state.happyCustomers = action?.payload?.happyCustomers;
+        state.TotalFeedbackCount = action?.payload?.TotalFeedbackCount;
+      }
     });
   },
 });

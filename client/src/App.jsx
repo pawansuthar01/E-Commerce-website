@@ -20,6 +20,7 @@ import ThankYou from "./Page/Order/Thankyou";
 import UpdateProfile from "./Page/User/Update";
 import SlowInternetPage from "./helper/CheckInternet";
 import AdminDashboard from "./Page/ADMIN/Dashboard";
+import CarouselUpload from "./Page/ADMIN/CarouselUpload/CarouselUpload";
 function App() {
   return (
     <ThemeProvider>
@@ -55,6 +56,7 @@ function App() {
           </Route>
           <Route element={<RequireAuth allowedRole={["ADMIN", "AUTHOR"]} />}>
             <Route path="/AddProduct" element={<AddProduct />}></Route>
+            <Route path="/CarouselUpload" element={<CarouselUpload />}></Route>
             <Route path="/DashBoard" element={<AdminDashboard />}></Route>
           </Route>
           <Route path="/Denied" element={<Denied />}></Route>

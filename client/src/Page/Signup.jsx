@@ -35,6 +35,7 @@ function SignUp() {
 
   const handelImageInput = (e) => {
     e.preventDefault();
+
     const image = e.target.files[0];
     if (image) {
       setSignUpData({
@@ -42,6 +43,7 @@ function SignUp() {
         avatar: image,
       });
     }
+
     const fileReader = new FileReader();
     fileReader.readAsDataURL(image);
     fileReader.addEventListener("load", function () {
@@ -56,56 +58,68 @@ function SignUp() {
       ...SignUpData,
       [name]: value,
     });
+    document.getElementById(name).style.borderColor = "";
+    document.getElementById(name).nextElementSibling.innerHTML = name;
+    document.getElementById(name).nextElementSibling.style.color = "";
   };
 
   const handleCreate = async (event) => {
     event.preventDefault();
     setLoading(true);
-    if (
-      !SignUpData.fullName ||
-      !SignUpData.userName ||
-      !SignUpData.password ||
-      !SignUpData.email ||
-      !SignUpData.avatar ||
-      !SignUpData.phoneNumber ||
-      !SignUpData.ConfirmPassword
-    ) {
+
+    if (!SignUpData.avatar) {
       setLoading(false);
-      toast.error("All Fields are required...");
+      document.getElementById("uploadImage").style.borderColor = "red";
+      document.getElementById("uploadImage").nextElementSibling.style.color =
+        "red";
       return;
     }
     if (SignUpData.fullName.length < 5) {
       setLoading(false);
-      toast.error("FullName should be at least 5 characters..");
+      document.getElementById("fullName").style.borderColor = "red";
+      document.getElementById("fullName").nextElementSibling.style.color =
+        "red";
+
       return;
     }
     if (!isEmail(SignUpData.email)) {
       setLoading(false);
-      toast.error("Invalid email..");
+      document.getElementById("email").style.borderColor = "red";
+      document.getElementById("email").nextElementSibling.style.color = "red";
       return;
     }
     if (!isValidPassword(SignUpData.password)) {
       setLoading(false);
-      toast.error(
-        "Password should be 6-16 characters and include at least one number and one special character.."
-      );
+      document.getElementById("password").style.borderColor = "red";
+      document.getElementById("password").nextElementSibling.style.color =
+        "red";
+
       return;
     }
     if (!isPhoneNumber(SignUpData.phoneNumber)) {
       setLoading(false);
-      toast.error("Invalid Phone Number..");
+      document.getElementById("phoneNumber").style.borderColor = "red";
+      document.getElementById("phoneNumber").nextElementSibling.style.color =
+        "red";
+
       return;
     }
     if (!isUserName(SignUpData.userName)) {
       setLoading(false);
-      toast.error(
-        "Username should be 6-20 characters and contain no spaces or special characters.."
-      );
+      document.getElementById("userName").style.borderColor = "red";
+      document.getElementById("userName").nextElementSibling.style.color =
+        "red";
       return;
     }
     if (SignUpData.password !== SignUpData.ConfirmPassword) {
       setLoading(false);
-      toast.error("Password and Confirm Password do not match..");
+      document.getElementById("password").style.borderColor = "red";
+      document.getElementById("password").nextElementSibling.style.color =
+        "red";
+      document.getElementById("ConfirmPassword").style.borderColor = "red";
+      document.getElementById(
+        "ConfirmPassword"
+      ).nextElementSibling.style.color = "red";
       return;
     }
     setShowLoading(true);
@@ -122,7 +136,24 @@ function SignUp() {
       setLoading(false);
       setShowLoading(false);
     }
-
+    if (!response?.payload?.success) {
+      if (response?.payload?.message == "Username already exists") {
+        document.getElementById("userName").style.borderColor = "red";
+        document.getElementById("userName").nextElementSibling.innerHTML =
+          response?.payload?.message;
+        document.getElementById("userName").nextElementSibling.style.color =
+          "red";
+      }
+      if (response?.payload?.message == "Email already exists") {
+        document.getElementById("email").style.borderColor = "red";
+        document.getElementById("email").nextElementSibling.innerHTML =
+          response?.payload?.message;
+        document.getElementById("email").nextElementSibling.style.color = "red";
+      }
+      if (response?.payload?.message) {
+        alert(response?.payload?.message);
+      }
+    }
     if (response?.payload?.success) {
       setLoading(false);
       navigate("/");
@@ -171,7 +202,17 @@ function SignUp() {
                   </div>
                 ) : (
                   <div>
-                    <BsPersonCircle className="w-24 h-24 rounded-full m-auto" />
+                    <BsPersonCircle
+                      id="uploadImage"
+                      name="uploadImage"
+                      className="w-24 h-24 rounded-full m-auto border-2"
+                    />
+                    <label
+                      htmlFor="uploadImage"
+                      className=" text-xl mb-5 flex justify-center"
+                    >
+                      upload Image
+                    </label>
                   </div>
                 )}
               </label>
@@ -295,19 +336,19 @@ function SignUp() {
                   name="password"
                   id="password"
                   required
-                  className="peer w-full border-b-2 border-gray-300  focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent  dark:text-gray-200"
+                  className="peer w-full border-b-2  border-gray-300  focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent  dark:text-gray-200"
                 />
                 {SignUpData.password ? (
                   <label
                     htmlFor="password"
-                    className=" absolute left-0 top-[-20px] text-sm text-gray-500 dark:text-gray-300"
+                    className=" absolute left-0 top-[-20px] text-sm text-gray-500 dark:text-gray-300 "
                   >
                     Password
                   </label>
                 ) : (
                   <label
                     htmlFor="password"
-                    className="absolute left-0 top-2 text-lg text-gray-500 dark:text-gray-300 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm"
+                    className="absolute left-0 top-2 text-lg text-gray-500 dark:text-gray-300  transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm"
                   >
                     Password
                   </label>

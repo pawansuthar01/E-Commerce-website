@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 const initialState = {
   product: [],
   topProducts: [],
+  totalProducts: 10000,
 };
 export const getAllProduct = createAsyncThunk(
   "/product",
@@ -33,8 +34,11 @@ export const getAllProduct = createAsyncThunk(
 export const getSearchProduct = createAsyncThunk(
   "/product/get",
   async (data) => {
+    console.log(data);
     try {
-      const res = axiosInstance.get(`/api/v3/Product/Search/${data}`);
+      const res = axiosInstance.get(
+        `/api/v3/Product/Search?query=${encodeURIComponent(data)}`
+      );
       toast.promise(res, {
         loading: "please wait! Search product..",
         success: (data) => {
@@ -203,6 +207,40 @@ export const LikeAndDisLike = createAsyncThunk(
     }
   }
 );
+export const DeleteProduct = createAsyncThunk("Product/Delete", async (id) => {
+  dispatch({ type: "DELETE_PRODUCT_OPTIMISTIC", payload: id });
+  try {
+    const res = axiosInstance.delete(`/api/v3/Admin/Product/${id}`);
+    toast.promise(res, {
+      loading: "please wait! Delete product..",
+      success: (data) => {
+        return data?.data?.message;
+      },
+
+      error: (data) => {
+        return data?.response?.data?.message;
+      },
+    });
+    dispatch({ type: "DELETE_PRODUCT_SUCCESS" });
+    return (await res).data;
+  } catch (error) {
+    dispatch({ type: "DELETE_PRODUCT_FAIL", payload: error.message });
+    toast.error(error?.response?.message);
+  }
+});
+const productReducer = (state = { products: [] }, action) => {
+  switch (action.type) {
+    case "DELETE_PRODUCT_OPTIMISTIC":
+      return {
+        ...state,
+        products: state.products.filter((p) => p._id !== action.payload),
+      };
+    case "DELETE_PRODUCT_FAIL":
+      return { ...state, error: action.payload }; // Optionally handle error
+    default:
+      return state;
+  }
+};
 
 const productRedux = createSlice({
   name: "product",
@@ -210,8 +248,11 @@ const productRedux = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(getAllProduct.fulfilled, (state, action) => {
-      state.product = action?.payload?.data;
-      state.topProducts = action?.payload?.popularProducts;
+      if (action?.payload?.success) {
+        state.product = action?.payload?.data;
+        state.topProducts = action?.payload?.popularProducts;
+        state.totalProducts = action?.payload?.totalProducts;
+      }
     });
   },
 });

@@ -1,8 +1,25 @@
 import Layout from "../layout/layout";
 import AboutImage from "../assets/home/download.jpg";
 import { useNavigate } from "react-router-dom";
+import FeedbackForm from "../Components/feedbackfrom";
+import FeedbackList from "../Components/feedbackList";
+import { useSelector } from "react-redux";
 function About() {
-  const navigate = useNavigate();
+  const { happyCustomers, TotalFeedbackCount, Feedback } = useSelector(
+    (state) => state?.feedback
+  );
+  const { totalProducts } = useSelector((state) => state?.product);
+  function formatCount(count) {
+    if (count >= 1_000_000_000) {
+      return (count / 1_000_000_000).toFixed(1).replace(/\.0$/, "") + "B";
+    } else if (count >= 1_000_000) {
+      return (count / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
+    } else if (count >= 1_000) {
+      return (count / 1_000).toFixed(1).replace(/\.0$/, "") + "k";
+    }
+    return count.toString();
+  }
+
   return (
     <Layout>
       <div className="sm:mt-[50px ]  select-none relative max-sm:mt-2">
@@ -61,17 +78,32 @@ function About() {
             <p className="text-xl ">All Over India </p>
           </div>
           <div className="flex flex-col justify-center cursor-pointer  p-5 rounded hover:bg-[#f1d6cb] bg-[#fce7de] dark:bg-[#111825] dark:border-2 border-[#182237] text-center line-clamp-2 sm:min-w-[200px]">
-            <h1 className="text-2xl font-bold">250K</h1>
+            <h1 className="text-2xl font-bold">{formatCount(totalProducts)}</h1>
             <p className="text-xl ">prodect avaliable </p>
           </div>
           <div className="flex flex-col justify-center cursor-pointer  p-5 rounded hover:bg-[#f1d6cb] bg-[#fce7de] dark:bg-[#111825] dark:border-2 border-[#182237] text-center line-clamp-2 sm:min-w-[200px]">
-            <h1 className="text-2xl font-bold">2K</h1>
+            <h1 className="text-2xl font-bold">
+              {" "}
+              {formatCount(TotalFeedbackCount)}
+            </h1>
             <p className="text-xl  ">prodect reviews </p>
           </div>
           <div className="flex flex-col justify-center cursor-pointer  p-5 rounded hover:bg-[#f1d6cb] bg-[#fce7de] dark:bg-[#111825] dark:border-2 border-[#182237] text-center line-clamp-2 sm:min-w-[200px] ">
-            <h1 className="text-2xl font-bold capitalize">100K</h1>
+            <h1 className="text-2xl font-bold capitalize">
+              {" "}
+              {formatCount(happyCustomers)}
+            </h1>
             <p className="text-xl  ">happy customers</p>
           </div>
+        </div>
+        {/* feedback section */}
+        <div className="w-full  ">
+          <hr className="h-1 bg-slate-200" />
+          <h1 className="text-2xl font-bold mb-4 ml-10 text-start dark:text-white text-black">
+            feedback Section
+          </h1>
+          <FeedbackForm />
+          <FeedbackList />
         </div>
       </div>
     </Layout>

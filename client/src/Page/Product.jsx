@@ -1,40 +1,66 @@
 import { useDispatch } from "react-redux";
-import { getAllProduct } from "../Redux/Slice/ProductSlice";
+import { getAllProduct, getSearchProduct } from "../Redux/Slice/ProductSlice";
 
 import { useEffect, useState } from "react";
 import ProductCard from "../Components/productCard";
 import Layout from "../layout/layout";
 import FeedbackForm from "../Components/feedbackfrom";
 import FeedbackList from "../Components/feedbackList";
+import { useLocation } from "react-router-dom";
+import SearchBar from "../Components/SearchBar";
 
 function Product() {
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState(false);
+  const [query, setQuery] = useState("");
   const dispatch = useDispatch();
+  const { state } = useLocation();
 
+  const handleSearch = async (query) => {
+    try {
+      setQuery(query);
+      setLoading(true);
+
+      const res = await dispatch(getSearchProduct(query));
+      setLoading(false);
+      setSearch(true);
+      setProducts(res?.payload?.data);
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+    }
+  };
   const fetchProducts = async (page) => {
     setLoading(true);
 
     try {
-      const response = await dispatch(
-        getAllProduct({ page, limit: window.innerWidth > 760 ? "50" : "25" })
-      );
-      const { data, totalPages } = response.payload;
-      console.log(
-        data.map((orderCount) => {
-          return orderCount.orderCount;
-        })
-      );
-      setProducts(data);
-      setTotalPages(totalPages);
-      setCurrentPage(page);
+      if (state) {
+        setQuery(state);
+        const res = await dispatch(getSearchProduct(state));
+        setProducts(res?.payload?.data);
+        setSearch(true);
+      } else {
+        setSearch(false);
+        const response = await dispatch(
+          getAllProduct({ page, limit: window.innerWidth > 760 ? "50" : "25" })
+        );
+        const { data, totalPages } = response.payload;
+        setProducts(data);
+        setTotalPages(totalPages);
+        setCurrentPage(page);
+      }
     } catch (error) {
-      console.error("Error fetching products:", error);
     } finally {
       setLoading(false); // Hide loader
     }
+  };
+
+  const handleProductDelete = (productId) => {
+    setProducts((prevProducts) =>
+      prevProducts.filter((product) => product._id !== productId)
+    );
   };
 
   useEffect(() => {
@@ -48,59 +74,29 @@ function Product() {
   };
 
   return (
-    <Layout>
+    <Layout load={true}>
       <div className="min-h-[100vh] ">
-        <div className="sm:hidden  flex w-screen justify-center mt-4 ">
-          <label
-            htmlFor="default-search"
-            className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
-          >
-            Search
-          </label>
-          <div className="relative w-full mx-10  ">
-            <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none   ">
-              <svg
-                className="w-4 h-4 text-gray-500 dark:text-gray-400"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                />
-              </svg>
-            </div>
-            <input
-              type="search"
-              id="default-search"
-              className="w-full p-4 ps-10 text-sm outline-none text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="Search Mockups, Logos..."
-              required
-            />
-            <button
-              type="submit"
-              className="text-white absolute end-2.5 bottom-2.5 bg-blue-700  border-blue-700 hover:bg-transparent hover:text-blue-700 hover:border-2 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            >
-              Search
-            </button>
-          </div>
-        </div>
+        <SearchBar onSearch={handleSearch} width={"w-[80%]"} />
         <div className="container mx-auto ">
           {loading ? (
-            <div className="text-center py-8">Loading products...</div>
-          ) : products.length > 0 ? (
+            <div className="text-center py-8">
+              {" "}
+              {search ? "searching products..." : "Loading products..."}
+            </div>
+          ) : products?.length > 0 ? (
             <>
+              {search && (
+                <h1 className=" my-10 text-center text-2xl font-serif text-black dark:text-white">
+                  Your Search product {query}
+                </h1>
+              )}
               <div className=" flex flex-wrap  max-sm:justify-center justify-evenly  gap-10 my-10">
                 {products.map((product) => (
                   <ProductCard
                     key={product._id}
                     data={product}
                     loadProduct={() => fetchProducts()}
+                    onProductDelete={handleProductDelete}
                   />
                 ))}
               </div>
@@ -140,7 +136,10 @@ function Product() {
               </div>
             </>
           ) : (
-            <div className="text-center py-8">No products found.</div>
+            <div className="text-center py-8">
+              {" "}
+              {search ? "Not Available product..." : "No products Found..."}
+            </div>
           )}
         </div>
         {/* feedback section */}

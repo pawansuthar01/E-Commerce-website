@@ -7,11 +7,9 @@ export default {
     extend: {
       screens: {
         "max-sm": { max: "800px" },
+        "max-w-xs": { max: "323px" },
         sm: { min: "800px" },
       },
-      // scrollbar: {
-      //   "scrollbar-width": { scrollbar-width:  "10px" },
-      // },
 
       animation: {
         "carousel-slide": "carousel 0.8s ease-in-out",

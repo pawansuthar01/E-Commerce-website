@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   AddProductCard,
+  DeleteProduct,
   LikeAndDisLike,
   RemoveProductCard,
 } from "../Redux/Slice/ProductSlice";
@@ -12,7 +13,7 @@ import { AiOutlineDelete } from "react-icons/ai";
 import toast from "react-hot-toast";
 import { LoadAccount } from "../Redux/Slice/authSlice";
 
-function ProductCard({ data }) {
+function ProductCard({ data, onProductDelete }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isLike, setIsLike] = useState(false);
@@ -38,16 +39,15 @@ function ProductCard({ data }) {
         (data.images && data.images.length > 0 && data.images[0]?.secure_url) ||
         data.image
     );
-  }, [data, userName, userData]);
+  }, [data, userName]);
   const loadProfile = async () => {
-    const res = await dispatch(LoadAccount());
+    await dispatch(LoadAccount());
   };
   const handleLikeDislike = async (id) => {
-    !isLike ? toast.success("like") : toast.success("dislike");
-
     setIsLike((prev) => !prev);
-    loadProfile();
+
     await dispatch(LikeAndDisLike(id));
+    loadProfile();
   };
 
   const handleAddToCart = async (productId) => {
@@ -61,6 +61,20 @@ function ProductCard({ data }) {
       await dispatch(RemoveProductCard(productId));
       loadProfile();
     }
+  };
+  const handleDeleteProduct = async (productId) => {
+    if (!productId) return;
+
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this product?"
+    );
+
+    if (!isConfirmed) return;
+
+    onProductDelete(productId);
+
+    await dispatch(DeleteProduct(productId));
+    toast.success("Product deleted successfully");
   };
 
   const handleMouseEnter = () => {
@@ -78,21 +92,23 @@ function ProductCard({ data }) {
   };
 
   return (
-    <div className="w-[260px] flex-shrink-0 max-sm:w-[150px] flex flex-col cursor-pointer sm:h-[400px] bg-white border border-gray-200 rounded-lg shadow p-2 dark:bg-gray-800 dark:border-gray-700">
+    <div className="w-[250px] flex-shrink-0 max-w-xs:w-[250px] max-w-xs:h-[350px] max-sm:w-[150px] flex flex-col cursor-pointer max-sm:h-[250px]  sm:h-[400px] bg-white border border-gray-200 rounded-lg shadow p-2 dark:bg-gray-800 dark:border-gray-700">
       {(role === "ADMIN" || role === "AUTHOR") && (
-        <AiOutlineDelete
-          size={36}
-          className="text-red-400"
-          onClick={() => {
-            // Add delete logic
-          }}
-        />
+        <>
+          <AiOutlineDelete
+            size={36}
+            className="text-red-400"
+            onClick={() => {
+              handleDeleteProduct(data._id);
+            }}
+          />
+        </>
       )}
-      <section className="relative h-full flex justify-center rounded-lg p-5 w-[100%] group overflow-hidden">
+      <section className="relative h-full flex justify-center rounded-lg p-5 w-full  group overflow-hidden">
         <img
           src={imageUrl}
           alt="product_image"
-          className="rounded-xl transition-transform duration-500 ease-in-out group-hover:scale-110"
+          className="rounded-lg max-w-xs:w-[100%] max-w-xs:object-contain  max-w-xs:h-[100%]  transition-transform duration-500 ease-in-out group-hover:scale-110"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           onClick={() =>

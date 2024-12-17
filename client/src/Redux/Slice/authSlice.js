@@ -8,7 +8,7 @@ const initialState = {
   exp: Number(localStorage.getItem("exp")) || 0,
   userName: localStorage.getItem("userName") || "",
   data:
-    localStorage.getItem("data") !== null
+    localStorage.getItem("data") == undefined
       ? JSON.parse(localStorage.getItem("data"))
       : {},
 };
@@ -17,22 +17,10 @@ export const CreateAccount = createAsyncThunk(
   "/auth/register",
   async (data) => {
     try {
-      const res = axiosInstance.post("/api/v3/user/register", data);
-      toast.promise(res, {
-        loading: "please wait! creating account..",
-        success: (data) => {
-          return data?.data?.message;
-        },
-
-        error: (data) => {
-          return data?.response?.data?.message;
-        },
-      });
-      const Data = await res;
-      console.log(Data);
-      return (await res).data;
+      const res = await axiosInstance.post("/api/v3/user/register", data);
+      return res.data;
     } catch (error) {
-      toast.error(e?.response?.message);
+      return error?.response?.data || error?.message || "Something went wrong";
     }
   }
 );
@@ -136,24 +124,24 @@ const authSliceRedux = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(CreateAccount.fulfilled, (state, action) => {
-        const { data, exp } = action.payload;
+        if (action.payload.success) {
+          localStorage.setItem("data", JSON.stringify(action?.payload?.data));
+          localStorage.setItem("isLoggedIn", true);
+          localStorage.setItem("exp", Number(action?.payload?.exp));
+          localStorage.setItem("role", action?.payload?.data.role);
+          localStorage.setItem("userName", action?.payload?.data.userName);
 
-        localStorage.setItem("data", JSON.stringify(data));
-        localStorage.setItem("isLoggedIn", true);
-        localStorage.setItem("exp", Number(exp));
-        localStorage.setItem("role", data.role);
-        localStorage.setItem("userName", data.userName);
-
-        state.userName = data.userName;
-        state.walletProduct = [...data.walletAddProducts];
-        state.exp = Number(exp);
-        state.isLoggedIn = true;
-        state.data = data;
-        state.role = data.role;
+          state.userName = action?.payload?.data.userName;
+          state.walletProduct = [...action?.payload?.data.walletAddProducts];
+          state.exp = Number(action?.payload?.exp);
+          state.isLoggedIn = true;
+          state.data = action?.payload?.data;
+          state.role = action?.payload?.data.role;
+        }
       })
       .addCase(LoginAccount.fulfilled, (state, action) => {
         const { data, exp } = action.payload;
-        console.log("login", exp);
+
         localStorage.setItem("data", JSON.stringify(data));
         localStorage.setItem("isLoggedIn", true);
         localStorage.setItem("exp", Number(exp));
@@ -169,7 +157,7 @@ const authSliceRedux = createSlice({
       })
       .addCase(LoadAccount.fulfilled, (state, action) => {
         const { data, exp } = action.payload;
-        console.log("load", exp);
+
         localStorage.setItem("data", JSON.stringify(data));
         localStorage.setItem("isLoggedIn", true);
         localStorage.setItem("exp", Number(exp));

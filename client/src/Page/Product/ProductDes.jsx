@@ -79,7 +79,11 @@ function ProductDescription() {
   useEffect(() => {
     const fetchSearch = async () => {
       if (ProductDetails?.name) {
-        const res = await dispatch(getSearchProduct(ProductDetails.name));
+        const res = await dispatch(
+          getSearchProduct({
+            name: ProductDetails.name,
+          })
+        );
         setSearch(res.payload?.data || []);
       }
     };
