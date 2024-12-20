@@ -163,7 +163,7 @@ function CheckoutPage() {
 
         const { orderId, currency, amount } = orderResponse?.payload;
         const options = {
-          key: "rzp_live_tQdXshnQ0yJCfk",
+          key: "rzp_test_ySodygWXmjNTgT",
           amount,
           currency,
           name: "Kgs Doors",

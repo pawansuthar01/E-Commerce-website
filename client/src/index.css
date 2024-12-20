@@ -21,6 +21,7 @@
   margin: 0;
   padding: 0;
 }
+
 input[type="number"] {
   appearance: none; /* Standard */
   -webkit-appearance: none; /* Webkit-specific */

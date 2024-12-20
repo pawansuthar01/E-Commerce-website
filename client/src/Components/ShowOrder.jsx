@@ -1,10 +1,10 @@
-import { useRef, useState } from "react";
 import { MdCurrencyRupee } from "react-icons/md";
 import { FiEdit } from "react-icons/fi";
 import { useDispatch } from "react-redux";
-import { UpdateOrder } from "../Redux/Slice/OrderSlice";
-import toast from "react-hot-toast";
-import { useReactToPrint } from "react-to-print";
+import { FaPrint } from "react-icons/fa6";
+import { AiOutlinePrinter } from "react-icons/ai";
+import { useState } from "react";
+import ProfessionalShippingLabel from "./Lable";
 
 export const OrderShow = ({
   Orders,
@@ -17,18 +17,8 @@ export const OrderShow = ({
   handelOrderCancel,
 }) => {
   const dispatch = useDispatch();
-
-  // Function to handle order update (status or paymentStatus)
-
-  // Helper to render progress bar width
-  const printContentRef = useRef();
-
-  const handlePrint = useReactToPrint({
-    content: () => {
-      console.log(printContentRef.current); // Check if this returns the expected content
-      return printContentRef.current;
-    },
-  });
+  const [showPrint, setShowPrint] = useState(false);
+  const [OrderPrintData, setOrderPrintData] = useState();
 
   const renderOrderProgress = (status) => {
     const progressWidth = {
@@ -46,12 +36,6 @@ export const OrderShow = ({
       key={index}
       className="bg-white dark:bg-[#111827] sm:w-[45%] dark:text-white shadow-[0_0_2px_black] mt-2 rounded-lg p-6 max-w-2xl mx-auto mb-4 flex flex-col"
     >
-      <button
-        onClick={handlePrint}
-        className="text-white bg-blue-600 hover:bg-blue-500 p-2 rounded"
-      >
-        Print Order Details
-      </button>
       <h2 className="text-lg flex justify-between dark:text-white font-semibold mb-4 max-sm:text-sm gap-2">
         Order ID: {order._id}
         {orderStats[order._id] === "Canceled" ? (
@@ -59,15 +43,22 @@ export const OrderShow = ({
             Canceled
           </p>
         ) : Role == "ADMIN" || Role == "AUTHOR" ? (
-          <FiEdit
-            onClick={() => {
-              setOrderId(order._id);
-              setPaymentStatus(order.paymentStatus);
-              setEditShow(true);
-            }}
-            size={26}
-            className="cursor-pointer text-red-400 hover:text-red-300"
-          />
+          <div className="flex gap-1">
+            <FiEdit
+              onClick={() => {
+                setOrderId(order._id);
+                setPaymentStatus(order.paymentStatus);
+                setEditShow(true);
+              }}
+              size={26}
+              className="cursor-pointer text-red-400 hover:text-red-300"
+            />
+            <AiOutlinePrinter
+              onClick={() => (setShowPrint(true), setOrderPrintData(order))}
+              size={26}
+              className="text-blue-500 cursor-pointer"
+            />
+          </div>
         ) : (
           <p
             className="text-red-500 text-sm cursor-pointer hover:underline"
@@ -77,7 +68,6 @@ export const OrderShow = ({
           </p>
         )}
       </h2>
-
       {/* Products Section */}
       {order.products.map((product, productIndex) => (
         <div key={productIndex} className="flex space-x-4 mb-4">
@@ -97,13 +87,12 @@ export const OrderShow = ({
             <p className="text-gray-500 text-sm dark:text-white">
               Quantity: {product.quantity}
             </p>
-            <p className="mt-2 text-gray-700 dark:text-white">
+            <p className="mt-2 text-gray-700 dark:text-white w-[100px] line-clamp-1">
               {product.productDetails.description}
             </p>
           </div>
         </div>
       ))}
-
       {/* Delivery and Order Details */}
       <div className="mt-6 sm:grid grid-cols-2 gap-4 dark:text-white">
         <div>
@@ -164,7 +153,6 @@ export const OrderShow = ({
           </p>
         </div>
       </div>
-
       {/* Order Progress */}
       <div className="mt-6">
         <div className="flex justify-between">
@@ -226,6 +214,12 @@ export const OrderShow = ({
           </div>
         )}
       </div>
+      {showPrint && (
+        <ProfessionalShippingLabel
+          Order={OrderPrintData}
+          setShowPrint={setShowPrint}
+        />
+      )}
     </div>
   ));
 };

@@ -5,8 +5,8 @@ import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { FiEdit } from "react-icons/fi";
 import Layout from "../../../layout/layout";
-import { AddNewCarousel } from "../../../Redux/Slice/CarouselSlice";
 import LoadingButton from "../../../constants/LoadingBtn";
+import { AddNewCarousel, getAllCarousel } from "../../../Redux/Slice/Carousel";
 
 function CarouselUpload() {
   const dispatch = useDispatch();
@@ -17,7 +17,6 @@ function CarouselUpload() {
 
   const [CarouselUpData, setCarouselUpData] = useState({
     name: "",
-    price: "",
     description: "",
     images: "", // For multiple images
   });
@@ -65,7 +64,6 @@ function CarouselUpload() {
     // Validate form fields and image count
     if (
       !CarouselUpData.name ||
-      !CarouselUpData.price ||
       !CarouselUpData.description ||
       CarouselUpData.images.length < 1 ||
       CarouselUpData.images.length > 1
@@ -85,10 +83,8 @@ function CarouselUpload() {
       toast.error("Product price should be at least 1 Rupee.");
       return;
     }
-    console.log(CarouselUpData);
     const formData = new FormData();
     formData.append("name", CarouselUpData.name);
-    formData.append("price", CarouselUpData.price);
     formData.append("description", CarouselUpData.description);
 
     formData.append("images", CarouselUpData.images);
@@ -101,7 +97,8 @@ function CarouselUpload() {
 
     if (response?.payload?.success) {
       setLoading(false);
-      navigate("/AllProduct");
+      await dispatch(getAllCarousel());
+      navigate("/");
       setCarouselUpData({
         name: "",
         price: "",

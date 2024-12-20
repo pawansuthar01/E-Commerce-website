@@ -82,9 +82,16 @@ export const createOrderPayment = async (req, res, next) => {
     if (!totalAmount || totalAmount <= 0) {
       return next(new AppError("Invalid or missing totalAmount", 400));
     }
+    const amountInPaise = totalAmount * 100;
+    const MAX_AMOUNT = 500000;
+    if (amountInPaise <= MAX_AMOUNT) {
+      return next(
+        new AppError("Amount exceeds maximum limit allowed by Razorpay", 400)
+      );
+    }
 
     const options = {
-      amount: totalAmount * 100,
+      amount: amountInPaise,
       currency: "INR",
       receipt: `order_rcptid_${Date.now()}`,
     };

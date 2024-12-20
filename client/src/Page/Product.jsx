@@ -15,15 +15,14 @@ function Product() {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState(false);
-  const [query, setQuery] = useState("");
+  const [searchTitle, setSearchTitle] = useState("");
   const dispatch = useDispatch();
   const { state } = useLocation();
 
   const handleSearch = async (query) => {
     try {
-      setQuery(query);
       setLoading(true);
-
+      setSearchTitle(query);
       const res = await dispatch(getSearchProduct(query));
       setLoading(false);
       setSearch(true);
@@ -76,7 +75,12 @@ function Product() {
   return (
     <Layout load={true}>
       <div className="min-h-[100vh] ">
-        <SearchBar onSearch={handleSearch} width={"w-[80%]"} />
+        <SearchBar
+          setQueryBarTitle={searchTitle}
+          onSearch={handleSearch}
+          width={"w-[80%]"}
+          TopMargin={"mt-[10px]"}
+        />
         <div className="container mx-auto ">
           {loading ? (
             <div className="text-center py-8">
@@ -87,7 +91,7 @@ function Product() {
             <>
               {search && (
                 <h1 className=" my-10 text-center text-2xl font-serif text-black dark:text-white">
-                  Your Search product {query}
+                  Your Search product
                 </h1>
               )}
               <div className=" flex flex-wrap  max-sm:justify-center justify-evenly  gap-10 my-10">

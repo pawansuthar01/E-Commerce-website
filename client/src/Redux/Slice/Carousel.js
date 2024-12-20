@@ -8,8 +8,9 @@ const initialState = {
 export const getAllCarousel = createAsyncThunk(
   "/carousel/getallCarousel",
   async () => {
+    console.log("yes");
     try {
-      const res = axiosInstance.get(`/api/v3/user/getAllCarousel`);
+      const res = axiosInstance.get(`/api/v3/user/Carousel`);
       toast.promise(res, {
         loading: "Loading carousel...",
         success: (data) => {

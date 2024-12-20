@@ -15,13 +15,14 @@ import {
   getFeedback,
   SubmitFeedback,
 } from "../Controllers/feedback.Controller.js";
+import { getAllCarousel } from "../Controllers/CarouselController.js";
 const UserRouter = Router();
 UserRouter.post("/register", upload.single("avatar"), RegisterUser);
 UserRouter.post("/login", login);
 UserRouter.post("/SubmitFeedback", SubmitFeedback);
 UserRouter.get("/getFeedback", getFeedback);
 UserRouter.get("/logout", logout);
-
+UserRouter.get("/Carousel", getAllCarousel);
 UserRouter.get("/getProfile", isLoggedIn, getProfile);
 UserRouter.post("/resetPassword", resetPassword);
 UserRouter.post("/changePassword:resetToken", changePassword);

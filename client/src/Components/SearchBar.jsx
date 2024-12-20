@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 
-const SearchBar = ({ onSearch, width }) => {
-  const [query, setQuery] = useState(""); // User input
+const SearchBar = ({ setQueryBarTitle, onSearch, width, TopMargin }) => {
+  const [query, setQuery] = useState(setQueryBarTitle);
+  const [show, setShow] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
-  const products = useSelector((state) => state.product.product); // Assuming products are stored in state.product.products
+  const products = useSelector((state) => state.product.product);
+  const dropdownRef = useRef(null);
 
+  // Handle input changes
   useEffect(() => {
     const fetchSuggestions = () => {
       if (query.trim() === "") {
-        setSuggestions([]); // Clear suggestions if query is empty
+        setSuggestions([]);
         return;
       }
 
@@ -25,13 +28,35 @@ const SearchBar = ({ onSearch, width }) => {
     };
 
     const debounce = setTimeout(fetchSuggestions, 300);
-    return () => clearTimeout(debounce);
-  }, [query, products]); // Depend on both query and products
 
-  // Handle search button click
+    return () => clearTimeout(debounce);
+  }, [query, products]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShow(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleFocus = () => setShow(true);
+  const handleBlur = () => {
+    setTimeout(() => {
+      if (!query) {
+        setShow(false);
+      }
+    }, 300);
+  };
+
   const handleSearchClick = () => {
+    setShow(false);
     if (query.trim()) {
       setSuggestions([]);
+      document.getElementById("defaultSearch").value = query;
       onSearch(query); // Trigger search with current query
     }
   };
@@ -40,10 +65,10 @@ const SearchBar = ({ onSearch, width }) => {
     <div
       className={`relative ${!width && "max-sm:hidden"} flex ${
         width ? width : "w-full"
-      } mx-auto justify-center`}
+      } mx-auto justify-center ${TopMargin && TopMargin}`}
     >
       <label
-        htmlFor="default-search"
+        htmlFor="defaultSearch"
         className="mb-2 text-sm font-medium dark:text-white text-gray-900 sr-only"
       >
         Search
@@ -68,33 +93,40 @@ const SearchBar = ({ onSearch, width }) => {
         </div>
         <input
           type="search"
-          id="default-search"
+          id="defaultSearch"
           className="w-[100%] p-4 ps-10 text-sm outline-none dark:text-white dark:bg-gray-700 dark:border-gray-600 text-gray-900 bg-gray-50 border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
           placeholder="Search products..."
           autoComplete="off"
           value={query}
-          onChange={(e) => setQuery(e.target.value)} // Update query as user types
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          onChange={(e) => setQuery(e.target.value)}
           required
         />
         <button
           type="submit"
-          onClick={handleSearchClick} // Trigger search on click
+          onClick={() => (handleSearchClick(), setSuggestions([]))}
           className="text-white absolute end-2.5 bottom-2.5 dark:bg-blue-600 bg-blue-700 border-blue-700 hover:bg-transparent hover:text-blue-700 hover:border-2 font-medium rounded-lg text-sm px-4 py-2"
         >
           Search
         </button>
       </div>
 
-      {query && suggestions?.length > 0 && (
-        <div className="absolute w-full bg-white border rounded max-h-40 overflow-x-auto shadow-md mt-10 z-10">
+      {query && show && suggestions?.length > 0 && (
+        <div
+          ref={dropdownRef}
+          className="absolute w-full bg-white border rounded max-h-40 overflow-x-auto hide-scrollbar shadow-md mt-14 z-10 dark:text-white dark:bg-gray-700"
+        >
           {suggestions?.map((suggestion) => (
             <div
               key={suggestion._id}
-              className="p-2 cursor-pointer hover:bg-gray-200"
+              className="p-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-500"
               onClick={() => {
+                const formattedQuery = `${suggestion.name} under ${suggestion.price}`;
                 setSuggestions([]);
-                setQuery(suggestion.name);
-                onSearch(suggestion.name, suggestion.price); // Pass both name and price when suggestion is clicked
+                setShow(false);
+                setQuery(formattedQuery);
+                onSearch(formattedQuery);
               }}
             >
               {suggestion.name} under ₹{suggestion.price}

@@ -23,6 +23,7 @@ const NotificationSchema = new Schema(
         "New Order",
         "Canceled Order",
         "blog",
+        "New Account",
         "new product",
       ],
     },

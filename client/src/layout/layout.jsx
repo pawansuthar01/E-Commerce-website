@@ -58,20 +58,14 @@ function Layout({ children, load }) {
   };
   const handelNotificationLoad = async () => {
     if (isLoggedIn) {
-      if (
-        notification == undefined ||
-        notification == null ||
-        notification == ""
-      ) {
-        const res = await dispatch(NotificationGet());
-        await dispatch(LoadAccount());
-        if (res?.payload?.data) {
-          const notificationsArray = Array.isArray(res.payload.data)
-            ? res.payload.data
-            : [res.payload.data];
+      const res = await dispatch(NotificationGet());
+      await dispatch(LoadAccount());
+      if (res?.payload?.data) {
+        const notificationsArray = Array.isArray(res.payload.data)
+          ? res.payload.data
+          : [res.payload.data];
 
-          setNotification(notificationsArray);
-        }
+        setNotification(notificationsArray);
       }
     }
   };

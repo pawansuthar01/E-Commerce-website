@@ -27,6 +27,10 @@ export const SubmitFeedback = async (req, res, next) => {
 export const getFeedback = async (req, res, next) => {
   try {
     const data = await Feedback.find();
+    const TotalFeedbackCount = await Feedback.countDocuments();
+    const happyCustomers = await Feedback.countDocuments({
+      rating: { $gte: 3 },
+    });
     if (!data) {
       return next(
         new AppError("something went wrong , please tyr Again  ", 400)
@@ -35,6 +39,8 @@ export const getFeedback = async (req, res, next) => {
     res.status(201).json({
       success: true,
       data: data,
+      TotalFeedbackCount,
+      happyCustomers,
       message: "Feedback get successfully!",
     });
   } catch (error) {

@@ -55,6 +55,7 @@ const FeedbackRedux = createSlice({
   extraReducers: (builder) => {
     builder.addCase(getFeedback.fulfilled, (state, action) => {
       if (action?.payload?.success) {
+        console.log(action?.payload);
         state.Feedback = action?.payload?.data;
         state.happyCustomers = action?.payload?.happyCustomers;
         state.TotalFeedbackCount = action?.payload?.TotalFeedbackCount;

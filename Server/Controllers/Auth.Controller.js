@@ -5,11 +5,12 @@ import fs from "fs/promises";
 import crypto from "crypto";
 import SendEmail from "../utils/SendEmial.js";
 import { config } from "dotenv";
+import Notification from "../module/Notification.module.js";
 config();
 const cookieOption = {
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   httpOnly: true,
-  sameSite: "None",
+  sameSite: "Lax",
   secure: process.env.NODE_ENV === "production",
   path: "/",
 };
@@ -81,6 +82,12 @@ export const RegisterUser = async (req, res, next) => {
       );
     }
 
+    const notification = new Notification({
+      userId: user._id,
+      message: `WellCome KGS DOORS shop ,Enjoy Shopping.. .`,
+      type: "New Account",
+    });
+    await notification.save();
     const token = await user.generateJWTToken();
     user.password = undefined;
     res.cookie("token", token, cookieOption);

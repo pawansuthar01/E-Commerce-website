@@ -5,11 +5,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllProduct } from "../Redux/Slice/ProductSlice";
 import { celebrities } from "../constants/Homecarousellist";
 import CarouselSlide from "../Components/CarouselSlice";
-import { ProductCarousel } from "../Components/CarouselProduct";
 import LoginPrompt from "../Components/loginProment";
 import FeedbackForm from "../Components/feedbackfrom";
 import FeedbackList from "../Components/feedbackList";
-import { getAllCarousel } from "../Redux/Slice/CarouselSlice";
+import { getAllCarousel } from "../Redux/Slice/Carousel";
 
 function HomePage() {
   const [currentSlide, setCurrentSlide] = useState(1); // Start from 1 (middle of the duplicated slides)
@@ -19,20 +18,31 @@ function HomePage() {
   const [oneTime, setOneTime] = useState(true);
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state?.auth?.isLoggedIn);
-
+  const [carousel, SetCarousel] = useState([]);
   const { product, topProducts } = useSelector((state) => state.product);
-  const [products, setProducts] = useState(product);
-  const [topProduct, setTopProduct] = useState(topProducts);
+  const [products, setProducts] = useState([]);
+  const [topProduct, setTopProduct] = useState([]);
   const Carousel = useSelector((state) => state.carousel.Carousel);
-
+  useEffect(() => {
+    if (Carousel.length === 0) {
+      SetCarousel(celebrities);
+    } else {
+      SetCarousel(Carousel);
+    }
+  }, [Carousel]);
+  useEffect(() => {
+    if (products.length == 0 || topProduct.length == 0) {
+      setProducts(product);
+      setTopProduct(topProducts);
+    }
+  }, [product]);
   const ProductLoad = async () => {
     setLoading(true);
     if (Carousel?.length == 0) {
       await dispatch(getAllCarousel());
     }
     if (product.length == 0) {
-      const res = await dispatch(getAllProduct({ page: 1, limit: 25 }));
-      console.log(res.payload);
+      await dispatch(getAllProduct({ page: 1, limit: 25 }));
     }
     setLoading(false);
   };
@@ -66,9 +76,9 @@ function HomePage() {
     if (currentSlide === 0) {
       setTimeout(() => {
         setIsAnimating(false);
-        setCurrentSlide(Carousel?.length);
+        setCurrentSlide(carousel?.length);
       }, 700);
-    } else if (currentSlide === Carousel?.length + 1) {
+    } else if (currentSlide === carousel?.length + 1) {
       setTimeout(() => {
         setIsAnimating(false);
         setCurrentSlide(1);
@@ -106,11 +116,11 @@ function HomePage() {
             >
               <CarouselSlide
                 key="last-duplicate"
-                image={Carousel[Carousel?.length - 1]?.images[0]?.secure_url}
-                title={Carousel[Carousel?.length - 1]?.name}
-                description={Carousel[Carousel?.length - 1]?.description}
+                image={carousel[carousel?.length - 1]?.images[0]?.secure_url}
+                title={carousel[carousel?.length - 1]?.name}
+                description={carousel[carousel?.length - 1]?.description}
               />
-              {Carousel?.map((slide, index) => (
+              {carousel?.map((slide, index) => (
                 <CarouselSlide
                   key={index}
                   image={slide?.images[0]?.secure_url}
@@ -120,15 +130,15 @@ function HomePage() {
               ))}
               <CarouselSlide
                 key="first-duplicate"
-                image={Carousel[0]?.images[0].secure_url}
-                title={Carousel[0]?.name}
-                description={Carousel[0]?.description}
+                image={carousel[0]?.images[0]?.secure_url}
+                title={carousel[0]?.name}
+                description={carousel[0]?.description}
               />
             </div>
           </div>
 
           <div className="flex w-full justify-center gap-2 py-2 flex-wrap">
-            {Carousel?.map((_, index) => (
+            {carousel?.map((_, index) => (
               <button
                 key={index}
                 className={`btn btn-xs dark:bg-gray-800 bg-white dark:text-white ${

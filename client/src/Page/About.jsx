@@ -1,11 +1,10 @@
 import Layout from "../layout/layout";
 import AboutImage from "../assets/home/download.jpg";
-import { useNavigate } from "react-router-dom";
 import FeedbackForm from "../Components/feedbackfrom";
 import FeedbackList from "../Components/feedbackList";
 import { useSelector } from "react-redux";
 function About() {
-  const { happyCustomers, TotalFeedbackCount, Feedback } = useSelector(
+  const { happyCustomers, TotalFeedbackCount } = useSelector(
     (state) => state?.feedback
   );
   const { totalProducts } = useSelector((state) => state?.product);

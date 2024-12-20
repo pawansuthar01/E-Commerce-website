@@ -146,27 +146,44 @@ export const productDelete = async (req, res, next) => {
   }
 };
 export const getSearchProduct = async (req, res, next) => {
-  const { name } = req.params;
-  console.log(req.params);
-  if (!name) {
-    return next(new AppError("product Search for   required name  ...", 400));
-  }
+  const { query } = req.query;
   try {
-    const products = await Product.find({
-      name: { $regex: name, $options: "i" },
-    });
-    if (!products) {
-      return next(
-        new AppError(" product failed  to get.., Please try again..", 400)
-      );
+    let filter = {};
+    let name = "";
+    let maxPrice = null;
+
+    const regex = /(\w+)\s*under\s*(\d+)/;
+    const match = query.match(regex);
+
+    if (match) {
+      name = match[1];
+      maxPrice = match[2];
+    } else {
+      name = query;
     }
+
+    if (name) {
+      filter.name = { $regex: name, $options: "i" };
+    }
+    if (maxPrice) {
+      filter.price = { $lte: Number(maxPrice) };
+    }
+
+    const products = await Product.find(filter);
+
+    if (!products || products.length === 0) {
+      return next(new AppError("No products found. Please try again.", 404));
+    }
+
     res.status(200).json({
       success: true,
       data: products,
-      message: " search product successfully get...",
+      message: "Products fetched successfully.",
     });
   } catch (error) {
-    return next(new AppError(error.message, 400));
+    return next(
+      new AppError(`Failed to fetch products: ${error.message}`, 500)
+    );
   }
 };
 export const getProduct = async (req, res, next) => {

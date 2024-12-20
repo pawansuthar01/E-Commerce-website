@@ -10,7 +10,7 @@ const ThankYou = () => {
   useEffect(() => {}, []);
   return (
     <Layout>
-      <div className="bg-gray-100 dark:bg-[#1F2937] flex justify-center items-center w-full ">
+      <div className="bg-gray-100 dark:bg-[#1F2937] flex flex-col justify-center items-center w-full ">
         <div className=" w-full   p-6">
           {/* Thank You Message */}
           <h1 className="text-2xl font-bold text-green-600 mb-4">

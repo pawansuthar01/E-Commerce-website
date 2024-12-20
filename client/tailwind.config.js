@@ -9,6 +9,7 @@ export default {
         "max-sm": { max: "800px" },
         "max-w-xs": { max: "323px" },
         sm: { min: "800px" },
+        print: { raw: "print" },
       },
 
       animation: {

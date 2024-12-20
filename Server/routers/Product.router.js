@@ -8,7 +8,7 @@ import {
 } from "../Controllers/Product.Controller.js";
 const ProductRouter = Router();
 ProductRouter.get("/", getAllProduct);
-ProductRouter.get("/Search/:name", getSearchProduct);
+ProductRouter.get("/Search", getSearchProduct);
 ProductRouter.route("/:id")
   .get(isLoggedIn, getProduct)
   .put(isLoggedIn, LikeAndDisLikeProduct);

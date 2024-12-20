@@ -17,6 +17,9 @@ import { isEmail, isPhoneNumber } from "../../helper/regexMatch";
 import { OrderShow } from "../../Components/ShowOrder";
 import FeedbackForm from "../../Components/feedbackfrom";
 import FeedbackList from "../../Components/feedbackList";
+import OrderLabel from "../../Components/Lable";
+import AmazonOrderLabel from "../../Components/Lable";
+import ShippingLabel from "../../Components/Lable";
 
 function Profile() {
   const navigate = useNavigate();
@@ -188,9 +191,10 @@ function Profile() {
   }, [Orders]);
   useEffect(() => {
     loadProfile();
-
-    loadOrders();
   }, []);
+  useEffect(() => {
+    loadOrders();
+  }, [UserData, UserId]);
 
   return (
     <Layout>
@@ -272,18 +276,20 @@ function Profile() {
             </button>
           </div>
         ) : (
-          <div className="flex flex-wrap gap-1">
-            <OrderShow
-              Role={Role}
-              Orders={Orders}
-              orderStats={orderStats}
-              handelOrderCancel={(id) => handelOrderCancel(id)}
-              setShow={setShow}
-              setEditShow={setEditShow}
-              setOrderId={setOrderId}
-              setPaymentStatus={setPaymentStatus}
-            />
-          </div>
+          <>
+            <div className="flex flex-wrap gap-1">
+              <OrderShow
+                Role={Role}
+                Orders={Orders}
+                orderStats={orderStats}
+                handelOrderCancel={(id) => handelOrderCancel(id)}
+                setShow={setShow}
+                setEditShow={setEditShow}
+                setOrderId={setOrderId}
+                setPaymentStatus={setPaymentStatus}
+              />
+            </div>
+          </>
         )}
         {editShow && (
           <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-70 dark:bg-opacity-80 z-50">
