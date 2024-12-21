@@ -10,7 +10,12 @@ export const NotificationGet = createAsyncThunk(
   "/Notification/get",
   async () => {
     try {
-      const res = axiosInstance.get(`/api/v3/User/Notification`);
+      const token = localStorage.getItem("Authenticator");
+      const res = axiosInstance.get(`/api/v3/User/Notification`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
 
       toast.promise(res, {
         loading: "please wait! get notification..",
@@ -32,7 +37,16 @@ export const NotificationRead = createAsyncThunk(
   "/Notification/read",
   async (id) => {
     try {
-      const res = axiosInstance.put(`/api/v3/User/Notification/${id}`);
+      const token = localStorage.getItem("Authenticator");
+      const res = axiosInstance.put(
+        `/api/v3/User/Notification/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
 
       toast.promise(res, {
         loading: "please wait! set to read notification..",
@@ -57,7 +71,7 @@ const NotificationSliceRedux = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(NotificationGet.fulfilled, (state, action) => {
-      if (action.payload) {
+      if (action.payload?.success) {
         state.Notification = action.payload.data;
       }
     });

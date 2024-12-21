@@ -2,22 +2,21 @@ import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 
 const SearchBar = ({ setQueryBarTitle, onSearch, width, TopMargin }) => {
-  const [query, setQuery] = useState(setQueryBarTitle);
+  const [query, setQuery] = useState(setQueryBarTitle || "");
   const [show, setShow] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const products = useSelector((state) => state.product.product);
   const dropdownRef = useRef(null);
 
-  // Handle input changes
   useEffect(() => {
     const fetchSuggestions = () => {
-      if (query.trim() === "") {
+      if (query.trim() == "") {
         setSuggestions([]);
         return;
       }
 
       const filteredSuggestions = products?.filter((product) => {
-        const regex = new RegExp(query, "i"); // Case-insensitive search
+        const regex = new RegExp(query, "i");
         return (
           product.name.match(regex) ||
           product.price <= parseInt(query.split("under")[1]?.trim(), 10)

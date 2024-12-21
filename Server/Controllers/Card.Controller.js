@@ -36,7 +36,7 @@ export const AddCardProduct = async (req, res, next) => {
     const productImage = FindProduct.images
       ? FindProduct.images[0] // Select the first image
       : { public_id: null, secure_url: null }; // Fallback if no images
-    console.log(productImage);
+
     userFind.walletAddProducts.push({
       product: FindProduct._id, // Product ID
       name: FindProduct.name,

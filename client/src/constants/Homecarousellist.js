@@ -9,7 +9,7 @@ const image8 = "https://i.ibb.co/xHcb3CN/download-3.png";
 
 export const celebrities = [
   {
-    name: "Nelson Mandela",
+    name: " wellCome Chair",
     description:
       "Education is the most powerful tool you can use to change the world.",
 
@@ -21,7 +21,7 @@ export const celebrities = [
     slideNumber: 1,
   },
   {
-    name: "ABJ Abdul  ",
+    name: "wellCome  ",
     description:
       "Failure will never overtake me if my determination to succeed is strong enough.",
 
@@ -33,7 +33,7 @@ export const celebrities = [
     slideNumber: 2,
   },
   {
-    name: "Albert Einstein ",
+    name: "wellCome KGS DOORS ",
     description: "A person who never made a mistake never tried anything new.",
 
     images: [
@@ -44,7 +44,7 @@ export const celebrities = [
     slideNumber: 3,
   },
   {
-    name: "steve jobs",
+    name: "wellCome KGS DOORS",
     description:
       "We don't get a chance to do that many things, and every one should be really excellent.",
 
@@ -56,7 +56,7 @@ export const celebrities = [
     slideNumber: 4,
   },
   {
-    name: "Bill Gates ",
+    name: "wellCome Chair ",
     description:
       "Success is a lousy teacher. It seduces smart people into thinking they can’t lose.",
 
@@ -68,7 +68,7 @@ export const celebrities = [
     slideNumber: 5,
   },
   {
-    name: "Bill Gates ",
+    name: "wellCome KGS DOORS ",
     description:
       "Success is a lousy teacher. It seduces smart people into thinking they can’t lose.",
 
@@ -80,7 +80,7 @@ export const celebrities = [
     slideNumber: 6,
   },
   {
-    name: "Bill Gates ",
+    name: "wellCome sofa ",
     description:
       "Success is a lousy teacher. It seduces smart people into thinking they can’t lose.",
     images: [
@@ -92,7 +92,7 @@ export const celebrities = [
   },
 
   {
-    name: "Bill Gates ",
+    name: "wellCome Chair ",
     description:
       "Success is a lousy teacher. It seduces smart people into thinking they can’t lose.",
     images: [{ secure_url: image8 }],

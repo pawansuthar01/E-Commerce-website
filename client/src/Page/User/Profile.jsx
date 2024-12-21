@@ -17,9 +17,6 @@ import { isEmail, isPhoneNumber } from "../../helper/regexMatch";
 import { OrderShow } from "../../Components/ShowOrder";
 import FeedbackForm from "../../Components/feedbackfrom";
 import FeedbackList from "../../Components/feedbackList";
-import OrderLabel from "../../Components/Lable";
-import AmazonOrderLabel from "../../Components/Lable";
-import ShippingLabel from "../../Components/Lable";
 
 function Profile() {
   const navigate = useNavigate();
@@ -41,12 +38,13 @@ function Profile() {
 
   const [UserId, setUserID] = useState("");
   const [OrderId, setOrderId] = useState("");
-  const [Orders, setOrder] = useState([]);
   const [show, setShow] = useState(false);
   const [Role, setRole] = useState("");
   const [PaymentStatus, setPaymentStatus] = useState("");
   const [editShow, setEditShow] = useState(false);
   const UserData = useSelector((state) => state?.auth);
+  const orders = useSelector((state) => state?.order.Orders);
+  const [Orders, setOrder] = useState(orders);
 
   const loadProfile = async () => {
     const res = await dispatch(LoadAccount());
@@ -62,8 +60,16 @@ function Profile() {
   };
 
   const loadOrders = async (UserId) => {
-    const res = await dispatch(getOrder(UserId ? UserId : UserData?.data._id));
-    setOrder(res?.payload?.data);
+    if (Orders.length === 0) {
+      {
+        const res = await dispatch(
+          getOrder(UserId ? UserId : UserData?.data._id)
+        );
+        if (res.payload.success) setOrder(orders);
+      }
+    } else {
+      setOrder(orders);
+    }
   };
   const handelUserInput = (e) => {
     const { name, value } = e.target;

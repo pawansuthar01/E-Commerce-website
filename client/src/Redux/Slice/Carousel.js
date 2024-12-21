@@ -8,9 +8,18 @@ const initialState = {
 export const getAllCarousel = createAsyncThunk(
   "/carousel/getallCarousel",
   async () => {
-    console.log("yes");
     try {
-      const res = axiosInstance.get(`/api/v3/user/Carousel`);
+      const token = localStorage.getItem("Authenticator");
+
+      const res = axiosInstance.get(
+        `/api/v3/user/Carousel`,
+        {},
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
       toast.promise(res, {
         loading: "Loading carousel...",
         success: (data) => {
@@ -30,7 +39,17 @@ export const getAllCarousel = createAsyncThunk(
 
 export const getCarousel = createAsyncThunk("/Carousel/get", async (id) => {
   try {
-    const res = axiosInstance.get(`/api/v3/Carousel/${id}`);
+    const token = localStorage.getItem("Authenticator");
+
+    const res = axiosInstance.get(
+      `/api/v3/Carousel/${id}`,
+      {},
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+      }
+    );
     toast.promise(res, {
       loading: "please wait! loading Carousel..",
       success: (data) => {
@@ -50,8 +69,18 @@ export const updateCarousel = createAsyncThunk(
   "/Carousel/update",
   async (data) => {
     try {
-      console.log(data);
-      const res = axiosInstance.put(`/api/v3/Admin/Carousel/${data.id}`, data);
+      const token = localStorage.getItem("Authenticator");
+      const res = axiosInstance.put(
+        `/api/v3/Admin/Carousel/${data.id}`,
+
+        data,
+
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
       toast.promise(res, {
         loading: "please wait! update Carousel..",
         success: (data) => {
@@ -72,9 +101,20 @@ export const updateCarousel = createAsyncThunk(
 export const AddNewCarousel = createAsyncThunk(
   "/product/AddNewProduct",
   async (data) => {
-    console.log(data);
     try {
-      const res = axiosInstance.post("/api/v3/Admin/Carousel", data);
+      const token = localStorage.getItem("Authenticator");
+
+      const res = axiosInstance.post(
+        "/api/v3/Admin/Carousel",
+
+        data,
+
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
       toast.promise(res, {
         loading: "please wait! Add Carousel ...",
         success: (data) => {
@@ -98,7 +138,9 @@ const CarouselRedux = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(getAllCarousel.fulfilled, (state, action) => {
-      state.Carousel = action?.payload?.data;
+      if (action?.payload?.success) {
+        state.Carousel = action?.payload?.data;
+      }
     });
   },
 });

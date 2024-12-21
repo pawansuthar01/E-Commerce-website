@@ -7,7 +7,12 @@ const initialState = {
 };
 export const PlaceOrder = createAsyncThunk("Order/Place", async (data) => {
   try {
-    const res = axiosInstance.post("/api/v3/Order/PlaceOrder", data);
+    const token = localStorage.getItem("Authenticator");
+    const res = axiosInstance.post("/api/v3/Order/PlaceOrder", data, {
+      headers: {
+        Authorization: `${token}`,
+      },
+    });
     toast.promise(res, {
       loading: "please wait ! Order is Place...",
       success: (data) => {
@@ -26,7 +31,16 @@ export const PlaceOrder = createAsyncThunk("Order/Place", async (data) => {
 
 export const getOrder = createAsyncThunk("Order/get", async (id) => {
   try {
-    const res = axiosInstance.get(`/api/v3/Order/${id}`);
+    const token = localStorage.getItem("Authenticator");
+    const res = axiosInstance.get(
+      `/api/v3/Order/${id}`,
+
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+      }
+    );
     toast.promise(res, {
       loading: "please wait ! Order get...",
       success: (data) => {
@@ -46,7 +60,18 @@ export const UpdateOrder = createAsyncThunk(
   "Order/updateOrder",
   async (data) => {
     try {
-      const res = axiosInstance.put(`/api/v3/Order/${data.id}`, data);
+      const token = localStorage.getItem("Authenticator");
+      const res = axiosInstance.put(
+        `/api/v3/Order/${data.id}`,
+
+        data,
+
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
       toast.promise(res, {
         loading: "please wait ! Order get...",
         success: (data) => {
@@ -66,7 +91,16 @@ export const UpdateOrder = createAsyncThunk(
 
 export const CancelOrder = createAsyncThunk("Order/updateOrder", async (id) => {
   try {
-    const res = axiosInstance.put(`/api/v3/Order/${id}/CancelOrder`);
+    const token = localStorage.getItem("Authenticator");
+    const res = axiosInstance.put(
+      `/api/v3/Order/${id}/CancelOrder`,
+      {},
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+      }
+    );
     toast.promise(res, {
       loading: "please wait ! Order get...",
       success: (data) => {
@@ -85,7 +119,12 @@ export const CancelOrder = createAsyncThunk("Order/updateOrder", async (id) => {
 
 export const AllOrder = createAsyncThunk("Order/Orders", async () => {
   try {
-    const res = axiosInstance.get(`/api/v3/Admin/Order`);
+    const token = localStorage.getItem("Authenticator");
+    const res = axiosInstance.get(`/api/v3/Admin/Order`, {
+      headers: {
+        Authorization: `${token}`,
+      },
+    });
     toast.promise(res, {
       loading: "please wait ! Orders loading...",
       success: (data) => {
@@ -107,9 +146,10 @@ const OrderRedux = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(PlaceOrder.fulfilled, (state, action) => {
-      console.log(action);
-      state.Orders = action?.payload?.data;
+    builder.addCase(getOrder.fulfilled, (state, action) => {
+      if (action?.payload?.success) {
+        state.Orders = action?.payload?.data;
+      }
     });
   },
 });

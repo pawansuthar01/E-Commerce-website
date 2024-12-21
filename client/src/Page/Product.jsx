@@ -28,7 +28,7 @@ function Product() {
       setSearch(true);
       setProducts(res?.payload?.data);
     } catch (error) {
-      console.error("Error fetching search results:", error);
+      alert(error.message);
     }
   };
   const fetchProducts = async (page) => {

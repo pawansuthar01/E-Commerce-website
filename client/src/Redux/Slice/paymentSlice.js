@@ -9,9 +9,19 @@ export const paymentCreate = createAsyncThunk(
   "/payment/create",
   async (data) => {
     try {
-      const res = axiosInstance.post("/api/v3/Order/CreatePayment/new", {
-        totalAmount: data,
-      });
+      const token = localStorage.getItem("Authenticator");
+
+      const res = axiosInstance.post(
+        "/api/v3/Order/CreatePayment/new",
+        {
+          totalAmount: data,
+        },
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
       toast.promise(res, {
         loading: "please wait! payment ..",
         success: (data) => {
@@ -30,7 +40,19 @@ export const paymentCreate = createAsyncThunk(
 );
 export const checkPayment = createAsyncThunk("payment/check", async (data) => {
   try {
-    const res = axiosInstance.post("/api/v3/Order/PaymentVerify/verify", data);
+    const token = localStorage.getItem("Authenticator");
+
+    const res = axiosInstance.post(
+      "/api/v3/Order/PaymentVerify/verify",
+
+      data,
+
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+      }
+    );
     toast.promise(res, {
       loading: "please wait! remove  product..",
       success: (data) => {
@@ -50,7 +72,13 @@ export const getPaymentRecord = createAsyncThunk(
   "/payments/record",
   async () => {
     try {
-      const response = axiosInstance.get("/api/v3/Admin/Payment?count=100");
+      const token = localStorage.getItem("Authenticator");
+
+      const response = axiosInstance.get("/api/v3/Admin/Payment?count=100", {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
       toast.promise(response, {
         loading: "Getting the payment records",
         success: (data) => {

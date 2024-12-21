@@ -109,7 +109,6 @@ export const createOrderPayment = async (req, res, next) => {
       amount: order.amount,
     });
   } catch (error) {
-    console.error("Error creating Razorpay order:", error);
     return next(new AppError(error.message || "Internal Server Error", 500));
   }
 };
@@ -117,8 +116,6 @@ export const createOrderPayment = async (req, res, next) => {
 export const PaymentVerify = async (req, res, next) => {
   const { razorpay_payment_id, razorpay_order_id, razorpay_signature } =
     req.body;
-  console.log(req.boy);
-  console.log(process.env.SECRET_ID);
   try {
     const generated_signature = crypto
       .createHmac("sha256", process.env.SECRET_ID)
@@ -179,7 +176,6 @@ export const UpdateOrder = async (req, res, next) => {
     if (!order) {
       return next(new AppError("order is does not found..", 400));
     }
-    console.log(order);
     res.status(200).json({
       success: true,
       message: "update Order...",

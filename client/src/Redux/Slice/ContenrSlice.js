@@ -8,7 +8,17 @@ const initialState = {
 };
 export const getAllPost = createAsyncThunk("/content/post", async () => {
   try {
-    const res = axiosInstance.get("/api/v3/Content/Post");
+    const token = localStorage.getItem("Authenticator");
+
+    const res = axiosInstance.get(
+      "/api/v3/Content/Post",
+
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+      }
+    );
     toast.promise(res, {
       loading: "please wait ! loading blog...",
       success: (data) => {
@@ -30,7 +40,17 @@ export const LikeAndDisLikePost = createAsyncThunk(
   "/Content/likeDisLikePost",
   async (id) => {
     try {
-      const res = axiosInstance.put(`/api/v3/Content/Post/${id}`);
+      const token = localStorage.getItem("Authenticator");
+
+      const res = axiosInstance.put(
+        `/api/v3/Content/Post/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
       toast.promise(res, {
         loading: "please wait! like Post..",
         success: (data) => {
@@ -49,7 +69,17 @@ export const LikeAndDisLikePost = createAsyncThunk(
 );
 export const getPost = createAsyncThunk("/Content/get/post", async (id) => {
   try {
-    const res = axiosInstance.get(`/api/v3/Content/Post/${id}`);
+    const token = localStorage.getItem("Authenticator");
+
+    const res = axiosInstance.get(
+      `/api/v3/Content/Post/${id}`,
+      {},
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+      }
+    );
     toast.promise(res, {
       loading: "please wait! get Post..",
       success: (data) => {
@@ -69,11 +99,16 @@ export const deleteCommentById = createAsyncThunk(
   "/Content/Delete/CommentById",
   async (data) => {
     try {
-      console.log(data.userName);
+      const token = localStorage.getItem("Authenticator");
+
       const res = axiosInstance.delete(
         `/api/v3/Content/Post/?postId=${data.postId}&commentId=${data.commentId}`,
+
         {
           data: { userName: data.userName },
+          headers: {
+            Authorization: `${token}`,
+          },
         }
       );
       toast.promise(res, {
@@ -96,11 +131,20 @@ export const deleteCommentById = createAsyncThunk(
 export const AddCommentToPost = createAsyncThunk(
   "/Content/CommentAdd/Post",
   async (data) => {
-    console.log(data);
+    const token = localStorage.getItem("Authenticator");
+
     try {
-      const res = axiosInstance.post(`/api/v3/Content/Post/${data.id}`, {
-        comment: data.comment,
-      });
+      const res = axiosInstance.post(
+        `/api/v3/Content/Post/${data.id}`,
+        {
+          comment: data.comment,
+        },
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
 
       toast.promise(res, {
         loading: "please wait! comment send..",
@@ -121,12 +165,18 @@ export const AddCommentToPost = createAsyncThunk(
 export const AddCommentToReplay = createAsyncThunk(
   "/Content/CommentReplay/Post",
   async (data) => {
-    console.log(data);
+    const token = localStorage.getItem("Authenticator");
+
     try {
       const res = axiosInstance.put(
         `/api/v3/Content/posts/${data.postId}/comments/${data.commentId}/AddNewComment`,
         {
           reply: data.reply,
+        },
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
         }
       );
 
@@ -150,11 +200,17 @@ export const AddCommentToReplay = createAsyncThunk(
 export const removeReplayToComment = createAsyncThunk(
   "/Content/CommentReplayRemove/Post",
   async (data) => {
-    console.log(data);
-    console.log(data.replayId);
+    const token = localStorage.getItem("Authenticator");
+
     try {
       const res = axiosInstance.delete(
-        `/api/v3/Content/posts/${data.postId}/comments/${data.commentId}/replays/${data.replayId}`
+        `/api/v3/Content/posts/${data.postId}/comments/${data.commentId}/replays/${data.replayId}`,
+        {},
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
       );
 
       toast.promise(res, {
@@ -177,10 +233,17 @@ export const exitCommentInPostById = createAsyncThunk(
   "/Content/CommentEdit/Post",
   async (data) => {
     try {
+      const token = localStorage.getItem("Authenticator");
+
       const res = axiosInstance.put(
         `/api/v3/Content/posts/${data.postId}/comments/${data.commentId}/UpdateComment`,
         {
           comment: data.updatedComment,
+        },
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
         }
       );
 
@@ -207,7 +270,7 @@ const PostSliceRedux = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(getAllPost.fulfilled, (state, action) => {
-      if (action.payload) {
+      if (action?.payload?.success) {
         state.PostCount = action.payload.AllPostGetCount;
         state.PostData = [...action.payload.AllPostGet];
       }

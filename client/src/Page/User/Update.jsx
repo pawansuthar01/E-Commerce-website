@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -55,6 +55,7 @@ function UpdateProfile() {
 
     const formData = new FormData();
     formData.append("fullName", profileData.fullName);
+    formData.append("phoneNumber", profileData.phoneNumber);
 
     formData.append("avatar", profileData.avatar);
 

@@ -15,28 +15,24 @@ const convertPDFToImages = async (pdfPath) => {
   }
 
   const options = {
-    density: 300, // Higher density for better quality
+    density: 300,
     saveFilename: "page",
     savePath: outputFolder,
-    format: "png", // Output format
-    width: 800, // Resize width
+    format: "png",
+    width: 800,
   };
 
   return await pdf2image.convertPDF(pdfPath, options);
 };
 
-// Controller to handle PDF upload
 export const UploadPdf = async (req, res, next) => {
   try {
-    // Validate request data
     if (!req.file || !req.user || !req.user.userName) {
       return next(new AppError("All fields are required to process PDF", 400));
     }
 
     const pdfPath = req.file.path;
-    console.log(`PDF Path: ${pdfPath}`);
 
-    // Convert PDF to images
     const images = await convertPDFToImages(pdfPath);
 
     if (!images || images.length === 0) {
@@ -50,18 +46,15 @@ export const UploadPdf = async (req, res, next) => {
       });
       uploadedImageUrls.push(result.secure_url);
 
-      // Clean up temporary image files
       fs.unlinkSync(image.path);
     }
 
-    // Clean up the uploaded PDF file
     fs.unlinkSync(pdfPath);
 
     if (uploadedImageUrls.length === 0) {
       return next(new AppError("Failed to process PDF", 400));
     }
 
-    // Save PDF and image URLs to the database
     const savedPdf = await PdfToImages.create({
       pdfUrl: req.file.path,
       imageUrls: uploadedImageUrls,
@@ -74,9 +67,6 @@ export const UploadPdf = async (req, res, next) => {
       data: savedPdf,
     });
   } catch (error) {
-    console.error(error);
-
-    // Cleanup temporary files in case of error
     if (req.file && fs.existsSync(req.file.path)) {
       fs.unlinkSync(req.file.path);
     }

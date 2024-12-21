@@ -130,7 +130,6 @@ function SignUp() {
     formData.append("phoneNumber", SignUpData.phoneNumber);
     formData.append("avatar", SignUpData.avatar);
     formData.append("password", SignUpData.password);
-    console.log(formData);
     const response = await dispatch(CreateAccount(formData));
     if (response) {
       setLoading(false);

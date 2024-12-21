@@ -11,8 +11,16 @@ export const getAllProduct = createAsyncThunk(
   "/product",
   async ({ page = 1, limit = 50 }) => {
     try {
+      const token = localStorage.getItem("Authenticator");
+
       const res = axiosInstance.get(
-        `/api/v3/Product?page=${page}&limit=${limit}`
+        `/api/v3/Product?page=${page}&limit=${limit}`,
+        {},
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
       );
       toast.promise(res, {
         loading: "Loading products...",
@@ -34,10 +42,17 @@ export const getAllProduct = createAsyncThunk(
 export const getSearchProduct = createAsyncThunk(
   "/product/get",
   async (data) => {
-    console.log(data);
     try {
+      const token = localStorage.getItem("Authenticator");
+
       const res = axiosInstance.get(
-        `/api/v3/Product/Search?query=${encodeURIComponent(data)}`
+        `/api/v3/Product/Search?query=${encodeURIComponent(data)}`,
+        {},
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
       );
       toast.promise(res, {
         loading: "please wait! Search product..",
@@ -57,7 +72,17 @@ export const getSearchProduct = createAsyncThunk(
 );
 export const getProduct = createAsyncThunk("/product/get", async (id) => {
   try {
-    const res = axiosInstance.get(`/api/v3/Product/${id}`);
+    const token = localStorage.getItem("Authenticator");
+
+    const res = axiosInstance.get(
+      `/api/v3/Product/${id}`,
+      {},
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+      }
+    );
     toast.promise(res, {
       loading: "please wait! loading product..",
       success: (data) => {
@@ -77,8 +102,19 @@ export const updateProduct = createAsyncThunk(
   "/product/update",
   async (data) => {
     try {
-      console.log(data);
-      const res = axiosInstance.put(`/api/v3/Admin/Product/${data.id}`, data);
+      const token = localStorage.getItem("Authenticator");
+
+      const res = axiosInstance.put(
+        `/api/v3/Admin/Product/${data.id}`,
+        {
+          data,
+        },
+        {
+          headers: {
+            Authorization: ` ${token}`,
+          },
+        }
+      );
       toast.promise(res, {
         loading: "please wait! update product..",
         success: (data) => {
@@ -100,9 +136,18 @@ export const AddProductCard = createAsyncThunk(
   "/product/AddProduct",
   async (id) => {
     try {
-      const res = axiosInstance.put("/api/v3/Card/AddProduct", {
-        productId: id,
-      });
+      const token = localStorage.getItem("Authenticator");
+
+      const res = axiosInstance.put(
+        "/api/v3/Card/AddProduct",
+        { productId: id },
+        {
+          headers: {
+            Authorization: ` ${token}`,
+          },
+        }
+      );
+
       toast.promise(res, {
         loading: "please wait! Add product..",
         success: (data) => {
@@ -123,9 +168,19 @@ export const RemoveProductCard = createAsyncThunk(
   "/product/RemoveProduct",
   async (id) => {
     try {
-      const res = axiosInstance.put("/api/v3/Card/v2/RemoveProduct", {
-        productId: id,
-      });
+      const token = localStorage.getItem("Authenticator");
+
+      const res = axiosInstance.put(
+        "/api/v3/Card/v2/RemoveProduct",
+        {
+          productId: id,
+        },
+        {
+          headers: {
+            Authorization: ` ${token}`,
+          },
+        }
+      );
       toast.promise(res, {
         loading: "please wait! remove  product..",
         success: (data) => {
@@ -146,7 +201,17 @@ export const AllRemoveCardProduct = createAsyncThunk(
   "/product/AllRemoveCardProduct",
   async (id) => {
     try {
-      const res = axiosInstance.put(`/api/v3/Card/${id}/AllRemoveCardProduct`);
+      const token = localStorage.getItem("Authenticator");
+
+      const res = axiosInstance.put(
+        `/api/v3/Card/${id}/AllRemoveCardProduct`,
+        {},
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
 
       toast.promise(res, {
         loading: "please wait!  product..",
@@ -169,7 +234,19 @@ export const AddNewProduct = createAsyncThunk(
   "/product/AddNewProduct",
   async (data) => {
     try {
-      const res = axiosInstance.post("/api/v3/Admin/Product", data);
+      const token = localStorage.getItem("Authenticator");
+
+      const res = axiosInstance.post(
+        "/api/v3/Admin/Product",
+        {
+          data,
+        },
+        {
+          headers: {
+            Authorization: ` ${token}`,
+          },
+        }
+      );
       toast.promise(res, {
         loading: "please wait! Add product ...",
         success: (data) => {
@@ -190,7 +267,17 @@ export const LikeAndDisLike = createAsyncThunk(
   "/product/likeDisLike",
   async (id) => {
     try {
-      const res = axiosInstance.put(`/api/v3/Product/${id}`);
+      const token = localStorage.getItem("Authenticator");
+
+      const res = axiosInstance.put(
+        `/api/v3/Product/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
       toast.promise(res, {
         loading: "please wait! like product..",
         success: (data) => {
@@ -210,7 +297,17 @@ export const LikeAndDisLike = createAsyncThunk(
 export const DeleteProduct = createAsyncThunk("Product/Delete", async (id) => {
   dispatch({ type: "DELETE_PRODUCT_OPTIMISTIC", payload: id });
   try {
-    const res = axiosInstance.delete(`/api/v3/Admin/Product/${id}`);
+    const token = localStorage.getItem("Authenticator");
+
+    const res = axiosInstance.delete(
+      `/api/v3/Admin/Product/${id}`,
+      {},
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+      }
+    );
     toast.promise(res, {
       loading: "please wait! Delete product..",
       success: (data) => {

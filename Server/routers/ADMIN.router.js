@@ -5,13 +5,9 @@ import upload from "../Middleware/multerMiddleware.js";
 
 import {
   deletePostById,
-  deleteReelById,
   getAllPost,
-  getAllReel,
   postUpdate,
   PostUpload,
-  reelUpdate,
-  ReelUpload,
 } from "../Controllers/Content.Controller.js";
 import {
   productDelete,
@@ -50,24 +46,10 @@ ADMINRouter.route("/Post")
     PostUpload
   );
 
-ADMINRouter.route("/Reel")
-  .get(isLoggedIn, authorizeRoles("ADMIN", "AUTHOR"), getAllReel)
-  .post(
-    isLoggedIn,
-    authorizeRoles("ADMIN", "AUTHOR"),
-    upload.single("reel"),
-    ReelUpload
-  );
-
 ADMINRouter.route("/Post/:id")
   .delete(isLoggedIn, authorizeRoles("ADMIN", "AUTHOR"), deletePostById)
 
   .put(isLoggedIn, authorizeRoles("ADMIN", "AUTHOR"), postUpdate);
-
-ADMINRouter.route("/Reel/:id")
-  .delete(isLoggedIn, authorizeRoles("ADMIN", "AUTHOR"), deleteReelById)
-
-  .put(isLoggedIn, authorizeRoles("ADMIN", "AUTHOR"), reelUpdate);
 
 ////product api///
 ADMINRouter.route("/Product").post(

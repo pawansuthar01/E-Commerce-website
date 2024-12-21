@@ -8,9 +8,9 @@ import { config } from "dotenv";
 import Notification from "../module/Notification.module.js";
 config();
 const cookieOption = {
-  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  maxAge: 7 * 24 * 60 * 60 * 1000,
   httpOnly: true,
-  sameSite: "Lax",
+  sameSite: "None",
   secure: process.env.NODE_ENV === "production",
   path: "/",
 };
@@ -88,12 +88,13 @@ export const RegisterUser = async (req, res, next) => {
       type: "New Account",
     });
     await notification.save();
-    const token = await user.generateJWTToken();
+    const Token = await user.generateJWTToken();
     user.password = undefined;
-    res.cookie("token", token, cookieOption);
+    res.cookie("token", Token, cookieOption);
     res.status(200).json({
       success: true,
       data: user,
+      AuthenticatorToken: Token,
       exp: Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60,
       message: "Successfully registered.",
     });
@@ -126,10 +127,10 @@ export const login = async (req, res, next) => {
     const Token = await userExist.generateJWTToken();
     userExist.password = undefined;
     res.cookie("token", Token, cookieOption);
-    console.log("token=", Token);
     res.status(200).json({
       success: true,
       data: userExist,
+      AuthenticatorToken: Token,
       exp: Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60,
       Message: "successfully login...",
     });
@@ -221,7 +222,6 @@ export const changePassword = async (req, res, next) => {
       .createHash("sha256")
       .update(resetToken)
       .digest("hex");
-    console.log(forgotPasswordToken);
     const user = await User.findOne({
       forgotPasswordToken,
       forgotPasswordExpiry: { $gt: Date.now() },
@@ -278,8 +278,8 @@ export const updatePassword = async (req, res, next) => {
 };
 
 export const UpdateUserProfile = async (req, res, next) => {
-  const { fullName } = req.body;
-  if (!fullName) {
+  const { fullName, phoneNumber } = req.body;
+  if (!fullName && !phoneNumber) {
     return next(new AppError(" All felids is required", 400));
   }
   try {
@@ -290,6 +290,9 @@ export const UpdateUserProfile = async (req, res, next) => {
 
     if (fullName) {
       userExist.fullName = fullName;
+    }
+    if (phoneNumber) {
+      userExist.phoneNumber = phoneNumber;
     }
     if (req.file) {
       await cloudinary.v2.uploader.destroy(userExist.avatar.public_id);

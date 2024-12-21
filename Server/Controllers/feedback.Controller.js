@@ -3,7 +3,7 @@ import AppError from "../utils/AppError.js";
 
 export const SubmitFeedback = async (req, res, next) => {
   const { rating, comment, userName } = req.body.data;
-  console.log(req.body);
+
   try {
     if (!rating || !comment || !userName) {
       return next(new AppError("feedback all filed is required ", 400));
@@ -26,8 +26,10 @@ export const SubmitFeedback = async (req, res, next) => {
 
 export const getFeedback = async (req, res, next) => {
   try {
-    const data = await Feedback.find();
-    const TotalFeedbackCount = await Feedback.countDocuments();
+    const { page = 1, limit = 10 } = req.query;
+    const skip = (page - 1) * limit;
+    const data = await Feedback.find({}).skip(skip).limit(parseInt(limit));
+    const TotalFeedbackCount = await Feedback.countDocuments({});
     const happyCustomers = await Feedback.countDocuments({
       rating: { $gte: 3 },
     });
@@ -41,6 +43,8 @@ export const getFeedback = async (req, res, next) => {
       data: data,
       TotalFeedbackCount,
       happyCustomers,
+      currentPage: page,
+      totalPages: Math.ceil(TotalFeedbackCount / limit),
       message: "Feedback get successfully!",
     });
   } catch (error) {

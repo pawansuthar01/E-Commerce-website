@@ -132,7 +132,6 @@ export const getCarousel = async (req, res, next) => {
   }
 };
 export const getAllCarousel = async (req, res, next) => {
-  console.log("YES");
   const carousel = await Carousel.find({});
 
   const totalCarousel = await Carousel.countDocuments({});

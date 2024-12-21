@@ -7,6 +7,7 @@ const initialState = {
   role: localStorage.getItem("role") || "",
   exp: Number(localStorage.getItem("exp")) || 0,
   userName: localStorage.getItem("userName") || "",
+  Authenticator: localStorage.getItem("Authenticator") || null,
   data:
     localStorage.getItem("data") == undefined
       ? JSON.parse(localStorage.getItem("data"))
@@ -44,7 +45,17 @@ export const LoginAccount = createAsyncThunk("/auth/login", async (data) => {
 });
 export const LogoutAccount = createAsyncThunk("/auth/logout", async () => {
   try {
-    const res = axiosInstance.get("/api/v3/user/logout");
+    const token = localStorage.getItem("Authenticator");
+
+    const res = axiosInstance.get(
+      "/api/v3/user/logout",
+      {},
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+      }
+    );
     toast.promise(res, {
       loading: "please wait! logout account..",
       success: (data) => {
@@ -63,7 +74,18 @@ export const LogoutAccount = createAsyncThunk("/auth/logout", async () => {
 
 export const UpdateAccount = createAsyncThunk("/auth/update", async (data) => {
   try {
-    const res = axiosInstance.put("/api/v3/user/UpdateProfile", data);
+    const token = localStorage.getItem("Authenticator");
+
+    const res = axiosInstance.put(
+      "/api/v3/user/UpdateProfile",
+      data,
+
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+      }
+    );
     toast.promise(res, {
       loading: "please wait! Update Profile ..",
       success: (data) => {
@@ -82,7 +104,16 @@ export const UpdateAccount = createAsyncThunk("/auth/update", async (data) => {
 
 export const LoadAccount = createAsyncThunk("/auth/getProfile", async () => {
   try {
-    const res = axiosInstance.get("/api/v3/user/getProfile");
+    const token = localStorage.getItem("Authenticator");
+    const res = axiosInstance.get(
+      "/api/v3/user/getProfile",
+
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+      }
+    );
     toast.promise(res, {
       loading: "please wait! get Profile ..",
       success: (data) => {
@@ -100,7 +131,16 @@ export const LoadAccount = createAsyncThunk("/auth/getProfile", async () => {
 });
 export const getAllUsers = createAsyncThunk("/auth/User", async () => {
   try {
-    const res = axiosInstance.get("/api/v3/Admin/User");
+    const token = localStorage.getItem("Authenticator");
+    const res = axiosInstance.get(
+      "/api/v3/Admin/User",
+
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+      }
+    );
     toast.promise(res, {
       loading: "please wait! All user ..",
       success: (data) => {
@@ -130,7 +170,11 @@ const authSliceRedux = createSlice({
           localStorage.setItem("exp", Number(action?.payload?.exp));
           localStorage.setItem("role", action?.payload?.data.role);
           localStorage.setItem("userName", action?.payload?.data.userName);
-
+          localStorage.setItem(
+            "Authenticator",
+            action?.payload?.AuthenticatorToken
+          );
+          state.Authenticator = action?.payload?.AuthenticatorToken;
           state.userName = action?.payload?.data.userName;
           state.walletProduct = [...action?.payload?.data.walletAddProducts];
           state.exp = Number(action?.payload?.exp);
@@ -141,13 +185,16 @@ const authSliceRedux = createSlice({
       })
       .addCase(LoginAccount.fulfilled, (state, action) => {
         const { data, exp } = action.payload;
-
         localStorage.setItem("data", JSON.stringify(data));
         localStorage.setItem("isLoggedIn", true);
         localStorage.setItem("exp", Number(exp));
         localStorage.setItem("role", data.role);
         localStorage.setItem("userName", data.userName);
-
+        localStorage.setItem(
+          "Authenticator",
+          action?.payload?.AuthenticatorToken
+        );
+        state.Authenticator = action?.payload?.AuthenticatorToken;
         state.userName = data.userName;
         state.walletProduct = [...data.walletAddProducts];
         state.exp = Number(exp);
@@ -175,6 +222,7 @@ const authSliceRedux = createSlice({
         localStorage.clear();
         state.userName = "";
         state.exp = 0;
+        state.Authenticator = null;
         state.isLoggedIn = false;
         state.data = {};
         state.role = "";

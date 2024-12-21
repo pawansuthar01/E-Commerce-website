@@ -4,7 +4,7 @@ import { config } from "dotenv";
 config();
 export const isLoggedIn = async (req, res, next) => {
   try {
-    const { token } = req.cookies;
+    const token = req.header("Authorization");
     if (!token) {
       return next(new AppError("Unauthenticated,please login ", 500));
     }
@@ -17,7 +17,6 @@ export const isLoggedIn = async (req, res, next) => {
       role: userDetails.role,
       exp: userDetails.exp,
     };
-    console.log(userDetails.exp);
   } catch (error) {
     return next(new AppError(error.message, 400));
   }

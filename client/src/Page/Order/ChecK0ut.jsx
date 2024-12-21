@@ -140,7 +140,6 @@ function CheckoutPage() {
       if (res?.payload?.success) {
         await dispatch(AllRemoveCardProduct(UserId));
         for (const product of cart) {
-          console.log(product);
           await dispatch(
             updateProduct({
               id: product.product,
@@ -196,7 +195,6 @@ function CheckoutPage() {
         paymentObject.open();
       } catch (error) {
         toast.error("Error processing payment");
-        console.error("Error:", error);
       } finally {
         setLoading(false);
       }

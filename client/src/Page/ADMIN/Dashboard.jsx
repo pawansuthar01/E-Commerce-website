@@ -22,6 +22,7 @@ import { FiCheckCircle, FiXCircle, FiLoader, FiTruck } from "react-icons/fi";
 import { FaArrowLeft, FaUsers } from "react-icons/fa6";
 import Layout from "../../layout/layout";
 import { OrderShow } from "../../Components/ShowOrder";
+import toast from "react-hot-toast";
 
 // Register chart.js components
 ChartJS.register(
@@ -78,7 +79,7 @@ const AdminDashboard = () => {
         products: productsRes.payload.totalProducts,
       });
     } catch (error) {
-      console.error("Error fetching products:", error);
+      alert(error.message);
     }
   };
   const loadProfile = async () => {
@@ -91,17 +92,18 @@ const AdminDashboard = () => {
     orderStats = null
   ) => {
     if (orderStats === "Delivered") {
-      toast.error("You cannot update or cancel a delivered order.");
+      alert("You cannot update or cancel a delivered order.");
+
       return;
     }
 
     if (orderStats !== null && PaymentStatus !== "Completed") {
-      toast.error("Payment must be completed before updating the order.");
+      alert("Payment must be completed before updating the order.");
       return;
     }
 
     if (!id) {
-      toast.error("Something went wrong. Please try again.");
+      alert("Something went wrong. Please try again.");
       return;
     }
 
@@ -111,13 +113,11 @@ const AdminDashboard = () => {
         setEditShow(false);
         const ordersRes = await dispatch(AllOrder());
         setOrders(ordersRes.payload.data);
+        alert("Payment Status updated successfully!");
 
-        toast.success("Payment Status updated successfully!");
         loadOrders();
       } else {
-        toast.error(
-          res?.payload?.message || "Failed to update payment status."
-        );
+        alert(res?.payload?.message || "Failed to update payment status.");
       }
     }
 
@@ -125,12 +125,12 @@ const AdminDashboard = () => {
       const res = await dispatch(UpdateOrder({ id, data: orderStats }));
       if (res?.payload?.success) {
         setEditShow(false);
-        toast.success("Order Status updated successfully!");
+        alert("Order Status updated successfully!");
 
         const ordersRes = await dispatch(AllOrder());
         setOrders(ordersRes.payload.data);
       } else {
-        toast.error(res?.payload?.message || "Failed to update order status.");
+        alert(res?.payload?.message || "Failed to update order status.");
       }
     }
   };
@@ -154,12 +154,12 @@ const AdminDashboard = () => {
       });
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching admin data:", error);
+      alert(error.message);
     }
   };
   const formatDate = (timestamp) => {
-    const date = new Date(timestamp * 1000); // Multiply by 1000 to convert to milliseconds
-    return date.toLocaleDateString(); // Format date as "MM/DD/YYYY"
+    const date = new Date(timestamp * 1000);
+    return date.toLocaleDateString();
   };
 
   useEffect(() => {
