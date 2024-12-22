@@ -16,7 +16,7 @@ export const CreateOrder = async (req, res, next) => {
     PaymentMethod,
     totalAmount,
   } = req.body;
-
+  console.log(req.body);
   if (!userId || !products || !shippingAddress || !totalAmount) {
     return next(new AppError("All fields are required.", 400));
   }

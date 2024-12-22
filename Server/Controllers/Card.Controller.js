@@ -68,11 +68,6 @@ export const removeCardProduct = async (req, res, next) => {
     return next(new AppError("all filed is required..", 400));
   }
   try {
-    const FindProduct = await Product.findById(productId);
-    if (!FindProduct) {
-      return next(new AppError("Product is not Found..", 400));
-    }
-
     const userFind = await User.findOneAndUpdate(
       { _id: id },
       { $pull: { walletAddProducts: { product: productId } } },

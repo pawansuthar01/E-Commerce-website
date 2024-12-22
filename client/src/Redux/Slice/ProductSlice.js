@@ -76,7 +76,7 @@ export const getProduct = createAsyncThunk("/product/get", async (id) => {
 
     const res = axiosInstance.get(
       `/api/v3/Product/${id}`,
-      {},
+
       {
         headers: {
           Authorization: `${token}`,
@@ -294,37 +294,46 @@ export const LikeAndDisLike = createAsyncThunk(
     }
   }
 );
-export const DeleteProduct = createAsyncThunk("Product/Delete", async (id) => {
-  dispatch({ type: "DELETE_PRODUCT_OPTIMISTIC", payload: id });
-  try {
-    const token = localStorage.getItem("Authenticator");
+export const DeleteProduct = createAsyncThunk(
+  "Product/Delete",
+  async (id, thunkAPI) => {
+    try {
+      console.log("yes");
+      thunkAPI.dispatch({ type: "DELETE_PRODUCT_OPTIMISTIC", payload: id });
+      const token = localStorage.getItem("Authenticator");
 
-    const res = axiosInstance.delete(
-      `/api/v3/Admin/Product/${id}`,
-      {},
-      {
-        headers: {
-          Authorization: `${token}`,
+      const res = axiosInstance.delete(
+        `/api/v3/Admin/Product/${id}`,
+
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      toast.promise(res, {
+        loading: "please wait! Delete product..",
+        success: (data) => {
+          return data?.data?.message;
         },
-      }
-    );
-    toast.promise(res, {
-      loading: "please wait! Delete product..",
-      success: (data) => {
-        return data?.data?.message;
-      },
 
-      error: (data) => {
-        return data?.response?.data?.message;
-      },
-    });
-    dispatch({ type: "DELETE_PRODUCT_SUCCESS" });
-    return (await res).data;
-  } catch (error) {
-    dispatch({ type: "DELETE_PRODUCT_FAIL", payload: error.message });
-    toast.error(error?.response?.message);
+        error: (data) => {
+          return data?.response?.data?.message;
+        },
+      });
+      const response = await res;
+      thunkAPI.dispatch({ type: "DELETE_PRODUCT_SUCCESS" });
+      return response.data;
+    } catch (error) {
+      thunkAPI.dispatch({
+        type: "DELETE_PRODUCT_FAIL",
+        payload: error.message || "An error occurred",
+      });
+      toast.error(error?.response?.message);
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
+    }
   }
-});
+);
 const productReducer = (state = { products: [] }, action) => {
   switch (action.type) {
     case "DELETE_PRODUCT_OPTIMISTIC":

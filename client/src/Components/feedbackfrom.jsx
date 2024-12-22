@@ -20,7 +20,7 @@ const FeedbackForm = () => {
     setIsSubmitting(true);
     await dispatch(SubmitFeedback({ rating, comment, userName }));
     setIsSubmitting(false);
-    await dispatch(getFeedback());
+    await dispatch(getFeedback({ page: 0, limit: 0 }));
     setRating(0);
     setComment(" ");
   };

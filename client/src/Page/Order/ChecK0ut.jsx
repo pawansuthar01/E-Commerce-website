@@ -43,7 +43,6 @@ function CheckoutPage() {
     postalCode: "",
   });
   const [paymentMethod, setPaymentMethod] = useState("razorpay");
-  const [paymentStatus, setPaymentStatus] = useState("Pending");
   const [showLoading, setShowLoading] = useState(true);
 
   const [error, setError] = useState(false);
@@ -122,36 +121,6 @@ function CheckoutPage() {
       setMessage("Something want Wrong try again..");
       return;
     }
-    const orderData = {
-      userId: UserId,
-      products: cart,
-      shippingAddress: shippingInfo,
-      paymentStatus: paymentStatus,
-      PaymentMethod: paymentMethod,
-      totalAmount: totalPrice,
-    };
-
-    async function OrderPlaceNew() {
-      setShowLoading(true);
-      const res = await dispatch(PlaceOrder(orderData));
-      setShowLoading(false);
-      setLoading(false);
-      setError(false);
-      if (res?.payload?.success) {
-        await dispatch(AllRemoveCardProduct(UserId));
-        for (const product of cart) {
-          await dispatch(
-            updateProduct({
-              id: product.product,
-
-              orderCount: (product.orderCount || 0) + product.quantity,
-            })
-          );
-        }
-        loadProfile();
-        navigate("/ThankYou", { state: { data: res?.payload?.data } });
-      }
-    }
     if (paymentMethod === "razorpay") {
       setLoading(false);
 
@@ -173,13 +142,13 @@ function CheckoutPage() {
 
             const res = await dispatch(checkPayment(response));
 
-            res?.payload?.success
-              ? (setError(false),
-                setPaymentStatus("Completed"),
-                OrderPlaceNew())
-              : (setError(true),
+            if (res?.payload?.success) {
+              setError(false), OrderPlaceNew("Completed");
+            } else {
+              setError(true),
                 setLoading(false),
-                setMessage("Payment is Fail 💔 please try again.."));
+                setMessage("Payment is Fail 💔 please try again..");
+            }
           },
           prefill: {
             name: shippingInfo.name,
@@ -199,7 +168,39 @@ function CheckoutPage() {
         setLoading(false);
       }
     } else {
-      OrderPlaceNew();
+      OrderPlaceNew("Pending");
+    }
+
+    async function OrderPlaceNew(paymentStatus) {
+      setShowLoading(true);
+
+      const orderData = {
+        userId: UserId,
+        products: cart,
+        shippingAddress: shippingInfo,
+        paymentStatus: paymentStatus,
+        PaymentMethod: paymentMethod,
+        totalAmount: totalPrice,
+      };
+
+      const res = await dispatch(PlaceOrder(orderData));
+      setShowLoading(false);
+      setLoading(false);
+      setError(false);
+      if (res?.payload?.success) {
+        await dispatch(AllRemoveCardProduct(UserId));
+        for (const product of cart) {
+          await dispatch(
+            updateProduct({
+              id: product.product,
+
+              orderCount: (product.orderCount || 0) + product.quantity,
+            })
+          );
+        }
+        loadProfile();
+        navigate("/ThankYou", { state: { data: res?.payload?.data } });
+      }
     }
   };
 
