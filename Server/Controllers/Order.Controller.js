@@ -109,6 +109,7 @@ export const createOrderPayment = async (req, res, next) => {
       amount: order.amount,
     });
   } catch (error) {
+    console.log(error);
     return next(new AppError(error.message || "Internal Server Error", 500));
   }
 };
