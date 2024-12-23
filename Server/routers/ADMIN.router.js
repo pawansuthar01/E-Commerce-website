@@ -15,7 +15,12 @@ import {
   ProductUpload,
 } from "../Controllers/Product.Controller.js";
 import { AllOrder, allOrderPayments } from "../Controllers/Order.Controller.js";
-import { CarouselUpload } from "../Controllers/CarouselController.js";
+import {
+  CarouselDelete,
+  CarouselUpdate,
+  CarouselUpload,
+  getCarousel,
+} from "../Controllers/CarouselController.js";
 const ADMINRouter = Router();
 ADMINRouter.get(
   "/User",
@@ -66,6 +71,16 @@ ADMINRouter.route("/Carousel").post(
   upload.array("images", 2),
   CarouselUpload
 );
+ADMINRouter.route("/Carousel/:id")
+  .put(
+    isLoggedIn,
+    authorizeRoles("ADMIN", "AUTHOR"),
+
+    upload.array("images", 2),
+    CarouselUpdate
+  )
+  .get(isLoggedIn, getCarousel)
+  .delete(isLoggedIn, authorizeRoles("ADMIN", "AUTHOR"), CarouselDelete);
 
 ADMINRouter.route("/Product/:id")
   .put(isLoggedIn, authorizeRoles("ADMIN", "AUTHOR"), productUpdate)

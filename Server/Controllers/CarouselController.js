@@ -59,16 +59,39 @@ export const CarouselUpload = async (req, res, next) => {
 
 export const CarouselUpdate = async (req, res, next) => {
   const { id } = req.params;
-  const { data } = req.body;
+  const { name, description } = req.body;
 
   if (!id) {
     return next(new AppError("Carousel ID is required for update.", 400));
   }
 
   try {
+    let imageUploads = [];
+    if (req.files && req.files.length > 0) {
+      imageUploads = await Promise.all(
+        req.files.map(async (file) => {
+          const uploadResult = await cloudinary.v2.uploader.upload(file.path, {
+            folder: "Carousel",
+          });
+
+          await fs.rm(file.path, { force: true });
+
+          return {
+            public_id: uploadResult.public_id,
+            secure_url: uploadResult.secure_url,
+          };
+        })
+      );
+    }
+
+    const updateData = {};
+    if (name) updateData.name = name;
+    if (description) updateData.description = description;
+    if (imageUploads.length > 0) updateData.images = imageUploads;
+
     const updatedCarousel = await Carousel.findByIdAndUpdate(
       id,
-      { $set: data },
+      { $set: updateData },
       { new: true, runValidators: true }
     );
 
@@ -80,7 +103,7 @@ export const CarouselUpdate = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      message: "carousel successfully updated.",
+      message: "Carousel successfully updated.",
       data: updatedCarousel,
     });
   } catch (error) {
@@ -112,6 +135,7 @@ export const CarouselDelete = async (req, res, next) => {
 
 export const getCarousel = async (req, res, next) => {
   const { id } = req.params;
+  console.log(id);
   if (!id) {
     return next(new AppError("carousel update to id is required..", 400));
   }

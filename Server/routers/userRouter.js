@@ -15,7 +15,10 @@ import {
   getFeedback,
   SubmitFeedback,
 } from "../Controllers/feedback.Controller.js";
-import { getAllCarousel } from "../Controllers/CarouselController.js";
+import {
+  getAllCarousel,
+  getCarousel,
+} from "../Controllers/CarouselController.js";
 const UserRouter = Router();
 UserRouter.post("/register", upload.single("avatar"), RegisterUser);
 UserRouter.post("/login", login);

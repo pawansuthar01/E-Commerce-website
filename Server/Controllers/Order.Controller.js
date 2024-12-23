@@ -16,7 +16,6 @@ export const CreateOrder = async (req, res, next) => {
     PaymentMethod,
     totalAmount,
   } = req.body;
-  console.log(req.body);
   if (!userId || !products || !shippingAddress || !totalAmount) {
     return next(new AppError("All fields are required.", 400));
   }
@@ -109,7 +108,6 @@ export const createOrderPayment = async (req, res, next) => {
       amount: order.amount,
     });
   } catch (error) {
-    console.log(error);
     return next(new AppError(error.message || "Internal Server Error", 500));
   }
 };

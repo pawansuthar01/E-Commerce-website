@@ -42,8 +42,8 @@ export const getCarousel = createAsyncThunk("/Carousel/get", async (id) => {
     const token = localStorage.getItem("Authenticator");
 
     const res = axiosInstance.get(
-      `/api/v3/Carousel/${id}`,
-      {},
+      `/api/v3/Admin/Carousel/${id}`,
+
       {
         headers: {
           Authorization: `${token}`,
@@ -65,15 +65,14 @@ export const getCarousel = createAsyncThunk("/Carousel/get", async (id) => {
     toast.error(e?.response?.message);
   }
 });
-export const updateCarousel = createAsyncThunk(
-  "/Carousel/update",
-  async (data) => {
+export const DeleteCarousel = createAsyncThunk(
+  "/Carousel/Delete",
+  async (id) => {
     try {
       const token = localStorage.getItem("Authenticator");
-      const res = axiosInstance.put(
-        `/api/v3/Admin/Carousel/${data.id}`,
 
-        data,
+      const res = axiosInstance.delete(
+        `/api/v3/Admin/Carousel/${id}`,
 
         {
           headers: {
@@ -81,6 +80,33 @@ export const updateCarousel = createAsyncThunk(
           },
         }
       );
+      toast.promise(res, {
+        loading: "please wait! loading Carousel..",
+        success: (data) => {
+          return data?.data?.message;
+        },
+
+        error: (data) => {
+          return data?.response?.data?.message;
+        },
+      });
+      return (await res).data;
+    } catch (e) {
+      toast.error(e?.response?.message);
+    }
+  }
+);
+export const updateCarousel = createAsyncThunk(
+  "/Carousel/update",
+  async ({ data, id }) => {
+    console.log(data);
+    try {
+      const token = localStorage.getItem("Authenticator");
+      const res = axiosInstance.put(`/api/v3/Admin/Carousel/${id}`, data, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
       toast.promise(res, {
         loading: "please wait! update Carousel..",
         success: (data) => {

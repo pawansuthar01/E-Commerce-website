@@ -4,12 +4,12 @@ const { v2: cloudinary } = Pkg;
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import AppError from "../utils/AppError.js";
 
-// Configure Multer Storage for Cloudinary
+
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: "uploads", // Cloudinary folder
-    allowed_formats: ["jpg", "jpeg", "png", "webp", "mp4", "svg"], // Allowed file types
+    allowed_formats: ["jpg", "jpeg", "png", "webp", "mp4", "svg","pdf"], // Allowed file types
   },
 });
 
@@ -23,6 +23,7 @@ const upload = multer({
       "image/webp",
       "video/mp4",
       "image/svg+xml",
+      "application/pdf"
     ];
     if (!allowedExts.includes(file.mimetype)) {
       return cb(new AppError("Unsupported file type...", 400), false);

@@ -8,7 +8,6 @@ import CommentCard from "./CommentListCard";
 
 function BlogCard({ data }) {
   const [showCommentForm, setShowCommentForm] = useState(false); // State to toggle comment form visibility
-  const [isDarkMode, setIsDarkMode] = useState(false); // State for dark mode toggle
 
   const dispatch = useDispatch();
   const { userName } = useSelector((state) => state?.auth);

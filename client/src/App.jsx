@@ -21,6 +21,7 @@ import UpdateProfile from "./Page/User/Update";
 import SlowInternetPage from "./helper/CheckInternet";
 import AdminDashboard from "./Page/ADMIN/Dashboard";
 import CarouselUpload from "./Page/ADMIN/CarouselUpload/CarouselUpload";
+import { CarouselUpdate } from "./Page/ADMIN/CarouselUpload/carouselUpdate";
 function App() {
   return (
     <ThemeProvider>
@@ -56,6 +57,7 @@ function App() {
           </Route>
           <Route element={<RequireAuth allowedRole={["ADMIN", "AUTHOR"]} />}>
             <Route path="/AddProduct" element={<AddProduct />}></Route>
+            <Route path="/CarouselUpdate" element={<CarouselUpdate />}></Route>
             <Route path="/CarouselUpload" element={<CarouselUpload />}></Route>
             <Route path="/DashBoard" element={<AdminDashboard />}></Route>
           </Route>

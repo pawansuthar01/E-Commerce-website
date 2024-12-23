@@ -34,7 +34,7 @@ export const getAllProduct = createAsyncThunk(
       return (await res).data;
     } catch (e) {
       toast.error(e?.response?.message || "Failed to load products.");
-      throw e; // Re-throw the error to handle it in components if needed
+      throw e;
     }
   }
 );
@@ -238,9 +238,8 @@ export const AddNewProduct = createAsyncThunk(
 
       const res = axiosInstance.post(
         "/api/v3/Admin/Product",
-        {
-          data,
-        },
+
+        data,
         {
           headers: {
             Authorization: ` ${token}`,

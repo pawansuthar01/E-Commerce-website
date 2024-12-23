@@ -5,7 +5,7 @@ import ProductRedux from "./Slice/ProductSlice";
 import OrderRedux from "./Slice/OrderSlice";
 import NotificationSliceRedux from "./Slice/notification.Slice";
 import FeedbackRedux from "./Slice/feedbackSlice";
-import CarouselRedux from "./Slice/Carousel";
+import CarouselRedux from "./Slice/CarouselSlice.js";
 const Store = configureStore({
   reducer: {
     auth: authSliceRedux,

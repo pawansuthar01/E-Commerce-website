@@ -19,10 +19,8 @@ const SlowInternetPage = () => {
       }
     };
 
-    // Initial check
     checkNetworkSpeed();
 
-    // Listen for network changes
     navigator.connection?.addEventListener("change", checkNetworkSpeed);
 
     return () => {

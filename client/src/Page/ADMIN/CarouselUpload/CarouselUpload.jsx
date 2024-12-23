@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { FiEdit } from "react-icons/fi";
 import Layout from "../../../layout/layout";
 import LoadingButton from "../../../constants/LoadingBtn";
-import { AddNewCarousel, getAllCarousel } from "../../../Redux/Slice/Carousel";
+import { AddNewCarousel } from "../../../Redux/Slice/CarouselSlice";
 
 function CarouselUpload() {
   const dispatch = useDispatch();

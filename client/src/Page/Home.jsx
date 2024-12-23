@@ -8,7 +8,7 @@ import CarouselSlide from "../Components/CarouselSlice";
 import LoginPrompt from "../Components/loginProment";
 import FeedbackForm from "../Components/feedbackfrom";
 import FeedbackList from "../Components/feedbackList";
-import { getAllCarousel } from "../Redux/Slice/Carousel";
+import { getAllCarousel } from "../Redux/Slice/CarouselSlice";
 
 function HomePage() {
   const [currentSlide, setCurrentSlide] = useState(1); // Start from 1 (middle of the duplicated slides)
