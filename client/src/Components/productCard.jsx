@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FiShoppingCart, FiEye, FiHeart } from "react-icons/fi";
+import { FiShoppingCart, FiEye, FiHeart, FiEdit } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
@@ -13,14 +13,13 @@ import { AiOutlineDelete } from "react-icons/ai";
 import toast from "react-hot-toast";
 import { LoadAccount } from "../Redux/Slice/authSlice";
 
-function ProductCard({ data, onProductDelete }) {
+function ProductCard({ data, onSave, onProductDelete }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isLike, setIsLike] = useState(false);
   const [productExists, setProductExists] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
   const { userName, role, data: userData } = useSelector((state) => state.auth);
-
   useEffect(() => {
     setIsLike(
       data?.ProductLikes?.some(
@@ -94,15 +93,24 @@ function ProductCard({ data, onProductDelete }) {
   return (
     <div className="w-[250px] flex-shrink-0 max-w-xs:w-[250px] max-w-xs:h-[350px] max-sm:w-[150px] flex flex-col cursor-pointer max-sm:h-[250px]  sm:h-[400px] bg-white border border-gray-200 rounded-lg shadow p-2 dark:bg-gray-800 dark:border-gray-700">
       {(role === "ADMIN" || role === "AUTHOR") && (
-        <>
+        <div className="flex w-full justify-between ">
           <AiOutlineDelete
-            size={36}
+            size={26}
             className="text-red-400"
             onClick={() => {
               handleDeleteProduct(data._id);
             }}
           />
-        </>
+          <FiEdit
+            onClick={() => {
+              navigate("/SingleProduct", {
+                state: { ...data },
+              });
+            }}
+            size={26}
+            className="text-red-400"
+          />
+        </div>
       )}
       <section className="relative h-full flex justify-center rounded-lg p-5 w-full  group overflow-hidden">
         <img

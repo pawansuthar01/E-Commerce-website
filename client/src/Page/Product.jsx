@@ -72,6 +72,9 @@ function Product() {
     }
   };
 
+  async function handleSave(data) {
+    console.log(data);
+  }
   return (
     <Layout load={true}>
       <div className="min-h-[100vh] ">
@@ -101,6 +104,7 @@ function Product() {
                     data={product}
                     loadProduct={() => fetchProducts()}
                     onProductDelete={handleProductDelete}
+                    onSave={handleSave}
                   />
                 ))}
               </div>

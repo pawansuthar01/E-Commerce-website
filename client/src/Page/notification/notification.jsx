@@ -27,11 +27,8 @@ function NotificationCart({ data, onUpdate }) {
   };
 
   return (
-    <div
-      onClick={() => handelClick(data._id)}
-      className="w-full  flex items-center gap-10    font-medium"
-    >
-      <p>{data.message}</p>
+    <div className="w-full  flex items-center gap-10    font-medium">
+      <p onClick={() => handelClick(data._id)}>{data.message}</p>
       <button
         onClick={() => handelClickBtn(data._id)}
         className=" text-red-500 text-lg font-bold cursor-pointer text-end"

@@ -11,25 +11,15 @@ export const NotificationGet = createAsyncThunk(
   async () => {
     try {
       const token = localStorage.getItem("Authenticator");
-      const res = axiosInstance.get(`/api/v3/User/Notification`, {
+      const res = await axiosInstance.get(`/api/v3/User/Notification`, {
         headers: {
           Authorization: `${token}`,
         },
       });
 
-      toast.promise(res, {
-        loading: "please wait! get notification..",
-        success: (data) => {
-          return data?.data?.message;
-        },
-
-        error: (data) => {
-          return data?.response?.data?.message;
-        },
-      });
-      return (await res).data;
-    } catch (e) {
-      toast.error(e?.response?.message);
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
     }
   }
 );
@@ -38,7 +28,7 @@ export const NotificationRead = createAsyncThunk(
   async (id) => {
     try {
       const token = localStorage.getItem("Authenticator");
-      const res = axiosInstance.put(
+      const res = await axiosInstance.put(
         `/api/v3/User/Notification/${id}`,
         {},
         {
@@ -48,19 +38,9 @@ export const NotificationRead = createAsyncThunk(
         }
       );
 
-      toast.promise(res, {
-        loading: "please wait! set to read notification..",
-        success: (data) => {
-          return data?.data?.message;
-        },
-
-        error: (data) => {
-          return data?.response?.data?.message;
-        },
-      });
-      return (await res).data;
-    } catch (e) {
-      toast.error(e?.response?.message);
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
     }
   }
 );

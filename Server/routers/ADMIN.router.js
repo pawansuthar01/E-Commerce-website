@@ -83,6 +83,11 @@ ADMINRouter.route("/Carousel/:id")
   .delete(isLoggedIn, authorizeRoles("ADMIN", "AUTHOR"), CarouselDelete);
 
 ADMINRouter.route("/Product/:id")
-  .put(isLoggedIn, authorizeRoles("ADMIN", "AUTHOR"), productUpdate)
+  .put(
+    isLoggedIn,
+    authorizeRoles("ADMIN", "AUTHOR"),
+    upload.array("images", 10),
+    productUpdate
+  )
   .delete(isLoggedIn, authorizeRoles("ADMIN", "AUTHOR"), productDelete);
 export default ADMINRouter;

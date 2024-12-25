@@ -56,7 +56,7 @@ const SearchBar = ({ setQueryBarTitle, onSearch, width, TopMargin }) => {
     if (query.trim()) {
       setSuggestions([]);
       document.getElementById("defaultSearch").value = query;
-      onSearch(query); // Trigger search with current query
+      onSearch(query.trim()); // Trigger search with current query
     }
   };
 

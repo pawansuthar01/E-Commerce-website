@@ -103,7 +103,7 @@ function Layout({ children, load }) {
       if (connection) {
         const slowConnectionTypes = ["slow-2g", "2g"];
         if (slowConnectionTypes.includes(connection.effectiveType)) {
-          navigate("/SlowInternetPage");
+          // navigate("/SlowInternetPage");
         }
       }
     };

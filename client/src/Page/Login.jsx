@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import { LoginAccount } from "../Redux/Slice/authSlice";
 import { useTheme } from "../Components/ThemeContext"; // Import dark mode context
+import { isEmail } from "../helper/regexMatch";
 
 function Login() {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ function Login() {
   const [showLoading, setShowLoading] = useState(false);
 
   const [LoginData, setLoginData] = useState({
-    email: "",
+    Email: "",
     password: "",
   });
 
@@ -27,18 +28,58 @@ function Login() {
       ...LoginData,
       [name]: value,
     });
+    document.getElementById(name).style.borderColor = "";
+    document.getElementById(name).nextElementSibling.innerHTML = name;
+    document.getElementById(name).nextElementSibling.style.color = "";
   }
 
   const handleLogin = async (event) => {
     event.preventDefault();
     setLoading(true);
-    if (!LoginData.email || !LoginData.password) {
+    if (!LoginData.Email) {
       setLoading(false);
-      toast.error("All fields are required...");
+      document.getElementById("Email").style.borderColor = "red";
+      document.getElementById("Email").nextElementSibling.innerHTML =
+        "Please Enter Email..";
+      document.getElementById("Email").nextElementSibling.style.color = "red";
+      return;
+    }
+    if (!isEmail(LoginData.Email)) {
+      setLoading(false);
+
+      document.getElementById("Email").style.borderColor = "red";
+      document.getElementById("Email").nextElementSibling.style.color = "red";
+
+      return;
+    }
+    if (!LoginData.password) {
+      setLoading(false);
+      document.getElementById("password").style.borderColor = "red";
+      document.getElementById("password").nextElementSibling.innerHTML =
+        "Please Enter password..";
+
+      document.getElementById("password").nextElementSibling.style.color =
+        "red";
       return;
     }
     setShowLoading(true);
     const res = await dispatch(LoginAccount(LoginData));
+    if (!res.payload?.success) {
+      if (res.payload?.message == " user not found...") {
+        document.getElementById("Email").style.borderColor = "red";
+        document.getElementById("Email").nextElementSibling.innerHTML =
+          res?.payload?.message;
+        document.getElementById("Email").nextElementSibling.style.color = "red";
+      }
+      if (res.payload?.message == "password Does not match..") {
+        document.getElementById("password").style.borderColor = "red";
+        document.getElementById("password").nextElementSibling.innerHTML =
+          res?.payload?.message;
+        document.getElementById("password").nextElementSibling.style.color =
+          "red";
+      }
+    }
+
     if (res) {
       setShowLoading(false);
       setLoading(false);
@@ -79,26 +120,26 @@ function Login() {
             <form>
               <div className="relative mb-6">
                 <input
-                  type="email"
-                  name="email"
-                  id="email"
+                  type="Email"
+                  name="Email"
+                  id="Email"
                   onChange={handelUserInput}
-                  value={LoginData.email}
+                  value={LoginData.Email}
                   required
                   className={`peer w-full border-b-2 ${
                     darkMode ? "border-gray-500" : "border-gray-300"
                   } focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent`}
                 />
-                {LoginData.email ? (
+                {LoginData.Email ? (
                   <label
-                    htmlFor="email"
+                    htmlFor="Email"
                     className="absolute left-0 top-[-20px] text-sm text-gray-500"
                   >
                     Email
                   </label>
                 ) : (
                   <label
-                    htmlFor="email"
+                    htmlFor="Email"
                     className="absolute left-0 top-2 text-lg text-gray-500 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm"
                   >
                     Email

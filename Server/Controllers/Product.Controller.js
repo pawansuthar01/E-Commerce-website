@@ -76,33 +76,82 @@ export const ProductUpload = async (req, res, next) => {
 
 export const productUpdate = async (req, res, next) => {
   const { id } = req.params;
-  const { data } = req.body;
+  const { name, orderCount, description, price, images, index } = req.body;
   if (!id) {
     return next(new AppError("Product ID is required for update.", 400));
   }
 
   try {
-    if (data.orderCount) {
-      const currentProduct = await Product.findById(id);
-
-      if (!currentProduct) {
-        return next(new AppError("Product not found.", 404));
-      }
-      data.orderCount = currentProduct.orderCount + data.orderCount;
+    const currentProduct = await Product.findById(id);
+    if (!currentProduct) {
+      return next(new AppError("Product not found.", 404));
     }
 
-    // Update the product with the provided data
-    const updatedProduct = await Product.findByIdAndUpdate(
-      id,
-      { $set: data },
-      { new: true, runValidators: true } // Return updated document and validate inputs
-    );
+    if (orderCount) {
+      currentProduct.orderCount += orderCount;
+    }
+
+    let updatedImageData = [...currentProduct.images];
+
+    if (req.files && req.files.length > 0) {
+      const files = req.files;
+
+      if (index && Array.isArray(index)) {
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+
+          if (index[i] !== undefined) {
+            const imageIndex = parseInt(index[i], 10);
+
+            const uploadResult = await cloudinary.v2.uploader.upload(
+              file.path,
+              {
+                folder: "Product",
+              }
+            );
+
+            await fs.rm(file.path, { force: true });
+
+            updatedImageData[imageIndex] = {
+              public_id: uploadResult.public_id,
+              secure_url: uploadResult.secure_url,
+            };
+          }
+        }
+      } else if (index !== undefined) {
+        for (const file of files) {
+          const uploadResult = await cloudinary.v2.uploader.upload(file.path, {
+            folder: "Product",
+          });
+
+          await fs.rm(file.path, { force: true });
+
+          updatedImageData[parseInt(index, 10)] = {
+            public_id: uploadResult.public_id,
+            secure_url: uploadResult.secure_url,
+          };
+        }
+      }
+    }
+
+    const updateData = {
+      ...(name && { name }),
+      ...(price && { price }),
+      ...(description && { description }),
+      images: updatedImageData,
+    };
+
+    const updatedProduct = await Product.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!updatedProduct) {
       return next(
         new AppError("Failed to update the product. Please try again.", 400)
       );
     }
+
     res.status(200).json({
       success: true,
       message: "Product successfully updated.",

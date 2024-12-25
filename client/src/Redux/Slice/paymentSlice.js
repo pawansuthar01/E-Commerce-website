@@ -11,7 +11,7 @@ export const paymentCreate = createAsyncThunk(
     try {
       const token = localStorage.getItem("Authenticator");
 
-      const res = axiosInstance.post(
+      const res = await axiosInstance.post(
         "/api/v3/Order/CreatePayment/new",
         {
           totalAmount: data,
@@ -22,19 +22,10 @@ export const paymentCreate = createAsyncThunk(
           },
         }
       );
-      toast.promise(res, {
-        loading: "please wait! payment ..",
-        success: (data) => {
-          return data?.data?.message;
-        },
 
-        error: (data) => {
-          return data?.response?.data?.message;
-        },
-      });
-      return (await res).data;
-    } catch (e) {
-      toast.error(e?.response?.message);
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
     }
   }
 );
@@ -42,7 +33,7 @@ export const checkPayment = createAsyncThunk("payment/check", async (data) => {
   try {
     const token = localStorage.getItem("Authenticator");
 
-    const res = axiosInstance.post(
+    const res = await axiosInstance.post(
       "/api/v3/Order/PaymentVerify/verify",
 
       data,
@@ -53,19 +44,10 @@ export const checkPayment = createAsyncThunk("payment/check", async (data) => {
         },
       }
     );
-    toast.promise(res, {
-      loading: "please wait! remove  product..",
-      success: (data) => {
-        return data?.data?.message;
-      },
 
-      error: (data) => {
-        return data?.response?.data?.message;
-      },
-    });
-    return (await res).data;
-  } catch (e) {
-    toast.error(e?.response?.message);
+    return res.data;
+  } catch (error) {
+    return error?.response?.data || error?.message || "Something went wrong";
   }
 });
 export const getPaymentRecord = createAsyncThunk(
@@ -74,21 +56,18 @@ export const getPaymentRecord = createAsyncThunk(
     try {
       const token = localStorage.getItem("Authenticator");
 
-      const response = axiosInstance.get("/api/v3/Admin/Payment?count=100", {
-        headers: {
-          Authorization: `${token}`,
-        },
-      });
-      toast.promise(response, {
-        loading: "Getting the payment records",
-        success: (data) => {
-          return data?.data?.message;
-        },
-        error: "Failed to get payment records",
-      });
-      return (await response).data;
+      const response = await axiosInstance.get(
+        "/api/v3/Admin/Payment?count=100",
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+
+      return response.data;
     } catch (error) {
-      toast.error("Operation failed");
+      return error?.response?.data || error?.message || "Something went wrong";
     }
   }
 );

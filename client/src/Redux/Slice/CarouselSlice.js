@@ -11,7 +11,7 @@ export const getAllCarousel = createAsyncThunk(
     try {
       const token = localStorage.getItem("Authenticator");
 
-      const res = axiosInstance.get(
+      const res = await axiosInstance.get(
         `/api/v3/user/Carousel`,
         {},
         {
@@ -20,19 +20,10 @@ export const getAllCarousel = createAsyncThunk(
           },
         }
       );
-      toast.promise(res, {
-        loading: "Loading carousel...",
-        success: (data) => {
-          return data?.data?.message;
-        },
-        error: (data) => {
-          return data?.response?.data?.message;
-        },
-      });
-      return (await res).data;
-    } catch (e) {
-      toast.error(e?.response?.message || "Failed to load products.");
-      throw e; // Re-throw the error to handle it in components if needed
+
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
     }
   }
 );
@@ -41,7 +32,7 @@ export const getCarousel = createAsyncThunk("/Carousel/get", async (id) => {
   try {
     const token = localStorage.getItem("Authenticator");
 
-    const res = axiosInstance.get(
+    const res = await axiosInstance.get(
       `/api/v3/Admin/Carousel/${id}`,
 
       {
@@ -50,19 +41,10 @@ export const getCarousel = createAsyncThunk("/Carousel/get", async (id) => {
         },
       }
     );
-    toast.promise(res, {
-      loading: "please wait! loading Carousel..",
-      success: (data) => {
-        return data?.data?.message;
-      },
 
-      error: (data) => {
-        return data?.response?.data?.message;
-      },
-    });
-    return (await res).data;
-  } catch (e) {
-    toast.error(e?.response?.message);
+    return res.data;
+  } catch (error) {
+    return error?.response?.data || error?.message || "Something went wrong";
   }
 });
 export const DeleteCarousel = createAsyncThunk(
@@ -71,7 +53,7 @@ export const DeleteCarousel = createAsyncThunk(
     try {
       const token = localStorage.getItem("Authenticator");
 
-      const res = axiosInstance.delete(
+      const res = await axiosInstance.delete(
         `/api/v3/Admin/Carousel/${id}`,
 
         {
@@ -80,46 +62,31 @@ export const DeleteCarousel = createAsyncThunk(
           },
         }
       );
-      toast.promise(res, {
-        loading: "please wait! loading Carousel..",
-        success: (data) => {
-          return data?.data?.message;
-        },
 
-        error: (data) => {
-          return data?.response?.data?.message;
-        },
-      });
-      return (await res).data;
-    } catch (e) {
-      toast.error(e?.response?.message);
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
     }
   }
 );
 export const updateCarousel = createAsyncThunk(
   "/Carousel/update",
   async ({ data, id }) => {
-    console.log(data);
     try {
       const token = localStorage.getItem("Authenticator");
-      const res = axiosInstance.put(`/api/v3/Admin/Carousel/${id}`, data, {
-        headers: {
-          Authorization: `${token}`,
-        },
-      });
-      toast.promise(res, {
-        loading: "please wait! update Carousel..",
-        success: (data) => {
-          return data?.data?.message;
-        },
+      const res = await axiosInstance.put(
+        `/api/v3/Admin/Carousel/${id}`,
+        data,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
 
-        error: (data) => {
-          return data?.response?.data?.message;
-        },
-      });
-      return (await res).data;
-    } catch (e) {
-      toast.error(e?.response?.message);
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
     }
   }
 );

@@ -13,25 +13,16 @@ export const SubmitFeedback = createAsyncThunk(
     const token = localStorage.getItem("Authenticator");
 
     try {
-      const res = axiosInstance.post("/api/v3/user/SubmitFeedback", {
+      const res = await axiosInstance.post("/api/v3/user/SubmitFeedback", {
         data,
         headers: {
           Authorization: `${token}`,
         },
       });
-      toast.promise(res, {
-        loading: "please wait! submit feedback..",
-        success: (data) => {
-          return data?.data?.message;
-        },
 
-        error: (data) => {
-          return data?.response?.data?.message;
-        },
-      });
-      return (await res).data;
+      return res.data;
     } catch (error) {
-      toast.error(error?.response?.message);
+      return error?.response?.data || error?.message || "Something went wrong";
     }
   }
 );
@@ -41,7 +32,7 @@ export const getFeedback = createAsyncThunk(
     try {
       const token = localStorage.getItem("Authenticator");
 
-      const res = axiosInstance.get(
+      const res = await axiosInstance.get(
         `/api/v3/user/getFeedback?page=${page}&limit=${limit}`,
         {
           headers: {
@@ -49,19 +40,10 @@ export const getFeedback = createAsyncThunk(
           },
         }
       );
-      toast.promise(res, {
-        loading: "please wait! get feedback..",
-        success: (data) => {
-          return data?.data?.message;
-        },
 
-        error: (data) => {
-          return data?.response?.data?.message;
-        },
-      });
-      return (await res).data;
+      return res.data;
     } catch (error) {
-      toast.error(error?.response?.message);
+      return error?.response?.data || error?.message || "Something went wrong";
     }
   }
 );

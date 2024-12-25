@@ -27,27 +27,18 @@ export const CreateAccount = createAsyncThunk(
 );
 export const LoginAccount = createAsyncThunk("/auth/login", async (data) => {
   try {
-    const res = axiosInstance.post("/api/v3/user/login", data);
-    toast.promise(res, {
-      loading: "please wait! login account..",
-      success: (data) => {
-        return data?.data?.message;
-      },
+    const res = await axiosInstance.post("/api/v3/user/login", data);
 
-      error: (data) => {
-        return data?.response?.data?.message;
-      },
-    });
-    return (await res).data;
+    return res.data;
   } catch (error) {
-    toast.error(e?.response?.message);
+    return error?.response?.data || error?.message || "Something went wrong";
   }
 });
 export const LogoutAccount = createAsyncThunk("/auth/logout", async () => {
   try {
     const token = localStorage.getItem("Authenticator");
 
-    const res = axiosInstance.get(
+    const res = await axiosInstance.get(
       "/api/v3/user/logout",
       {},
       {
@@ -56,19 +47,10 @@ export const LogoutAccount = createAsyncThunk("/auth/logout", async () => {
         },
       }
     );
-    toast.promise(res, {
-      loading: "please wait! logout account..",
-      success: (data) => {
-        return data?.data?.message;
-      },
 
-      error: (data) => {
-        return data?.response?.data?.message;
-      },
-    });
-    return (await res).data;
+    return res.data;
   } catch (error) {
-    toast.error(e?.response?.message);
+    return error?.response?.data || error?.message || "Something went wrong";
   }
 });
 
@@ -76,7 +58,7 @@ export const UpdateAccount = createAsyncThunk("/auth/update", async (data) => {
   try {
     const token = localStorage.getItem("Authenticator");
 
-    const res = axiosInstance.put(
+    const res = await axiosInstance.put(
       "/api/v3/user/UpdateProfile",
       data,
 
@@ -86,26 +68,17 @@ export const UpdateAccount = createAsyncThunk("/auth/update", async (data) => {
         },
       }
     );
-    toast.promise(res, {
-      loading: "please wait! Update Profile ..",
-      success: (data) => {
-        return data?.data?.message;
-      },
 
-      error: (data) => {
-        return data?.response?.data?.message;
-      },
-    });
-    return (await res).data;
+    return res.data;
   } catch (error) {
-    toast.error(e?.response?.message);
+    return error?.response?.data || error?.message || "Something went wrong";
   }
 });
 
 export const LoadAccount = createAsyncThunk("/auth/getProfile", async () => {
   try {
     const token = localStorage.getItem("Authenticator");
-    const res = axiosInstance.get(
+    const res = await axiosInstance.get(
       "/api/v3/user/getProfile",
 
       {
@@ -114,25 +87,16 @@ export const LoadAccount = createAsyncThunk("/auth/getProfile", async () => {
         },
       }
     );
-    toast.promise(res, {
-      loading: "please wait! get Profile ..",
-      success: (data) => {
-        return data?.data?.message;
-      },
 
-      error: (data) => {
-        return data?.response?.data?.message;
-      },
-    });
-    return (await res).data;
+    return res.data;
   } catch (error) {
-    toast.error(e?.response?.message);
+    return error?.response?.data || error?.message || "Something went wrong";
   }
 });
 export const getAllUsers = createAsyncThunk("/auth/User", async () => {
   try {
     const token = localStorage.getItem("Authenticator");
-    const res = axiosInstance.get(
+    const res = await axiosInstance.get(
       "/api/v3/Admin/User",
 
       {
@@ -141,19 +105,10 @@ export const getAllUsers = createAsyncThunk("/auth/User", async () => {
         },
       }
     );
-    toast.promise(res, {
-      loading: "please wait! All user ..",
-      success: (data) => {
-        return data?.data?.message;
-      },
 
-      error: (data) => {
-        return data?.response?.data?.message;
-      },
-    });
-    return (await res).data;
+    return res.data;
   } catch (error) {
-    toast.error(e?.response?.message);
+    return error?.response?.data || error?.message || "Something went wrong";
   }
 });
 
@@ -184,23 +139,26 @@ const authSliceRedux = createSlice({
         }
       })
       .addCase(LoginAccount.fulfilled, (state, action) => {
-        const { data, exp } = action.payload;
-        localStorage.setItem("data", JSON.stringify(data));
-        localStorage.setItem("isLoggedIn", true);
-        localStorage.setItem("exp", Number(exp));
-        localStorage.setItem("role", data.role);
-        localStorage.setItem("userName", data.userName);
-        localStorage.setItem(
-          "Authenticator",
-          action?.payload?.AuthenticatorToken
-        );
-        state.Authenticator = action?.payload?.AuthenticatorToken;
-        state.userName = data.userName;
-        state.walletProduct = [...data.walletAddProducts];
-        state.exp = Number(exp);
-        state.isLoggedIn = true;
-        state.data = data;
-        state.role = data.role;
+        if (action?.payload?.success) {
+          const { data, exp } = action.payload;
+          console.log(data);
+          localStorage.setItem("data", JSON.stringify(data));
+          localStorage.setItem("isLoggedIn", true);
+          localStorage.setItem("exp", Number(exp));
+          localStorage.setItem("role", data.role);
+          localStorage.setItem("userName", data.userName);
+          localStorage.setItem(
+            "Authenticator",
+            action?.payload?.AuthenticatorToken
+          );
+          state.Authenticator = action?.payload?.AuthenticatorToken;
+          state.userName = data.userName;
+          state.walletProduct = [...data.walletAddProducts];
+          state.exp = Number(exp);
+          state.isLoggedIn = true;
+          state.data = data;
+          state.role = data.role;
+        }
       })
       .addCase(LoadAccount.fulfilled, (state, action) => {
         const { data, exp } = action.payload;

@@ -41,7 +41,7 @@ function HomePage() {
     if (Carousel?.length == 0) {
       await dispatch(getAllCarousel());
     }
-    if (product.length == 0) {
+    if (product.length == 0 || topProduct.length == 0) {
       await dispatch(getAllProduct({ page: 1, limit: 25 }));
     }
     setLoading(false);

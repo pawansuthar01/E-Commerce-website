@@ -10,7 +10,7 @@ export const getAllPost = createAsyncThunk("/content/post", async () => {
   try {
     const token = localStorage.getItem("Authenticator");
 
-    const res = axiosInstance.get(
+    const res = await axiosInstance.get(
       "/api/v3/Content/Post",
 
       {
@@ -19,20 +19,10 @@ export const getAllPost = createAsyncThunk("/content/post", async () => {
         },
       }
     );
-    toast.promise(res, {
-      loading: "please wait ! loading blog...",
-      success: (data) => {
-        return data?.data?.message;
-      },
 
-      error: (data) => {
-        return data?.response?.data?.message;
-      },
-    });
-
-    return (await res).data;
-  } catch (e) {
-    toast.error(e?.response?.message);
+    return res.data;
+  } catch (error) {
+    return error?.response?.data || error?.message || "Something went wrong";
   }
 });
 
@@ -42,7 +32,7 @@ export const LikeAndDisLikePost = createAsyncThunk(
     try {
       const token = localStorage.getItem("Authenticator");
 
-      const res = axiosInstance.put(
+      const res = await axiosInstance.put(
         `/api/v3/Content/Post/${id}`,
         {},
         {
@@ -51,19 +41,10 @@ export const LikeAndDisLikePost = createAsyncThunk(
           },
         }
       );
-      toast.promise(res, {
-        loading: "please wait! like Post..",
-        success: (data) => {
-          return data?.data?.message;
-        },
 
-        error: (data) => {
-          return data?.response?.data?.message;
-        },
-      });
-      return (await res).data;
+      return res.data;
     } catch (e) {
-      toast.error(e?.response?.message);
+      return error?.response?.data || error?.message || "Something went wrong";
     }
   }
 );
@@ -71,7 +52,7 @@ export const getPost = createAsyncThunk("/Content/get/post", async (id) => {
   try {
     const token = localStorage.getItem("Authenticator");
 
-    const res = axiosInstance.get(
+    const res = await axiosInstance.get(
       `/api/v3/Content/Post/${id}`,
       {},
       {
@@ -80,19 +61,10 @@ export const getPost = createAsyncThunk("/Content/get/post", async (id) => {
         },
       }
     );
-    toast.promise(res, {
-      loading: "please wait! get Post..",
-      success: (data) => {
-        return data?.data?.message;
-      },
 
-      error: (data) => {
-        return data?.response?.data?.message;
-      },
-    });
-    return (await res).data;
-  } catch (e) {
-    toast.error(e?.response?.message);
+    return res.data;
+  } catch (error) {
+    return error?.response?.data || error?.message || "Something went wrong";
   }
 });
 export const deleteCommentById = createAsyncThunk(
@@ -101,7 +73,7 @@ export const deleteCommentById = createAsyncThunk(
     try {
       const token = localStorage.getItem("Authenticator");
 
-      const res = axiosInstance.delete(
+      const res = await axiosInstance.delete(
         `/api/v3/Content/Post/?postId=${data.postId}&commentId=${data.commentId}`,
 
         {
@@ -111,19 +83,10 @@ export const deleteCommentById = createAsyncThunk(
           },
         }
       );
-      toast.promise(res, {
-        loading: "please wait! Delete Comment..",
-        success: (data) => {
-          return data?.data?.message;
-        },
 
-        error: (data) => {
-          return data?.response?.data?.message;
-        },
-      });
-      return (await res).data;
-    } catch (e) {
-      toast.error(e?.response?.message);
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
     }
   }
 );
@@ -134,7 +97,7 @@ export const AddCommentToPost = createAsyncThunk(
     const token = localStorage.getItem("Authenticator");
 
     try {
-      const res = axiosInstance.post(
+      const res = await axiosInstance.post(
         `/api/v3/Content/Post/${data.id}`,
         {
           comment: data.comment,
@@ -146,19 +109,9 @@ export const AddCommentToPost = createAsyncThunk(
         }
       );
 
-      toast.promise(res, {
-        loading: "please wait! comment send..",
-        success: (data) => {
-          return data?.data?.message;
-        },
-
-        error: (data) => {
-          return data?.response?.data?.message;
-        },
-      });
-      return (await res).data;
-    } catch (e) {
-      toast.error(e?.response?.message);
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
     }
   }
 );
@@ -168,7 +121,7 @@ export const AddCommentToReplay = createAsyncThunk(
     const token = localStorage.getItem("Authenticator");
 
     try {
-      const res = axiosInstance.put(
+      const res = await axiosInstance.put(
         `/api/v3/Content/posts/${data.postId}/comments/${data.commentId}/AddNewComment`,
         {
           reply: data.reply,
@@ -180,19 +133,9 @@ export const AddCommentToReplay = createAsyncThunk(
         }
       );
 
-      toast.promise(res, {
-        loading: "please wait! replay send..",
-        success: (data) => {
-          return data?.data?.message;
-        },
-
-        error: (data) => {
-          return data?.response?.data?.message;
-        },
-      });
-      return (await res).data;
-    } catch (e) {
-      toast.error(e?.response?.message);
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
     }
   }
 );
@@ -203,7 +146,7 @@ export const removeReplayToComment = createAsyncThunk(
     const token = localStorage.getItem("Authenticator");
 
     try {
-      const res = axiosInstance.delete(
+      const res = await axiosInstance.delete(
         `/api/v3/Content/posts/${data.postId}/comments/${data.commentId}/replays/${data.replayId}`,
         {},
         {
@@ -213,19 +156,9 @@ export const removeReplayToComment = createAsyncThunk(
         }
       );
 
-      toast.promise(res, {
-        loading: "please wait! replay delete..",
-        success: (data) => {
-          return data?.data?.message;
-        },
-
-        error: (data) => {
-          return data?.response?.data?.message;
-        },
-      });
-      return (await res).data;
-    } catch (e) {
-      toast.error(e?.response?.message);
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
     }
   }
 );
@@ -235,7 +168,7 @@ export const exitCommentInPostById = createAsyncThunk(
     try {
       const token = localStorage.getItem("Authenticator");
 
-      const res = axiosInstance.put(
+      const res = await axiosInstance.put(
         `/api/v3/Content/posts/${data.postId}/comments/${data.commentId}/UpdateComment`,
         {
           comment: data.updatedComment,
@@ -247,19 +180,9 @@ export const exitCommentInPostById = createAsyncThunk(
         }
       );
 
-      toast.promise(res, {
-        loading: "please wait! update comment..",
-        success: (data) => {
-          return data?.data?.message;
-        },
-
-        error: (data) => {
-          return data?.response?.data?.message;
-        },
-      });
-      return (await res).data;
-    } catch (e) {
-      toast.error(e?.response?.message);
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
     }
   }
 );

@@ -8,31 +8,22 @@ const initialState = {
 export const PlaceOrder = createAsyncThunk("Order/Place", async (data) => {
   try {
     const token = localStorage.getItem("Authenticator");
-    const res = axiosInstance.post("/api/v3/Order/PlaceOrder", data, {
+    const res = await axiosInstance.post("/api/v3/Order/PlaceOrder", data, {
       headers: {
         Authorization: `${token}`,
       },
     });
-    toast.promise(res, {
-      loading: "please wait ! Order is Place...",
-      success: (data) => {
-        return data?.data?.message;
-      },
 
-      error: (data) => {
-        return data?.response?.data?.message;
-      },
-    });
-    return (await res).data;
-  } catch (e) {
-    toast.error(e?.response?.message);
+    return res.data;
+  } catch (error) {
+    return error?.response?.data || error?.message || "Something went wrong";
   }
 });
 
 export const getOrder = createAsyncThunk("Order/get", async (id) => {
   try {
     const token = localStorage.getItem("Authenticator");
-    const res = axiosInstance.get(
+    const res = await axiosInstance.get(
       `/api/v3/Order/${id}`,
 
       {
@@ -41,19 +32,10 @@ export const getOrder = createAsyncThunk("Order/get", async (id) => {
         },
       }
     );
-    toast.promise(res, {
-      loading: "please wait ! Order get...",
-      success: (data) => {
-        return data?.data?.message;
-      },
 
-      error: (data) => {
-        return data?.response?.data?.message;
-      },
-    });
-    return (await res).data;
-  } catch (e) {
-    toast.error(e?.response?.message);
+    return res.data;
+  } catch (error) {
+    return error?.response?.data || error?.message || "Something went wrong";
   }
 });
 export const UpdateOrder = createAsyncThunk(
@@ -61,7 +43,7 @@ export const UpdateOrder = createAsyncThunk(
   async (data) => {
     try {
       const token = localStorage.getItem("Authenticator");
-      const res = axiosInstance.put(
+      const res = await axiosInstance.put(
         `/api/v3/Order/${data.id}`,
 
         data,
@@ -72,19 +54,10 @@ export const UpdateOrder = createAsyncThunk(
           },
         }
       );
-      toast.promise(res, {
-        loading: "please wait ! Order get...",
-        success: (data) => {
-          return data?.data?.message;
-        },
 
-        error: (data) => {
-          return data?.response?.data?.message;
-        },
-      });
-      return (await res).data;
-    } catch (e) {
-      toast.error(e?.response?.message);
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
     }
   }
 );
@@ -92,7 +65,7 @@ export const UpdateOrder = createAsyncThunk(
 export const CancelOrder = createAsyncThunk("Order/updateOrder", async (id) => {
   try {
     const token = localStorage.getItem("Authenticator");
-    const res = axiosInstance.put(
+    const res = await axiosInstance.put(
       `/api/v3/Order/${id}/CancelOrder`,
       {},
       {
@@ -101,43 +74,25 @@ export const CancelOrder = createAsyncThunk("Order/updateOrder", async (id) => {
         },
       }
     );
-    toast.promise(res, {
-      loading: "please wait ! Order get...",
-      success: (data) => {
-        return data?.data?.message;
-      },
 
-      error: (data) => {
-        return data?.response?.data?.message;
-      },
-    });
-    return (await res).data;
-  } catch (e) {
-    toast.error(e?.response?.message);
+    return res.data;
+  } catch (error) {
+    return error?.response?.data || error?.message || "Something went wrong";
   }
 });
 
 export const AllOrder = createAsyncThunk("Order/Orders", async () => {
   try {
     const token = localStorage.getItem("Authenticator");
-    const res = axiosInstance.get(`/api/v3/Admin/Order`, {
+    const res = await axiosInstance.get(`/api/v3/Admin/Order`, {
       headers: {
         Authorization: `${token}`,
       },
     });
-    toast.promise(res, {
-      loading: "please wait ! Orders loading...",
-      success: (data) => {
-        return data?.data?.message;
-      },
 
-      error: (data) => {
-        return data?.response?.data?.message;
-      },
-    });
-    return (await res).data;
-  } catch (e) {
-    toast.error(e?.response?.message);
+    return res.data;
+  } catch (error) {
+    return error?.response?.data || error?.message || "Something went wrong";
   }
 });
 

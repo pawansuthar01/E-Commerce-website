@@ -3,8 +3,14 @@ import axiosInstance from "../../helper/axiosInstance";
 import toast from "react-hot-toast";
 
 const initialState = {
-  product: [],
-  topProducts: [],
+  product:
+    localStorage.getItem("product") == undefined
+      ? []
+      : JSON.parse(localStorage.getItem("product")) || [],
+  topProducts:
+    localStorage.getItem("topProducts") == undefined
+      ? []
+      : JSON.parse(localStorage.getItem("topProducts")) || [],
   totalProducts: 10000,
 };
 export const getAllProduct = createAsyncThunk(
@@ -13,7 +19,7 @@ export const getAllProduct = createAsyncThunk(
     try {
       const token = localStorage.getItem("Authenticator");
 
-      const res = axiosInstance.get(
+      const res = await axiosInstance.get(
         `/api/v3/Product?page=${page}&limit=${limit}`,
         {},
         {
@@ -22,19 +28,10 @@ export const getAllProduct = createAsyncThunk(
           },
         }
       );
-      toast.promise(res, {
-        loading: "Loading products...",
-        success: (data) => {
-          return data?.data?.message;
-        },
-        error: (data) => {
-          return data?.response?.data?.message;
-        },
-      });
-      return (await res).data;
-    } catch (e) {
-      toast.error(e?.response?.message || "Failed to load products.");
-      throw e;
+
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
     }
   }
 );
@@ -45,7 +42,7 @@ export const getSearchProduct = createAsyncThunk(
     try {
       const token = localStorage.getItem("Authenticator");
 
-      const res = axiosInstance.get(
+      const res = await axiosInstance.get(
         `/api/v3/Product/Search?query=${encodeURIComponent(data)}`,
         {},
         {
@@ -54,19 +51,10 @@ export const getSearchProduct = createAsyncThunk(
           },
         }
       );
-      toast.promise(res, {
-        loading: "please wait! Search product..",
-        success: (data) => {
-          return data?.data?.message;
-        },
 
-        error: (data) => {
-          return data?.response?.data?.message;
-        },
-      });
-      return (await res).data;
-    } catch (e) {
-      toast.error(e?.response?.message);
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
     }
   }
 );
@@ -74,7 +62,7 @@ export const getProduct = createAsyncThunk("/product/get", async (id) => {
   try {
     const token = localStorage.getItem("Authenticator");
 
-    const res = axiosInstance.get(
+    const res = await axiosInstance.get(
       `/api/v3/Product/${id}`,
 
       {
@@ -83,51 +71,34 @@ export const getProduct = createAsyncThunk("/product/get", async (id) => {
         },
       }
     );
-    toast.promise(res, {
-      loading: "please wait! loading product..",
-      success: (data) => {
-        return data?.data?.message;
-      },
 
-      error: (data) => {
-        return data?.response?.data?.message;
-      },
-    });
-    return (await res).data;
-  } catch (e) {
-    toast.error(e?.response?.message);
+    return res.data;
+  } catch (error) {
+    return error?.response?.data || error?.message || "Something went wrong";
   }
 });
 export const updateProduct = createAsyncThunk(
   "/product/update",
-  async (data) => {
+  async ({ data, id }) => {
+    console.log(data);
     try {
       const token = localStorage.getItem("Authenticator");
 
-      const res = axiosInstance.put(
-        `/api/v3/Admin/Product/${data.id}`,
-        {
-          data,
-        },
+      const res = await axiosInstance.put(
+        `/api/v3/Admin/Product/${id}`,
+
+        data,
+
         {
           headers: {
             Authorization: ` ${token}`,
           },
         }
       );
-      toast.promise(res, {
-        loading: "please wait! update product..",
-        success: (data) => {
-          return data?.data?.message;
-        },
 
-        error: (data) => {
-          return data?.response?.data?.message;
-        },
-      });
-      return (await res).data;
-    } catch (e) {
-      toast.error(e?.response?.message);
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
     }
   }
 );
@@ -138,7 +109,7 @@ export const AddProductCard = createAsyncThunk(
     try {
       const token = localStorage.getItem("Authenticator");
 
-      const res = axiosInstance.put(
+      const res = await axiosInstance.put(
         "/api/v3/Card/AddProduct",
         { productId: id },
         {
@@ -148,19 +119,9 @@ export const AddProductCard = createAsyncThunk(
         }
       );
 
-      toast.promise(res, {
-        loading: "please wait! Add product..",
-        success: (data) => {
-          return data?.data?.message;
-        },
-
-        error: (data) => {
-          return data?.response?.data?.message;
-        },
-      });
-      return (await res).data;
-    } catch (e) {
-      toast.error(e?.response?.message);
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
     }
   }
 );
@@ -170,7 +131,7 @@ export const RemoveProductCard = createAsyncThunk(
     try {
       const token = localStorage.getItem("Authenticator");
 
-      const res = axiosInstance.put(
+      const res = await axiosInstance.put(
         "/api/v3/Card/v2/RemoveProduct",
         {
           productId: id,
@@ -181,19 +142,10 @@ export const RemoveProductCard = createAsyncThunk(
           },
         }
       );
-      toast.promise(res, {
-        loading: "please wait! remove  product..",
-        success: (data) => {
-          return data?.data?.message;
-        },
 
-        error: (data) => {
-          return data?.response?.data?.message;
-        },
-      });
-      return (await res).data;
-    } catch (e) {
-      toast.error(e?.response?.message);
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
     }
   }
 );
@@ -203,7 +155,7 @@ export const AllRemoveCardProduct = createAsyncThunk(
     try {
       const token = localStorage.getItem("Authenticator");
 
-      const res = axiosInstance.put(
+      const res = await axiosInstance.put(
         `/api/v3/Card/${id}/AllRemoveCardProduct`,
         {},
         {
@@ -213,19 +165,9 @@ export const AllRemoveCardProduct = createAsyncThunk(
         }
       );
 
-      toast.promise(res, {
-        loading: "please wait!  product..",
-        success: (data) => {
-          return data?.data?.message;
-        },
-
-        error: (data) => {
-          return data?.response?.data?.message;
-        },
-      });
-      return (await res).data;
-    } catch (e) {
-      toast.error(e?.response?.message);
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
     }
   }
 );
@@ -236,7 +178,7 @@ export const AddNewProduct = createAsyncThunk(
     try {
       const token = localStorage.getItem("Authenticator");
 
-      const res = axiosInstance.post(
+      const res = await axiosInstance.post(
         "/api/v3/Admin/Product",
 
         data,
@@ -246,19 +188,10 @@ export const AddNewProduct = createAsyncThunk(
           },
         }
       );
-      toast.promise(res, {
-        loading: "please wait! Add product ...",
-        success: (data) => {
-          return data?.data?.message;
-        },
 
-        error: (data) => {
-          return data?.response?.data?.message;
-        },
-      });
-      return (await res).data;
-    } catch (e) {
-      toast.error(e?.response?.message);
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
     }
   }
 );
@@ -268,7 +201,7 @@ export const LikeAndDisLike = createAsyncThunk(
     try {
       const token = localStorage.getItem("Authenticator");
 
-      const res = axiosInstance.put(
+      const res = await axiosInstance.put(
         `/api/v3/Product/${id}`,
         {},
         {
@@ -277,19 +210,10 @@ export const LikeAndDisLike = createAsyncThunk(
           },
         }
       );
-      toast.promise(res, {
-        loading: "please wait! like product..",
-        success: (data) => {
-          return data?.data?.message;
-        },
 
-        error: (data) => {
-          return data?.response?.data?.message;
-        },
-      });
-      return (await res).data;
-    } catch (e) {
-      toast.error(e?.response?.message);
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
     }
   }
 );
@@ -297,11 +221,10 @@ export const DeleteProduct = createAsyncThunk(
   "Product/Delete",
   async (id, thunkAPI) => {
     try {
-      console.log("yes");
       thunkAPI.dispatch({ type: "DELETE_PRODUCT_OPTIMISTIC", payload: id });
       const token = localStorage.getItem("Authenticator");
 
-      const res = axiosInstance.delete(
+      const res = await axiosInstance.delete(
         `/api/v3/Admin/Product/${id}`,
 
         {
@@ -310,31 +233,34 @@ export const DeleteProduct = createAsyncThunk(
           },
         }
       );
-      toast.promise(res, {
-        loading: "please wait! Delete product..",
-        success: (data) => {
-          return data?.data?.message;
-        },
 
-        error: (data) => {
-          return data?.response?.data?.message;
-        },
-      });
-      const response = await res;
       thunkAPI.dispatch({ type: "DELETE_PRODUCT_SUCCESS" });
-      return response.data;
+      return res.data;
     } catch (error) {
       thunkAPI.dispatch({
         type: "DELETE_PRODUCT_FAIL",
         payload: error.message || "An error occurred",
       });
-      toast.error(error?.response?.message);
-      return thunkAPI.rejectWithValue(error.response?.data || error.message);
+      return error?.response?.data || error?.message || "Something went wrong";
     }
   }
 );
+export const updateProductSuccess = (updatedProduct) => ({
+  type: "UPDATE_PRODUCT_SUCCESS",
+  payload: updatedProduct,
+});
 const productReducer = (state = { products: [] }, action) => {
   switch (action.type) {
+    case "UPDATE_PRODUCT_SUCCESS":
+      return {
+        ...state,
+        product: state.products.map((product) =>
+          product._id === action.payload._id
+            ? { ...product, ...action.payload } // Update the specific product
+            : product
+        ),
+      };
+
     case "DELETE_PRODUCT_OPTIMISTIC":
       return {
         ...state,
@@ -352,13 +278,35 @@ const productRedux = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(getAllProduct.fulfilled, (state, action) => {
-      if (action?.payload?.success) {
-        state.product = action?.payload?.data;
-        state.topProducts = action?.payload?.popularProducts;
-        state.totalProducts = action?.payload?.totalProducts;
-      }
-    });
+    builder
+      .addCase(getAllProduct.fulfilled, (state, action) => {
+        if (action?.payload?.success) {
+          state.product = action?.payload?.data;
+
+          localStorage.setItem(
+            "product",
+            JSON.stringify(action?.payload?.data)
+          );
+          localStorage.setItem(
+            "topProducts",
+            JSON.stringify(action?.payload?.popularProducts)
+          );
+          state.topProducts = action?.payload?.popularProducts;
+          state.totalProducts = action?.payload?.totalProducts;
+        }
+      })
+      .addCase(updateProduct.fulfilled, (state, action) => {
+        if (action.payload.success) {
+          state.product = state.product.map((product) =>
+            product._id === action.payload.data._id
+              ? { ...product, ...action.payload.data }
+              : product
+          );
+        }
+      })
+      .addCase(updateProduct.rejected, (state, action) => {
+        state.error = action.payload;
+      });
   },
 });
 export const {} = productRedux.actions;

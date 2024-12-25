@@ -6,6 +6,7 @@ import { razorpay } from "../server.js";
 import AppError from "../utils/AppError.js";
 
 import crypto from "crypto";
+import SendEmail from "../utils/SendEmial.js";
 
 export const CreateOrder = async (req, res, next) => {
   const {
@@ -64,6 +65,8 @@ export const CreateOrder = async (req, res, next) => {
     message: `A new order has been placed with Order ID: ${newOrder._id}.`,
     type: "New Order",
   }));
+
+  await SendEmail(email, subject, message);
 
   await Notification.insertMany(notifications);
 
