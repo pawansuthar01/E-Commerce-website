@@ -39,6 +39,7 @@ function App() {
           <Route path="/Search" element={<Product />}></Route>
           <Route path="/AllProduct" element={<Product />}></Route>
           <Route path="/Contact" element={<Contact />}></Route>
+          <Route path="/api/v3/user/order/:id" element={<OrderDetails />} />
           <Route
             element={<RequireAuth allowedRole={["USER", "ADMIN", "AUTHOR"]} />}
           >
@@ -47,7 +48,6 @@ function App() {
             <Route path="/ThankYou" element={<ThankYou />}></Route>
             <Route path="/UpdateProfile" element={<UpdateProfile />}></Route>
             <Route path="/Cart" element={<Cart />}></Route>
-            <Route path="/api/v3/user/order/:id" element={<OrderDetails />} />
             <Route path="/Blog" element={<Blog />}></Route>
             <Route path="/Description" element={<ProductDescription />}></Route>
           </Route>
