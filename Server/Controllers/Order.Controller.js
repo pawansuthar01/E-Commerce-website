@@ -65,7 +65,8 @@ export const CreateOrder = async (req, res, next) => {
     message: `A new order has been placed with Order ID: ${newOrder._id}.`,
     type: "New Order",
   }));
-  const orderConfirmationUrl = `http://localhost:5173/api/v3/user/order/${newOrder._id}`;
+  const path = process.env.FRONTEND_URL;
+  const orderConfirmationUrl = `${path}/api/v3/user/order/${newOrder._id}`;
   const subject = "Order Confirmation";
   const message = `
   <div style="font-family: Arial, sans-serif; line-height: 1.6;">

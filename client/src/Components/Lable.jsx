@@ -1,10 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
 import { QRCodeSVG } from "qrcode.react";
+import { useLocation } from "react-router-dom";
 
 const ProfessionalShippingLabel = ({ Order, setShowPrint }) => {
   const [order, setOrder] = useState(Order);
   const labelRef = useRef();
-  const url = `http://localhost:5173/api/v3/user/order/${order._id}`;
+  const domain = window.location.hostname(
+    window.location.port ? `:${window.location.port}` : ""
+  );
+
+  const url = `http://${domain}/api/v3/user/order/${order._id}`;
   const handlePrint = () => {
     const printContent = labelRef.current.innerHTML;
     const iframe = document.createElement("iframe");
