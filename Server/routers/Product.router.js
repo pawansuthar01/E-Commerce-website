@@ -5,11 +5,14 @@ import {
   getProduct,
   getSearchProduct,
   LikeAndDisLikeProduct,
+  OrderCount,
+  productUpdate,
 } from "../Controllers/Product.Controller.js";
 const ProductRouter = Router();
 ProductRouter.get("/", getAllProduct);
 ProductRouter.get("/Search", getSearchProduct);
-ProductRouter.route("/:id")
+ProductRouter.route("/:id").put(isLoggedIn, OrderCount);
+ProductRouter.route("/:id/like")
   .get(isLoggedIn, getProduct)
   .put(isLoggedIn, LikeAndDisLikeProduct);
 export default ProductRouter;

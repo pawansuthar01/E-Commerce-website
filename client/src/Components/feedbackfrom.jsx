@@ -65,7 +65,7 @@ const FeedbackForm = () => {
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             rows="4"
-            className="w-full p-2 mt-2 border rounded-md border-gray-300 focus:ring-2 outline-none focus:ring-blue-500 dark:text-gray-200 dark:bg-gray-700"
+            className="w-full p-2 mt-2 border rounded-md border-gray-300 focus:ring-2 outline-none bg-white focus:ring-blue-500 dark:text-gray-200 dark:bg-gray-700"
             placeholder="Your feedback here..."
           />
         </div>

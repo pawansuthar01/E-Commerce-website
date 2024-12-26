@@ -76,6 +76,13 @@ function Layout({ children, load }) {
     } catch (e) {}
   };
 
+  const handleReadNotification = (NotificationId) => {
+    setNotification((prevNotiFiCation) =>
+      prevNotiFiCation.filter(
+        (Notification) => Notification._id !== NotificationId
+      )
+    );
+  };
   useEffect(() => {
     const currentTimestamp = Math.floor(Date.now() / 1000);
 
@@ -318,6 +325,7 @@ function Layout({ children, load }) {
                   >
                     <NotificationCart
                       data={data}
+                      handleReadNotification={handleReadNotification}
                       onUpdate={handelNotificationLoad}
                     />
                   </div>

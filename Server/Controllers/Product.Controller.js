@@ -73,6 +73,35 @@ export const ProductUpload = async (req, res, next) => {
     return next(new AppError(`Product upload failed: ${error.message}`, 400));
   }
 };
+export const OrderCount = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { orderCount: count } = req.body;
+
+    if (!id) {
+      return next(new AppError("Product ID is required for update.", 400));
+    }
+    if (!count) {
+      return next(new AppError("Order count is required for update.", 400));
+    }
+
+    const currentProduct = await Product.findById(id);
+    if (!currentProduct) {
+      return next(new AppError("Product not found.", 404));
+    }
+
+    currentProduct.orderCount += count;
+    await currentProduct.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Product successfully updated.",
+      data: currentProduct.orderCount,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const productUpdate = async (req, res, next) => {
   const { id } = req.params;

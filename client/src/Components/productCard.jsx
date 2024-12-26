@@ -95,7 +95,7 @@ function ProductCard({ data, onSave, onProductDelete }) {
       {(role === "ADMIN" || role === "AUTHOR") && (
         <div className="flex w-full justify-between ">
           <AiOutlineDelete
-            size={26}
+            size={20}
             className="text-red-400"
             onClick={() => {
               handleDeleteProduct(data._id);
@@ -107,7 +107,7 @@ function ProductCard({ data, onSave, onProductDelete }) {
                 state: { ...data },
               });
             }}
-            size={26}
+            size={20}
             className="text-red-400"
           />
         </div>
@@ -138,7 +138,7 @@ function ProductCard({ data, onSave, onProductDelete }) {
         <button
           title="Add to Cart"
           onClick={() => handleAddToCart(data._id)}
-          className={`dark:text-white text-2xl text-black w-1/3 flex justify-center dark:hover:text-green-500 hover:text-green-300`}
+          className={`dark:text-white text-2xl text-black w-1/3 flex justify-center `}
         >
           <FiShoppingCart
             className={`${
@@ -169,7 +169,7 @@ function ProductCard({ data, onSave, onProductDelete }) {
           <FiHeart
             className={`${
               isLike ? "text-red-500 dark:text-red-500" : "dark:text-white"
-            } p-2 dark:hover:text-red-500 hover:text-red-300`}
+            } p-2 `}
             size={36}
           />
         </button>

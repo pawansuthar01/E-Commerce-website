@@ -141,7 +141,6 @@ const authSliceRedux = createSlice({
       .addCase(LoginAccount.fulfilled, (state, action) => {
         if (action?.payload?.success) {
           const { data, exp } = action.payload;
-          console.log(data);
           localStorage.setItem("data", JSON.stringify(data));
           localStorage.setItem("isLoggedIn", true);
           localStorage.setItem("exp", Number(exp));
@@ -161,20 +160,22 @@ const authSliceRedux = createSlice({
         }
       })
       .addCase(LoadAccount.fulfilled, (state, action) => {
-        const { data, exp } = action.payload;
+        if (action.payload.success) {
+          const { data, exp } = action.payload;
 
-        localStorage.setItem("data", JSON.stringify(data));
-        localStorage.setItem("isLoggedIn", true);
-        localStorage.setItem("exp", Number(exp));
-        localStorage.setItem("role", data.role);
-        localStorage.setItem("userName", data.userName);
+          localStorage.setItem("data", JSON.stringify(data));
+          localStorage.setItem("isLoggedIn", true);
+          localStorage.setItem("exp", Number(exp));
+          localStorage.setItem("role", data.role);
+          localStorage.setItem("userName", data.userName);
 
-        state.userName = data.userName;
-        state.walletProduct = [...data.walletAddProducts];
-        state.exp = Number(exp);
-        state.isLoggedIn = true;
-        state.data = data;
-        state.role = data.role;
+          state.userName = data.userName;
+          state.walletProduct = [...data.walletAddProducts];
+          state.exp = Number(exp);
+          state.isLoggedIn = true;
+          state.data = data;
+          state.role = data.role;
+        }
       })
       .addCase(LogoutAccount.fulfilled, (state) => {
         localStorage.clear();

@@ -23,6 +23,7 @@ import AdminDashboard from "./Page/ADMIN/Dashboard";
 import CarouselUpload from "./Page/ADMIN/CarouselUpload/CarouselUpload";
 import { CarouselUpdate } from "./Page/ADMIN/CarouselUpload/carouselUpdate";
 import SingleProduct from "./Page/Product/Proudct";
+import OrderDetails from "./Page/Order/OrderDetails";
 function App() {
   return (
     <ThemeProvider>
@@ -46,7 +47,7 @@ function App() {
             <Route path="/ThankYou" element={<ThankYou />}></Route>
             <Route path="/UpdateProfile" element={<UpdateProfile />}></Route>
             <Route path="/Cart" element={<Cart />}></Route>
-
+            <Route path="/api/v3/user/order/:id" element={<OrderDetails />} />
             <Route path="/Blog" element={<Blog />}></Route>
             <Route path="/Description" element={<ProductDescription />}></Route>
           </Route>
@@ -54,6 +55,7 @@ function App() {
           <Route element={<RequireAuth allowedRole={["USER"]} />}>
             <Route path="/Profile" element={<Profile />}></Route>
             <Route path="/Blog" element={<Blog />}></Route>
+
             <Route path="/Description" element={<ProductDescription />}></Route>
           </Route>
           <Route element={<RequireAuth allowedRole={["ADMIN", "AUTHOR"]} />}>

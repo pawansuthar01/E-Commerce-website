@@ -6,6 +6,7 @@ import {
   CreateOrder,
   createOrderPayment,
   getOrder,
+  getOrderByID,
   PaymentVerify,
   UpdateOrder,
 } from "../Controllers/Order.Controller.js";
@@ -14,7 +15,7 @@ OrderRouter.route("/PlaceOrder").post(isLoggedIn, CreateOrder);
 
 OrderRouter.route("/CreatePayment/new").post(isLoggedIn, createOrderPayment);
 OrderRouter.route("/PaymentVerify/verify").post(isLoggedIn, PaymentVerify);
-
+OrderRouter.route("/:OrderId/getOrderById").get(getOrderByID);
 OrderRouter.route("/:id")
   .get(isLoggedIn, getOrder)
   .put(isLoggedIn, UpdateOrder);

@@ -3,10 +3,11 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { NotificationRead } from "../../Redux/Slice/notification.Slice";
 
-function NotificationCart({ data, onUpdate }) {
+function NotificationCart({ data, onUpdate, handleReadNotification }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handelClickBtn = async (id) => {
+    handleReadNotification(id);
     const res = await dispatch(NotificationRead(id));
     if (res?.payload?.success) {
       onUpdate();
@@ -18,12 +19,6 @@ function NotificationCart({ data, onUpdate }) {
     if (res?.payload?.success) {
       onUpdate();
     }
-
-    if (data.type == "comment") navigate("/Blog");
-    if (data.type == "replay") navigate("/Blog");
-    if (data.type == "blog") navigate("/Blog");
-    if (data.type == "new product") navigate("/AllProduct");
-    if (data.type == "like") navigate("/Blog");
   };
 
   return (

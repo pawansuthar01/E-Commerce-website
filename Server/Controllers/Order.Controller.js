@@ -20,7 +20,7 @@ export const CreateOrder = async (req, res, next) => {
   if (!userId || !products || !shippingAddress || !totalAmount) {
     return next(new AppError("All fields are required.", 400));
   }
-
+  console.log();
   const productDetails = await Promise.all(
     products.map(async (product) => {
       const productFound = await Product.findById(product.product);
@@ -65,8 +65,31 @@ export const CreateOrder = async (req, res, next) => {
     message: `A new order has been placed with Order ID: ${newOrder._id}.`,
     type: "New Order",
   }));
+  const orderConfirmationUrl = `http://localhost:5173/api/v3/user/order/${newOrder._id}`;
+  const subject = "Order Confirmation";
+  const message = `
+  <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+    <h2 style="color: #4CAF50;">Thank you for your order!</h2>
+    <p>Dear ${shippingAddress.name},</p>
+    <p>Your order has been successfully placed! We are thrilled to have the opportunity to serve you.</p>
+    <p>Here are your order details:</p>
+    <ul>
+      <li><strong>Order ID:</strong> ${newOrder._id}</li>
+      <li><strong>Total Amount:</strong> ₹${totalAmount}</li>
+      <li><strong>Shipping Address:</strong> ${shippingAddress.address}, ${shippingAddress.city}, ${shippingAddress.state}, ${shippingAddress.zip}</li>
+    </ul>
+    <p>You can view or track your order by clicking the link below:</p>
+    <p><a href="${orderConfirmationUrl}" style="color: #ffffff; background-color: #4CAF50; padding: 10px 20px; text-decoration: none; border-radius: 5px;" target="_blank">View My Order</a></p>
+    <p>If the button above doesn't work, copy and paste this link into your browser:</p>
+    <p>${orderConfirmationUrl}</p>
+    <p>If you have any questions or need further assistance, feel free to contact us at <a href="mailto:support@example.com">support@example.com</a>.</p>
+    <p>Thank you for shopping with us!</p>
+    <p>Best regards,</p>
+    <p><strong>KGS DOORS</strong></p>
+  </div>
+`;
 
-  await SendEmail(email, subject, message);
+  await SendEmail(shippingAddress.email, subject, message);
 
   await Notification.insertMany(notifications);
 
@@ -214,6 +237,26 @@ export const CancelOrder = async (req, res, next) => {
   }
 };
 
+export const getOrderByID = async (req, res, next) => {
+  try {
+    const { OrderId: id } = req.params;
+    if (!id) {
+      return next(new AppError("all flied is required..", 400));
+    }
+    const OrderExit = await Order.findById(id);
+
+    if (!OrderExit) {
+      return next(new AppError("Order Not Found..", 400));
+    }
+    res.status(200).json({
+      success: true,
+      message: "successFully Order Get...",
+      data: OrderExit,
+    });
+  } catch (error) {
+    return next(new AppError(error.message, 400));
+  }
+};
 export const getOrder = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -259,7 +302,6 @@ export const allOrderPayments = async (req, res, next) => {
       skip: parseInt(skip, 10),
     });
 
-    // Month names and initial monthly record object
     const monthNames = [
       "January",
       "February",

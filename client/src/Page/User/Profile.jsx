@@ -124,7 +124,6 @@ function Profile() {
   };
 
   const handelOrderCancel = async (id) => {
-    // Prevent cancellation if the order is already delivered
     if (orderStats[OrderId] === "Delivered") {
       toast.error("You cannot cancel a delivered order.");
       return;
@@ -140,7 +139,7 @@ function Profile() {
     setLoading(false);
     setShow(false);
     if (res?.payload?.success) {
-      loadOrders(); // Reload orders after canceling
+      loadOrders();
     }
   };
 
@@ -194,7 +193,8 @@ function Profile() {
 
   useEffect(() => {
     trackingOrder();
-  }, [Orders]);
+  }, []);
+
   useEffect(() => {
     loadProfile();
   }, []);
@@ -418,7 +418,7 @@ function Profile() {
                     value={shippingInfo.country}
                     name="country"
                     id="country"
-                    className="form-control mt-1 w-full dark:bg-[#111827]   border p-2 rounded"
+                    className="form-control mt-1 w-full dark:bg-[#111827] bg-white   border p-2 rounded"
                   />
                 </div>
 
@@ -436,7 +436,7 @@ function Profile() {
                       value={shippingInfo.name}
                       name="name"
                       id="name"
-                      className="form-control mt-1 w-full dark:bg-[#111827]   border p-2 rounded"
+                      className="form-control mt-1 w-full dark:bg-[#111827] bg-white  border p-2 rounded"
                     />
                   </div>
                 </div>
@@ -456,7 +456,7 @@ function Profile() {
                     id="address"
                     name="address"
                     placeholder="Street address"
-                    className="form-control mt-1 w-full dark:bg-[#111827]   border p-2 rounded"
+                    className="form-control mt-1 w-full dark:bg-[#111827] bg-white  border p-2 rounded"
                   />
                 </div>
 
@@ -467,7 +467,7 @@ function Profile() {
                     onChange={handelUserInput}
                     value={shippingInfo.address2}
                     placeholder="Apartment, suite, unit etc. (optional)"
-                    className="form-control mt-1 w-full dark:bg-[#111827]   border p-2 rounded"
+                    className="form-control mt-1 w-full dark:bg-[#111827]bg-white   border p-2 rounded"
                   />
                 </div>
 
@@ -485,7 +485,7 @@ function Profile() {
                       name="city"
                       type="text"
                       id="city"
-                      className="form-control mt-1 w-full dark:bg-[#111827]   border p-2 rounded"
+                      className="form-control mt-1 w-full dark:bg-[#111827] bg-white   border p-2 rounded"
                     />
                   </div>
                   <div className="w-full md:w-1/2 pr-2 mb-4 md:mb-0">
@@ -501,7 +501,7 @@ function Profile() {
                       name="state"
                       type="text"
                       id="state"
-                      className="form-control mt-1 w-full dark:bg-[#111827]   border p-2 rounded"
+                      className="form-control mt-1 w-full dark:bg-[#111827] bg-white  border p-2 rounded"
                     />
                   </div>
                   <div className="w-full md:w-1/2 pl-2">
@@ -517,7 +517,7 @@ function Profile() {
                       value={shippingInfo.postalCode}
                       name="postalCode"
                       id="postalCode"
-                      className="form-control mt-1 w-full dark:bg-[#111827]   border p-2 rounded"
+                      className="form-control mt-1 w-full dark:bg-[#111827] bg-white   border p-2 rounded"
                     />
                   </div>
                 </div>
@@ -536,7 +536,7 @@ function Profile() {
                       name="email"
                       type="email"
                       id="email"
-                      className="form-control mt-1 w-full dark:bg-[#111827]   border p-2 rounded"
+                      className="form-control mt-1 w-full dark:bg-[#111827] bg-white  border p-2 rounded"
                     />
                   </div>
                   <div className="w-full md:w-1/2 pl-2 mb-2">
@@ -553,7 +553,7 @@ function Profile() {
                       type="number"
                       id="phoneNumber"
                       placeholder="Phone Number"
-                      className="form-control mt-1 w-full dark:bg-[#111827]   border p-2 rounded"
+                      className="form-control mt-1 w-full dark:bg-[#111827] bg-white   border p-2 rounded"
                     />
                   </div>
                   <LoadingButton

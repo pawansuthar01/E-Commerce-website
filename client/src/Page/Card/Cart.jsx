@@ -4,21 +4,19 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { LoadAccount } from "../../Redux/Slice/authSlice";
 import { RemoveProductCard } from "../../Redux/Slice/ProductSlice";
-import LoadingButton from "../../constants/LoadingBtn"; // Ensure this component is present in your codebase
+import LoadingButton from "../../constants/LoadingBtn";
 import { MdCurrencyRupee } from "react-icons/md";
-import FeedbackForm from "../../Components/feedbackfrom";
-import FeedbackList from "../../Components/feedbackList";
 
 const Cart = () => {
   const [cart, setCart] = useState([]);
   const [loadingStates, setLoadingStates] = useState({});
   const [quantities, setQuantities] = useState({});
-  const [isLoading, setIsLoading] = useState(false); // New state for overall loading
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const loadProfile = async () => {
-    setIsLoading(true); // Start loader
+    setIsLoading(true);
     const res = await dispatch(LoadAccount());
     setCart(res?.payload?.data?.walletAddProducts || []);
     const initialQuantities = {};
@@ -26,7 +24,7 @@ const Cart = () => {
       initialQuantities[product.product] = product.quantity || 1;
     });
     setQuantities(initialQuantities);
-    setIsLoading(false); // Stop loader
+    setIsLoading(false);
   };
 
   const minQuantity = (productId) => {
@@ -142,7 +140,7 @@ const Cart = () => {
                               </button>
                               <input
                                 type="text"
-                                className="w-12 dark:bg-[#111827] text-center border rounded"
+                                className="w-12 dark:bg-[#111827] text-center bg-white border rounded"
                                 value={quantities[product.product] || 1}
                                 readOnly
                               />

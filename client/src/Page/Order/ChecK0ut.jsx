@@ -11,6 +11,7 @@ import { isEmail, isPhoneNumber } from "../../helper/regexMatch";
 import { PlaceOrder } from "../../Redux/Slice/OrderSlice";
 import {
   AllRemoveCardProduct,
+  orderCountUpdate,
   updateProduct,
 } from "../../Redux/Slice/ProductSlice";
 import { checkPayment, paymentCreate } from "../../Redux/Slice/paymentSlice";
@@ -190,13 +191,15 @@ function CheckoutPage() {
       if (res?.payload?.success) {
         await dispatch(AllRemoveCardProduct(UserId));
         for (const product of cart) {
-          await dispatch(
-            updateProduct({
+          const res = await dispatch(
+            orderCountUpdate({
               id: product.product,
-
-              orderCount: (product.orderCount || 0) + product.quantity,
+              data: {
+                orderCount: product.quantity,
+              },
             })
           );
+          console.log(res);
         }
         loadProfile();
         navigate("/ThankYou", { state: { data: res?.payload?.data } });
@@ -284,7 +287,7 @@ function CheckoutPage() {
                     value={shippingInfo.country}
                     name="country"
                     id="country"
-                    className="form-control mt-1 w-full dark:bg-[#111827]   border p-2 rounded"
+                    className="form-control mt-1 w-full dark:bg-[#111827] bg-white  border p-2 rounded"
                   />
                 </div>
 
@@ -302,7 +305,7 @@ function CheckoutPage() {
                       value={shippingInfo.name}
                       name="name"
                       id="name"
-                      className="form-control mt-1 w-full dark:bg-[#111827]  border p-2 rounded"
+                      className="form-control mt-1 w-full dark:bg-[#111827] bg-white  border p-2 rounded"
                     />
                   </div>
                 </div>
@@ -322,7 +325,7 @@ function CheckoutPage() {
                     id="address"
                     name="address"
                     placeholder="Street address"
-                    className="form-control mt-1 w-full dark:bg-[#111827]  border p-2 rounded"
+                    className="form-control mt-1 w-full dark:bg-[#111827] bg-white  border p-2 rounded"
                   />
                 </div>
 
@@ -333,7 +336,7 @@ function CheckoutPage() {
                     onChange={handelUserInput}
                     value={shippingInfo.address2}
                     placeholder="Apartment, suite, unit etc. (optional)"
-                    className="form-control mt-1 w-full dark:bg-[#111827] border p-2 rounded"
+                    className="form-control mt-1 w-full dark:bg-[#111827] bg-white border p-2 rounded"
                   />
                 </div>
 
@@ -351,7 +354,7 @@ function CheckoutPage() {
                       name="city"
                       type="text"
                       id="city"
-                      className="form-control mt-1 w-full dark:bg-[#111827]  border p-2 rounded"
+                      className="form-control mt-1 w-full dark:bg-[#111827]  bg-white  border p-2 rounded"
                     />
                   </div>
                   <div className="w-full md:w-1/2 pr-2 mb-4 md:mb-0">
@@ -367,7 +370,7 @@ function CheckoutPage() {
                       name="state"
                       type="text"
                       id="state"
-                      className="form-control mt-1 w-full dark:bg-[#111827]  border p-2 rounded"
+                      className="form-control mt-1 w-full dark:bg-[#111827] bg-white  border p-2 rounded"
                     />
                   </div>
                   <div className="w-full md:w-1/2 pl-2">
@@ -383,7 +386,7 @@ function CheckoutPage() {
                       value={shippingInfo.postalCode}
                       name="postalCode"
                       id="postalCode"
-                      className="form-control mt-1 w-full dark:bg-[#111827]  border p-2 rounded"
+                      className="form-control mt-1 w-full dark:bg-[#111827] bg-white  border p-2 rounded"
                     />
                   </div>
                 </div>
@@ -402,7 +405,7 @@ function CheckoutPage() {
                       name="email"
                       type="email"
                       id="email"
-                      className="form-control mt-1 w-full dark:bg-[#111827]  border p-2 rounded"
+                      className="form-control mt-1 w-full dark:bg-[#111827] bg-white  border p-2 rounded"
                     />
                   </div>
                   <div className="w-full md:w-1/2 pl-2">
@@ -419,7 +422,7 @@ function CheckoutPage() {
                       type="number"
                       id="phoneNumber"
                       placeholder="Phone Number"
-                      className="form-control mt-1 w-full dark:bg-[#111827]  border p-2 rounded"
+                      className="form-control mt-1 w-full dark:bg-[#111827] bg-white  border p-2 rounded"
                     />
                   </div>
                 </div>
@@ -433,7 +436,7 @@ function CheckoutPage() {
                 <h2 className="text-2xl mb-3 font-bold dark:text-white text-black">
                   Your Order
                 </h2>
-                <div className="p-5 border bg-white dark:bg-[#111827]  overflow-x-auto ">
+                <div className="p-5 border bg-white dark:bg-[#111827]   overflow-x-auto ">
                   <table className="w-full mb-5">
                     <thead className="">
                       <tr>
@@ -451,7 +454,7 @@ function CheckoutPage() {
                             <MdCurrencyRupee />{" "}
                             <span>{Number(product.price).toFixed(2)}</span>
                           </td>
-                          <td className="p-4 text-center  ">
+                          <td className="p-4 text-center bg-white  ">
                             {product.quantity}{" "}
                           </td>
 

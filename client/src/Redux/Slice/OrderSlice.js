@@ -20,6 +20,24 @@ export const PlaceOrder = createAsyncThunk("Order/Place", async (data) => {
   }
 });
 
+export const getOrderById = createAsyncThunk("Order/getOrder", async (id) => {
+  try {
+    const token = localStorage.getItem("Authenticator");
+    const res = await axiosInstance.get(
+      `/api/v3/Order/${id}/getOrderById`,
+
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+      }
+    );
+
+    return res.data;
+  } catch (error) {
+    return error?.response?.data || error?.message || "Something went wrong";
+  }
+});
 export const getOrder = createAsyncThunk("Order/get", async (id) => {
   try {
     const token = localStorage.getItem("Authenticator");

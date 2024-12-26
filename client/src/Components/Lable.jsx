@@ -4,9 +4,7 @@ import { QRCodeSVG } from "qrcode.react";
 const ProfessionalShippingLabel = ({ Order, setShowPrint }) => {
   const [order, setOrder] = useState(Order);
   const labelRef = useRef();
-
-  const url = "http://localhost:5173/Profile";
-  // Handle Print
+  const url = `http://localhost:5173/api/v3/user/order/${order._id}`;
   const handlePrint = () => {
     const printContent = labelRef.current.innerHTML;
     const iframe = document.createElement("iframe");

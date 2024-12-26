@@ -77,6 +77,31 @@ export const getProduct = createAsyncThunk("/product/get", async (id) => {
     return error?.response?.data || error?.message || "Something went wrong";
   }
 });
+export const orderCountUpdate = createAsyncThunk(
+  "/product/update",
+  async ({ data, id }) => {
+    console.log(data);
+    try {
+      const token = localStorage.getItem("Authenticator");
+
+      const res = await axiosInstance.put(
+        `/api/v3/Product/${id}`,
+
+        data,
+
+        {
+          headers: {
+            Authorization: ` ${token}`,
+          },
+        }
+      );
+
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
+    }
+  }
+);
 export const updateProduct = createAsyncThunk(
   "/product/update",
   async ({ data, id }) => {
@@ -202,7 +227,7 @@ export const LikeAndDisLike = createAsyncThunk(
       const token = localStorage.getItem("Authenticator");
 
       const res = await axiosInstance.put(
-        `/api/v3/Product/${id}`,
+        `/api/v3/Product/${id}/like`,
         {},
         {
           headers: {
