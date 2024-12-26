@@ -64,7 +64,6 @@ function Login() {
     }
     setShowLoading(true);
     const res = await dispatch(LoginAccount(LoginData));
-    console.log(res.payload);
     if (!res.payload?.success) {
       if (res.payload?.message == "user not found...") {
         document.getElementById("Email").style.borderColor = "red";

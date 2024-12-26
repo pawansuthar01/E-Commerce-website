@@ -2,20 +2,25 @@ import { FaArrowLeft, FaRegComment } from "react-icons/fa6";
 import { FiHeart } from "react-icons/fi";
 import { IoPaperPlaneOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllPost, LikeAndDisLikePost } from "../Redux/Slice/ContenrSlice";
+import {
+  getAllPost,
+  getPost,
+  LikeAndDisLikePost,
+} from "../Redux/Slice/ContenrSlice";
 import { useState, useEffect } from "react";
 import CommentCard from "./CommentListCard";
 
 function BlogCard({ data }) {
-  const [showCommentForm, setShowCommentForm] = useState(false); // State to toggle comment form visibility
-
+  const [showCommentForm, setShowCommentForm] = useState(false);
   const dispatch = useDispatch();
   const { userName } = useSelector((state) => state?.auth);
-
   const productExists = data?.PostLikes?.some(
     (item) => item.userName && item.userName.toString() === userName
   );
-
+  const [Blog, setBlog] = useState(data);
+  useEffect(() => {
+    setBlog(data);
+  }, []);
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
@@ -26,12 +31,9 @@ function BlogCard({ data }) {
     }
   };
 
-  const handleCommentAdded = () => {
-    LoadBlog();
-  };
-
-  async function LoadBlog() {
-    await dispatch(getAllPost());
+  async function LoadBlog(id) {
+    const res = await dispatch(getPost(id));
+    setBlog(res?.payload?.data);
   }
 
   async function handelLikeDisLike(id) {
@@ -46,16 +48,16 @@ function BlogCard({ data }) {
       <div className="card card-compact bg-base-100 dark:bg-gray-800 dark:text-white w-96 shadow-xl">
         <figure>
           <img
-            src={data.Post.secure_url}
+            src={Blog.Post.secure_url}
             alt="Shoes"
             className="max-h[250px]"
           />
         </figure>
         <div className="card-body">
           <h2 className="card-title text-black dark:text-white font-medium text-2xl">
-            {data.title}
+            {Blog.title}
           </h2>
-          <p>{data.description}</p>
+          <p>{Blog.description}</p>
           <div className="card-actions justify-evenly rounded-sm p-1 text-black dark:text-white font-normal">
             <button
               onClick={() => setShowCommentForm(true)}
@@ -65,10 +67,10 @@ function BlogCard({ data }) {
                 <FaRegComment className="rounded-lg" size={20} />
                 <span>Comment...</span>
               </h1>
-              {data.numberOfComment}
+              {Blog.numberOfComment}
             </button>
             <button
-              onClick={() => handelLikeDisLike(data._id)}
+              onClick={() => handelLikeDisLike(Blog._id)}
               className="font-serif"
             >
               <h1 className="flex gap-1">
@@ -82,7 +84,7 @@ function BlogCard({ data }) {
                 />
                 <span>{productExists ? "Unlike" : "Like"}</span>
               </h1>
-              {data.likeCount}
+              {Blog.likeCount}
             </button>
             <button
               onClick={handleShare}
@@ -108,7 +110,7 @@ function BlogCard({ data }) {
               Comment..
             </h3>
             <div className="max-h-[500px] overflow-x-auto hide-scrollbar">
-              <CommentCard data={data} onAddComment={handleCommentAdded} />
+              <CommentCard data={Blog} onAddComment={LoadBlog} />
             </div>
           </div>
         </div>

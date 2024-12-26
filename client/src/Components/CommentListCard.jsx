@@ -5,12 +5,14 @@ import {
   AddCommentToReplay,
   deleteCommentById,
   exitCommentInPostById,
+  getAllPost,
+  getPost,
   removeReplayToComment,
-  // Added import
 } from "../Redux/Slice/ContenrSlice";
 
 function CommentCard({ data, onAddComment }) {
   const dispatch = useDispatch();
+  const [BlogId, setBlogId] = useState(data?._id);
   const { userName, role } = useSelector((state) => state?.auth);
   const [newComment, setNewComment] = useState("");
   const [editingCommentId, setEditingCommentId] = useState(null);
@@ -49,16 +51,21 @@ function CommentCard({ data, onAddComment }) {
       })
     ).then(() => {
       setNewComment("");
-      onAddComment();
+
+      onAddComment(BlogId);
     });
   }
-
+  useEffect(() => {
+    setTimeout(() => {
+      onAddComment(BlogId);
+    }, 3000);
+  });
   async function addComment() {
     const res = await dispatch(
       AddCommentToPost({ id: data._id, comment: newComment })
     );
     if (res) {
-      onAddComment();
+      onAddComment(BlogId);
     }
   }
 
@@ -67,7 +74,7 @@ function CommentCard({ data, onAddComment }) {
       deleteCommentById({ postId: data._id, commentId: id, userName: userName })
     );
     if (res) {
-      onAddComment();
+      onAddComment(BlogId);
     }
   }
 
@@ -79,9 +86,8 @@ function CommentCard({ data, onAddComment }) {
         replayId: replayId,
       })
     );
-
     if (response?.payload?.success) {
-      onAddComment();
+      onAddComment(BlogId);
     }
   }
 
@@ -97,7 +103,7 @@ function CommentCard({ data, onAddComment }) {
       if (res) {
         setEditingCommentId(null);
         setEditedComment("");
-        onAddComment();
+        onAddComment(BlogId);
       }
     }
   }
@@ -106,17 +112,17 @@ function CommentCard({ data, onAddComment }) {
     if (endOfCommentsRef.current) {
       endOfCommentsRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [data.comments, replies]);
+  }, [data.comments]);
 
   return (
     <div className="p-4">
-      {data.numberOfComment === 0 ? (
+      {data.comments?.numberOfComment === 0 ? (
         <div className="flex justify-center">
           <p className="text-black text-xl text-center">No Comments...</p>
         </div>
       ) : (
         <div>
-          {data.comments.map((comment, index) => (
+          {data.comments?.map((comment, index) => (
             <div
               key={index}
               className={`flex mb-2 ${
@@ -231,7 +237,7 @@ function CommentCard({ data, onAddComment }) {
                                     : `hidden`
                                 } justify-between text-blue-600 cursor-pointer hover:underline`}
                                 onClick={() =>
-                                  DeleteComment(comment._id, comment.userName)
+                                  DeleteReplay(reply._id, comment._id)
                                 }
                               >
                                 Delete

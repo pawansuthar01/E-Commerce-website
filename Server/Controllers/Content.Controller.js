@@ -237,7 +237,6 @@ export const AddReplayToComment = async (req, res, next) => {
 };
 export const removeReplayToComment = async (req, res, next) => {
   const { postId, commentId, replyId } = req.params;
-
   if (!postId || !commentId || !replyId) {
     return next(new AppError("all filed is required...", 400));
   }
@@ -309,6 +308,7 @@ export const exitCommentInPostById = async (req, res, next) => {
 export const deleteCommentInPostById = async (req, res, next) => {
   const { userName } = req.body;
   const { postId, commentId } = req.query;
+  console.log(req.query);
 
   if (!postId || !commentId || !userName) {
     return next(

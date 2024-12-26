@@ -54,7 +54,7 @@ export const getPost = createAsyncThunk("/Content/get/post", async (id) => {
 
     const res = await axiosInstance.get(
       `/api/v3/Content/Post/${id}`,
-      {},
+
       {
         headers: {
           Authorization: `${token}`,
@@ -144,11 +144,10 @@ export const removeReplayToComment = createAsyncThunk(
   "/Content/CommentReplayRemove/Post",
   async (data) => {
     const token = localStorage.getItem("Authenticator");
-
     try {
       const res = await axiosInstance.delete(
         `/api/v3/Content/posts/${data.postId}/comments/${data.commentId}/replays/${data.replayId}`,
-        {},
+
         {
           headers: {
             Authorization: `${token}`,
