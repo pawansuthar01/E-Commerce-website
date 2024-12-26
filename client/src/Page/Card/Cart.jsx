@@ -214,15 +214,6 @@ const Cart = () => {
             )}
           </>
         )}
-        {/* feedback section */}
-        <div className="w-full  ">
-          <hr className="h-1 bg-slate-200" />
-          <h1 className="text-2xl font-bold mb-4 ml-10 text-start dark:text-white text-black">
-            feedback Section
-          </h1>
-          <FeedbackForm />
-          <FeedbackList />
-        </div>
       </div>
     </Layout>
   );
