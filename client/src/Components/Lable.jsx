@@ -5,9 +5,9 @@ import { useLocation } from "react-router-dom";
 const ProfessionalShippingLabel = ({ Order, setShowPrint }) => {
   const [order, setOrder] = useState(Order);
   const labelRef = useRef();
-  const domain = window.location.hostname(
-    window.location.port ? `:${window.location.port}` : ""
-  );
+  const domain =
+    window.location.hostname +
+    (window.location.port ? `:${window.location.port}` : "");
 
   const url = `http://${domain}/api/v3/user/order/${order._id}`;
   const handlePrint = () => {

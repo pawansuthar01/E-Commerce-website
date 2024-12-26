@@ -44,8 +44,10 @@ function Profile() {
   const [editShow, setEditShow] = useState(false);
   const UserData = useSelector((state) => state?.auth);
   const orders = useSelector((state) => state?.order.Orders);
-  const [Orders, setOrder] = useState(orders);
-
+  const [Orders, setOrder] = useState([]);
+  useEffect(() => {
+    setOrder(orders);
+  }, []);
   const loadProfile = async () => {
     const res = await dispatch(LoadAccount());
     setUserID(res?.payload?.data?._id);
@@ -193,7 +195,7 @@ function Profile() {
 
   useEffect(() => {
     trackingOrder();
-  }, []);
+  }, [orders]);
 
   useEffect(() => {
     loadProfile();
