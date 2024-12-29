@@ -51,6 +51,13 @@ const OrderSchema = new Schema({
     default: "razorpay",
   },
 
+  amount: {
+    type: Number,
+  },
+  name: {
+    type: String,
+  },
+
   totalAmount: {
     type: Number,
     required: true,
@@ -84,6 +91,9 @@ const OrderSchema = new Schema({
       date.setDate(date.getDate() + 10);
       return date;
     },
+  },
+  PaymentDate: {
+    type: Date,
   },
   createdAt: {
     type: Date,

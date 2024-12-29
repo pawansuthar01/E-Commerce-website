@@ -51,7 +51,7 @@ export const checkPayment = createAsyncThunk("payment/check", async (data) => {
   }
 });
 export const getPaymentRecord = createAsyncThunk(
-  "/payments/record",
+  "/payments/online",
   async () => {
     try {
       const token = localStorage.getItem("Authenticator");
@@ -71,6 +71,21 @@ export const getPaymentRecord = createAsyncThunk(
     }
   }
 );
+export const PaymentData = createAsyncThunk("/payments/record", async () => {
+  try {
+    const token = localStorage.getItem("Authenticator");
+
+    const response = await axiosInstance.get("/api/v3/Admin/Payment/Orders", {
+      headers: {
+        Authorization: `${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    return error?.response?.data || error?.message || "Something went wrong";
+  }
+});
 
 const PaymentRedux = createSlice({
   name: "payment",

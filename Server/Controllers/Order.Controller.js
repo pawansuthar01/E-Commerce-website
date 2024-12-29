@@ -181,6 +181,14 @@ export const UpdateOrder = async (req, res, next) => {
         new AppError("Only ADMIN or AUTHOR can edit order status.", 403)
       );
     }
+    if (
+      data.paymentStatus == "Completed" &&
+      (!data.name || !data.amount || !data.PaymentDate)
+    ) {
+      return next(
+        new AppError("Payment complete to required name and amount", 403)
+      );
+    }
     const updateData = {};
     if (data.shippingAddress && role === "USER") {
       updateData.shippingAddress = data.shippingAddress;
@@ -189,9 +197,21 @@ export const UpdateOrder = async (req, res, next) => {
     if (data.orderStats && (role === "ADMIN" || role === "AUTHOR")) {
       updateData.orderStats = data.orderStats;
     }
+    if (data.deliveryDate && (role === "ADMIN" || role === "AUTHOR")) {
+      updateData.deliveryDate = data.deliveryDate;
+    }
 
     if (data.paymentStatus && (role === "ADMIN" || role === "AUTHOR")) {
       updateData.paymentStatus = data.paymentStatus;
+    }
+    if (
+      data.paymentStatus == "Completed" &&
+      (role === "ADMIN" || role === "AUTHOR")
+    ) {
+      updateData.paymentStatus = data.paymentStatus;
+      updateData.name = data.name;
+      updateData.amount = data.amount;
+      updateData.PaymentDate = data.PaymentDate;
     }
 
     const order = await Order.findOneAndUpdate(

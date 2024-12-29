@@ -17,6 +17,7 @@ import { isEmail, isPhoneNumber } from "../../helper/regexMatch";
 import { OrderShow } from "../../Components/ShowOrder";
 import FeedbackForm from "../../Components/feedbackfrom";
 import FeedbackList from "../../Components/feedbackList";
+import { OrderCart } from "../../Components/OrderDataCart";
 
 function Profile() {
   const navigate = useNavigate();
@@ -47,7 +48,8 @@ function Profile() {
   const [Orders, setOrder] = useState([]);
   useEffect(() => {
     setOrder(orders);
-  }, []);
+  }, [orders]);
+
   const loadProfile = async () => {
     const res = await dispatch(LoadAccount());
     setUserID(res?.payload?.data?._id);
@@ -61,18 +63,17 @@ function Profile() {
     setOrderStatus(statusMap);
   };
 
-  const loadOrders = async (UserId) => {
-    if (Orders.length === 0) {
+  const loadOrders = async () => {
+    if (Orders.length == 0) {
       {
-        const res = await dispatch(
-          getOrder(UserId ? UserId : UserData?.data._id)
-        );
-        if (res.payload.success) setOrder(orders);
+        // const res = await dispatch(getOrder(UserData.data._id));
+        // if (res.payload.success) setOrder(res.payload.data);
       }
     } else {
       setOrder(orders);
     }
   };
+
   const handelUserInput = (e) => {
     const { name, value } = e.target;
     setShippingInfo({ ...shippingInfo, [name]: value });
@@ -203,7 +204,6 @@ function Profile() {
   useEffect(() => {
     loadOrders();
   }, [UserData, UserId]);
-
   return (
     <Layout>
       <div className="min-h-[100vh] w-full ">
@@ -285,7 +285,7 @@ function Profile() {
           </div>
         ) : (
           <>
-            <div className="flex flex-wrap gap-1">
+            {/* <div className="flex flex-wrap gap-1">
               <OrderShow
                 Role={Role}
                 Orders={Orders}
@@ -296,13 +296,12 @@ function Profile() {
                 setOrderId={setOrderId}
                 setPaymentStatus={setPaymentStatus}
               />
-            </div>
+            </div> */}
           </>
         )}
-        {editShow && (
+        {/* {editShow && (
           <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-70 dark:bg-opacity-80 z-50">
             <div className="bg-white dark:bg-[#1f2937] dark:text-white w-[90%] max-w-lg p-6 rounded-lg shadow-lg">
-              {/* Close Button */}
               <div className="flex justify-start">
                 <button
                   onClick={() => setEditShow(false)}
@@ -313,7 +312,6 @@ function Profile() {
                 </button>
               </div>
 
-              {/* Content */}
               <div className="mt-4 space-y-6">
                 {orderStats[OrderId] === "Delivered" && (
                   <p className="text-center text-red-400">
@@ -322,18 +320,14 @@ function Profile() {
                   </p>
                 )}
 
-                {/* If Order is Canceled */}
                 {orderStats[OrderId] === "Canceled" ? (
                   <p className="text-red-500 text-lg font-semibold text-center">
                     This order has been canceled.
                   </p>
                 ) : Role === "AUTHOR" || Role === "ADMIN" ? (
-                  // Author or Admin Controls
                   <div className="space-y-6">
-                    {/* Change Order Status */}
                     <div>
                       <p className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                        Change Order Status
                       </p>
                       <select
                         className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm cursor-pointer focus:ring-2 focus:ring-green-400 focus:outline-none"
@@ -355,7 +349,6 @@ function Profile() {
                       </select>
                     </div>
 
-                    {/* Change Payment Status */}
                     <div>
                       <p className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
                         Change Payment Status
@@ -390,7 +383,7 @@ function Profile() {
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         {show && (
           <div className="fixed inset-0 flex  overflow-y-auto  justify-center dark:bg-[#111827]   items-center bg-gray-800 bg-opacity-50 z-50">
@@ -572,6 +565,7 @@ function Profile() {
             </div>
           </div>
         )}
+        <OrderCart UserID={UserData.data._id} />
         {/* feedback section */}
         <div className="w-full  ">
           <hr className="h-1 bg-slate-200" />

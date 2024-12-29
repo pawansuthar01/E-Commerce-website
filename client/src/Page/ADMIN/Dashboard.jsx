@@ -1,40 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllUsers, LoadAccount } from "../../Redux/Slice/authSlice";
-import { getPaymentRecord } from "../../Redux/Slice/paymentSlice";
+import { getPaymentRecord, PaymentData } from "../../Redux/Slice/paymentSlice";
 import { AllOrder, UpdateOrder } from "../../Redux/Slice/OrderSlice";
 import { getAllProduct } from "../../Redux/Slice/ProductSlice";
-import { Bar, Pie } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-} from "chart.js";
-import { GiMoneyStack } from "react-icons/gi";
-import { FcSalesPerformance } from "react-icons/fc";
-import { FiCheckCircle, FiXCircle, FiLoader, FiTruck } from "react-icons/fi";
-
-import { FaArrowLeft, FaUsers } from "react-icons/fa6";
+import { FaArrowLeft, FaBoxOpen } from "react-icons/fa6";
 import Layout from "../../layout/layout";
 import { OrderShow } from "../../Components/ShowOrder";
-import toast from "react-hot-toast";
+import { FaUser, FaBox, FaCreditCard, FaThLarge } from "react-icons/fa";
+import { UsersCart } from "../../Components/DashBoard/UserDataCard";
+import { ProductsCart } from "../../Components/DashBoard/ProductDataCart";
+import { DashBoard } from "../../Components/DashBoard/DashBoardData";
+import { PaymentCart } from "../../Components/DashBoard/PaymentDataCart";
+import { LoadingCart } from "../../Components/DashBoard/Loader";
 
-// Register chart.js components
-ChartJS.register(
-  ArcElement,
-
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
 const AdminDashboard = () => {
   const dispatch = useDispatch();
   const [stats, setStats] = useState({
@@ -50,21 +29,18 @@ const AdminDashboard = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [users, setUsers] = useState([]);
   const [payments, setPayments] = useState([]);
+  const [Razorpay, setRazorpay] = useState([]);
   const [OrderId, setOrderId] = useState("");
   const [loading, setLoading] = useState(true);
 
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
-  const [showUser, setShowUser] = useState(false);
-  const [showProduct, setShowProduct] = useState(false);
-  const [showOrder, setShowOrder] = useState(false);
-  const [showPayment, setShowPayment] = useState(false);
+
   const [editShow, setEditShow] = useState(false);
   const [Role, setRole] = useState("");
   const [PaymentStatus, setPaymentStatus] = useState("");
   const [orderStats, setOrderStatus] = useState("");
 
-  // Fetch All Data
   const fetchProducts = async (page) => {
     try {
       const productsRes = await dispatch(
@@ -136,30 +112,29 @@ const AdminDashboard = () => {
   };
   const fetchData = async () => {
     try {
-      const usersRes = await dispatch(getAllUsers());
-
-      const ordersRes = await dispatch(AllOrder());
+      // const usersRes = await dispatch(getAllUsers());
+      // console.log(usersRes);
+      // const ordersRes = await dispatch(AllOrder());
+      // console.log(ordersRes);
       const paymentsRes = await dispatch(getPaymentRecord());
-      setUsers(usersRes.payload.allUser);
-      setOrders(ordersRes.payload.data);
-      setPayments(paymentsRes.payload.allPayments.items);
-
+      const paymentsRe = await dispatch(PaymentData());
+      console.log(paymentsRe);
+      setRazorpay(paymentsRes?.payload?.allPayments?.items);
+      // setUsers(usersRes?.payload?.allUser);
+      // setOrders(ordersRes?.payload?.data);
+      setPayments(paymentsRe?.payload?.data);
       setStats({
-        users: usersRes.payload.allUserCount,
-        Author: usersRes.payload.allAUTHORCount,
-        Admin: usersRes.payload.allADMINCount,
+        // users: usersRes?.payload?.allUserCount,
+        // Author: usersRes?.payload?.allAUTHORCount,
+        // Admin: usersRes?.payload?.allADMINCount,
         monthlySalesRecord: paymentsRes?.payload?.monthlySalesRecord,
-        orders: ordersRes.payload.data.length,
-        totalPayments: paymentsRes.payload.totalAmount,
+        // orders: ordersRes?.payload?.data.length,
+        totalPayments: paymentsRes?.payload?.totalAmount,
       });
       setLoading(false);
     } catch (error) {
       alert(error.message);
     }
-  };
-  const formatDate = (timestamp) => {
-    const date = new Date(timestamp * 1000);
-    return date.toLocaleDateString();
   };
 
   useEffect(() => {
@@ -167,68 +142,7 @@ const AdminDashboard = () => {
     loadProfile();
     fetchProducts(1);
   }, []);
-  const handlePageChange = (page) => {
-    if (page !== currentPage) {
-      fetchProducts(page);
-    }
-  };
-  const orderStatusChartData = {
-    labels: ["Delivered", "Canceled", "Processing", "Shipping"],
-    datasets: [
-      {
-        label: "Order Status",
-        data: [
-          orders.filter((order) => order.orderStats === "Delivered").length,
-          orders.filter((order) => order.orderStats === "Canceled").length,
-          orders.filter((order) => order.orderStats === "Processing").length,
-          orders.filter((order) => order.orderStats === "Shipping").length,
-        ],
-        backgroundColor: ["#4caf50", "#f44336", "#ff9800", "#2196f3"],
-        borderColor: ["#4caf50", "#f44336", "#ff9800", "#2196f3"],
-        borderWidth: 1,
-      },
-    ],
-  };
 
-  const userData = {
-    labels: ["USER", "ADMIN", "AUTHOR"],
-    fontColor: "white",
-    datasets: [
-      {
-        label: "User Details",
-        data: [stats.users, stats.Admin, stats.Author],
-        backgroundColor: ["yellow", "green", "red"],
-        borderWidth: 1,
-        borderColor: ["yellow", "green", "red"],
-      },
-    ],
-  };
-  const salesData = {
-    labels: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ],
-    fontColor: "white",
-    datasets: [
-      {
-        label: "Sales / Month",
-        data: stats.monthlySalesRecord,
-        backgroundColor: ["green"],
-        borderColor: ["white"],
-        borderWidth: 2,
-      },
-    ],
-  };
   useEffect(() => {
     const trackingOrder = () => {
       const statusMap = orders?.reduce((acc, Order) => {
@@ -240,6 +154,11 @@ const AdminDashboard = () => {
 
     trackingOrder();
   }, [orders]);
+  const [activeButton, setActiveButton] = useState(1);
+
+  const handleClick = (buttonId) => {
+    setActiveButton(buttonId);
+  };
 
   if (loading) {
     return (
@@ -254,334 +173,89 @@ const AdminDashboard = () => {
   return (
     <Layout>
       <div className="p-8 select-none">
+        <LoadingCart dataType={"user"} />
         <h1 className="text-3xl font-bold text-center mb-6">Admin Dashboard</h1>
-        {/* Statistics */}
+        <div className="flex space-x-4 w-full justify-evenly bg-[#EFF3EA] py-2">
+          {/* Dashboard Button */}
+          <button
+            className={`p-3 rounded-md transition-all duration-300 flex justify-center gap-1 items-center ${
+              activeButton === 1
+                ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg"
+                : "bg-gray-200 text-gray-700"
+            }`}
+            onClick={() => handleClick(1)}
+          >
+            <FaThLarge />
+            <span>DashBoard</span>
+          </button>
 
-        {/* Chart - User Count */}
+          {/* User Button */}
+          <button
+            className={`p-3 rounded-md transition-all duration-300 flex  items-center gap-1 ${
+              activeButton === 2
+                ? "bg-gradient-to-r from-green-500 to-teal-500 text-white shadow-lg"
+                : "bg-gray-200 text-gray-700"
+            }`}
+            onClick={() => handleClick(2)}
+          >
+            <FaUser />
+            <span>Users</span>
+          </button>
 
-        <div className="grid sm:grid-cols-2 justify-center gap-5 m-auto mx-10">
-          <div className="flex flex-col items-center gap-10 p-5 shadow-lg rounded-md">
-            <div className="w-80 h-80">
-              <Pie data={userData} />
-            </div>
-            <div className="grid grid-cols-3  gap-2">
-              <div className="flex items-center justify-between  p-1 gap-2 rounded-md shadow-md">
-                <div className="flex flex-col items-center ">
-                  <p className="font-semibold"> Users</p>
-                  <h3 className="text-2xl  font-bold">{stats.users}</h3>
-                </div>
-                <FaUsers className="text-yellow-500 text-3xl" />
-              </div>
-              <div className="flex items-center justify-between p-1 gap-2 rounded-md shadow-md">
-                <div className="flex flex-col items-center">
-                  <p className="font-semibold">Admin</p>
-                  <h3 className="text-2xl font-bold">{stats.Admin}</h3>
-                </div>
-                <FaUsers className="text-green-500 text-3xl" />
-              </div>
-              <div className="flex items-center justify-between p-1 gap-2 rounded-md shadow-md">
-                <div className="flex flex-col items-center">
-                  <p className="font-semibold">Author</p>
-                  <h3 className="text-2xl font-bold">{stats.Author}</h3>
-                </div>
-                <FaUsers className="text-green-500 text-3xl" />
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col items-center gap-10 p-5 shadow-lg rounded-md">
-            <div className="h-80 w-full relative">
-              <Bar className="absolute bottom-0 h-80 w-full" data={salesData} />
-            </div>
-            <div className="grid grid-cols-2 gap-5">
-              <div className="flex items-center justify-between p-2 gap-5 rounded-md shadow-md">
-                <div className="flex flex-col items-center">
-                  <p className="font-semibold">Total Order</p>
-                  <h3 className="text-3xl font-bold">{stats.orders}</h3>
-                </div>
-                <FcSalesPerformance className="text-yellow-500 text-5xl" />
-              </div>
-              <div className="flex items-center justify-between p-2 gap-5 rounded-md shadow-md">
-                <div className="flex flex-col items-center">
-                  <p className="font-semibold">Total Revenue</p>
-                  <h3 className="text-3xl font-bold">₹{stats.totalPayments}</h3>
-                </div>
-                <GiMoneyStack className="text-green-500 text-5xl" />
-              </div>
-            </div>
-          </div>
+          {/* Package Button */}
+          <button
+            className={`p-3 rounded-md transition-all duration-300  flex  items-center gap-1 ${
+              activeButton === 3
+                ? "bg-gradient-to-r from-yellow-500 to-orange-500 text-white shadow-lg"
+                : "bg-gray-200 text-gray-700"
+            }`}
+            onClick={() => handleClick(3)}
+          >
+            <FaBox />
+            <span>Order</span>
+          </button>
+          <button
+            className={`p-3 rounded-md transition-all duration-300  flex  items-center gap-1 ${
+              activeButton === 4
+                ? "bg-gradient-to-r from-green-500 to-orange-500 text-white shadow-lg"
+                : "bg-gray-200 text-gray-700"
+            }`}
+            onClick={() => handleClick(4)}
+          >
+            <FaBoxOpen />
+            <span>Products</span>
+          </button>
+
+          {/* Notification Button */}
+          <button
+            className={`p-3 rounded-md transition-all duration-300 flex gap-1 items-center ${
+              activeButton === 5
+                ? "bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-lg"
+                : "bg-gray-200 text-gray-700"
+            }`}
+            onClick={() => handleClick(5)}
+          >
+            <FaCreditCard />
+            <span>Payments</span>
+          </button>
         </div>
-        <div className="flex flex-col items-center gap-10 p-5 shadow-lg rounded-md">
-          <div className="w-96 h-96">
-            <Pie data={orderStatusChartData} />
-          </div>
-          <div className="grid grid-cols-4  gap-2">
-            <div className="flex items-center justify-between  p-1 gap-2 rounded-md shadow-md">
-              <div className="flex flex-col items-center ">
-                <p className="font-semibold"> Delivered</p>
-                <h3 className="text-2xl  font-bold">
-                  {
-                    orders.filter((order) => order.orderStats === "Delivered")
-                      .length
-                  }
-                </h3>
-              </div>
-              <FiCheckCircle className="text-green-500 text-3xl" />
-            </div>
-            <div className="flex items-center justify-between p-2 gap-2 rounded-md shadow-md">
-              <div className="flex flex-col items-center">
-                <p className="font-semibold">Canceled</p>
-                <h3 className="text-2xl font-bold">
-                  {
-                    orders.filter((order) => order.orderStats === "Canceled")
-                      .length
-                  }
-                </h3>
-              </div>
-              <FiXCircle className="text-red-500  text-3xl" />
-            </div>
-            <div className="flex items-center justify-between p-2 gap-2 rounded-md shadow-md">
-              <div className="flex flex-col items-center">
-                <p className="font-semibold">Processing</p>
-                <h3 className="text-2xl font-bold">
-                  {
-                    orders.filter((order) => order.orderStats === "Processing")
-                      .length
-                  }
-                </h3>
-              </div>
 
-              <FiLoader className="text-blue-500  text-3xl" />
-            </div>
-            <div className="flex items-center justify-between p-2 gap-2 rounded-md shadow-md">
-              <div className="flex flex-col items-center">
-                <p className="font-semibold">Shipping</p>
-                <h3 className="text-2xl font-bold">
-                  {
-                    orders.filter((order) => order.orderStats === "Shipping")
-                      .length
-                  }
-                </h3>
-              </div>
-              <FiTruck className="text-yellow-500 text-3xl " />
-            </div>
-          </div>
-        </div>
-        <div className="  flex flex-wrap justify-evenly my-2 m-auto shadow-md rounded-lg">
-          <div className="form-control w-52">
-            <label className="label cursor-pointer">
-              <span className="label-text">Order Show</span>
-              <input
-                type="checkbox"
-                className="toggle toggle-primary"
-                onChange={() => setShowOrder((prevState) => !prevState)}
-                value={showOrder}
-              />
-            </label>
-          </div>
-          <div className="form-control w-52">
-            <label className="label cursor-pointer">
-              <span className="label-text">Payment Records</span>
-              <input
-                type="checkbox"
-                className="toggle toggle-info"
-                onChange={() => setShowPayment((prevState) => !prevState)}
-                value={showPayment}
-              />
-            </label>
-          </div>
+        <DashBoard show={activeButton === 1} orders={orders} stats={stats} />
+        <UsersCart showUser={activeButton === 2} users={users} />
+        <PaymentCart
+          showPayment={activeButton === 5}
+          Razorpay={Razorpay}
+          payments={payments}
+        />
+        <ProductsCart
+          currentPage={currentPage}
+          totalPages={totalPages}
+          showProduct={activeButton === 4}
+          products={products}
+          fetchProducts={fetchProducts}
+        />
 
-          <div className="form-control w-52">
-            <label className="label cursor-pointer">
-              <span className="label-text">All UserShow</span>
-              <input
-                type="checkbox"
-                className="toggle toggle-success"
-                onChange={() => setShowUser((prevState) => !prevState)}
-                value={showUser}
-              />
-            </label>
-          </div>
-          <div className="form-control w-52">
-            <label className="label cursor-pointer">
-              <span className="label-text">Product Show</span>
-              <input
-                type="checkbox"
-                className="toggle toggle-accent"
-                onChange={() => setShowProduct((prevState) => !prevState)}
-                value={showProduct}
-              />
-            </label>
-          </div>
-        </div>
-        {/* User Management */}
-        {showUser && (
-          <>
-            <h2 className="text-2xl font-bold mb-4">Manage Users</h2>
-            <section className="mb-6 overflow-x-auto">
-              <table className="w-full bg-white shadow-md rounded-lg  ">
-                <thead className="bg-gray-200 ">
-                  <tr>
-                    <th className="p-2">No.</th>
-
-                    <th className="p-2">Name</th>
-                    <th className="p-2">Email</th>
-                    <th className="p-2">Role</th>
-                    <th className="p-2">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="">
-                  {users.map((user, index) => (
-                    <tr key={user._id}>
-                      <td className="p-2">#{index + 1}</td>
-                      <td className="p-2">{user.fullName}</td>
-                      <td className="p-2">{user.email}</td>
-                      <td className="p-2">{user.role}</td>
-                      <td className="p-2 flex space-x-2">
-                        <button
-                          className="bg-red-500 text-white px-4 py-1 rounded"
-                          onClick={() => handleUserDelete(user._id)}
-                        >
-                          Delete
-                        </button>
-                        {user.role !== "ADMIN" && (
-                          <button
-                            className="bg-blue-500 text-white px-4 py-1 rounded"
-                            onClick={() => handlePromoteToAdmin(user._id)}
-                          >
-                            Promote
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </section>
-          </>
-        )}
-
-        {/* Product Management */}
-        {showProduct && (
-          <>
-            <h2 className="text-2xl font-bold mb-4">Manage Products</h2>
-            <section className="overflow-x-auto bg-white shadow-md rounded-lg">
-              <table className="w-full  ">
-                <thead className="bg-gray-200">
-                  <tr>
-                    <th className="p-2">No.</th>
-                    <th className="p-2">Image</th>
-                    <th className="p-2">Name</th>
-                    <th className="p-2">Price</th>
-                    <th className="p-2">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="text-center">
-                  {products.map((product, index) => (
-                    <tr key={product._id}>
-                      <td className="p-2">#{index + 1}</td>
-                      <td>
-                        <img
-                          className="p-2 w-20 h-20 rounded-xl"
-                          src={
-                            product?.image?.secure_url
-                              ? product?.image?.secure_url
-                              : product?.images[0]?.secure_url
-                          }
-                          alt={product.name}
-                        />
-                      </td>
-                      <td className="p-2">{product.name}</td>
-                      <td className="p-2">₹{product.price}</td>
-                      <td className="p-2">
-                        <button
-                          className="bg-red-500 text-white px-4 py-1 rounded"
-                          onClick={() => handleProductDelete(product._id)}
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              {/* Pagination */}
-              <div className="flex justify-center items-center mt-1 space-x-2 mb-6 ">
-                {currentPage > 1 && (
-                  <button
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    className="px-4 py-2 border rounded bg-white text-blue-500 border-blue-500"
-                  >
-                    Previous
-                  </button>
-                )}
-                {[...Array(totalPages)].map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handlePageChange(index + 1)}
-                    className={`px-4 py-2 border rounded ${
-                      index + 1 === currentPage
-                        ? "bg-blue-300 text-white"
-                        : "bg-white text-blue-400 border-blue-600"
-                    }`}
-                    disabled={index + 1 === currentPage}
-                  >
-                    {index + 1}
-                  </button>
-                ))}
-                {currentPage < totalPages && (
-                  <button
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    className="px-4 py-2 border rounded bg-white text-blue-500 border-blue-500"
-                  >
-                    Next
-                  </button>
-                )}
-              </div>
-            </section>
-          </>
-        )}
-        {showPayment && (
-          <>
-            <h2 className="text-2xl font-bold mb-4">Manage Payments</h2>
-            <section className="mb-6 overflow-x-auto">
-              <table className="w-full bg-white shadow-md rounded-lg">
-                <thead className="bg-gray-200">
-                  <tr>
-                    <th className="p-2">No.</th>
-                    <th className="p-2">Amount</th>
-                    <th className="p-2">contact</th>
-                    <th className="p-2">currency</th>
-                    <th className="p-2">method</th>
-                    <th className="p-2">Payment Status</th>
-                    <th className="p-2">Date</th>
-                  </tr>
-                </thead>
-                <tbody className="text-center">
-                  {payments.map((payment, index) => (
-                    <tr key={payment.id}>
-                      <td className="p-2">#{index + 1}</td>
-                      <td className="p-2">₹{payment.amount}</td>
-                      <td className="p-2">{payment.contact}</td>
-                      <td className="p-2">{payment.currency}</td>
-                      <td className="p-2">{payment.method}</td>
-                      <td className="p-2 flex justify-center">
-                        {payment.status !== "failed" ? (
-                          <FiCheckCircle className="text-green-500 text-xl" />
-                        ) : (
-                          <FiXCircle className="text-red-500 text-xl" />
-                        )}
-                      </td>
-                      <td className="p-2">{formatDate(payment.created_at)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </section>
-          </>
-        )}
-
-        {showOrder && (
+        {activeButton === 3 && (
           <>
             <div className="flex flex-wrap gap-1">
               <OrderShow

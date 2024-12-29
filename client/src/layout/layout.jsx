@@ -72,7 +72,7 @@ function Layout({ children, load }) {
 
   const handleSearch = async (query) => {
     try {
-      navigate("AllProduct", { state: query });
+      navigate("/AllProduct", { state: query });
     } catch (e) {}
   };
 
@@ -232,6 +232,9 @@ function Layout({ children, load }) {
                 <>
                   <li onClick={hideSide}>
                     <Link to="/AddProduct">Add Product</Link>
+                  </li>
+                  <li onClick={hideSide}>
+                    <Link to="/CarouselUpdate">Carousel Update</Link>
                   </li>
                   <li onClick={hideSide}>
                     <Link to="/DashBoard">ADMIN Dashboard</Link>

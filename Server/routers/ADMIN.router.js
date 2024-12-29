@@ -21,6 +21,7 @@ import {
   CarouselUpload,
   getCarousel,
 } from "../Controllers/CarouselController.js";
+import { getPaymentData } from "../Controllers/payment.Controller.js";
 const ADMINRouter = Router();
 ADMINRouter.get(
   "/User",
@@ -33,6 +34,12 @@ ADMINRouter.get(
   isLoggedIn,
   authorizeRoles("ADMIN", "AUTHOR"),
   AllOrder
+);
+ADMINRouter.get(
+  "/Payment/Orders",
+  isLoggedIn,
+  authorizeRoles("ADMIN", "AUTHOR"),
+  getPaymentData
 );
 
 ADMINRouter.get(
