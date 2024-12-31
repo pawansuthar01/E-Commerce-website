@@ -174,7 +174,7 @@ export const UpdateOrder = async (req, res, next) => {
       );
     }
     if (
-      (data.orderStats || data.paymentStatus) &&
+      (data.orderStatus || data.paymentStatus) &&
       !(role === "ADMIN" || role === "AUTHOR")
     ) {
       return next(
@@ -194,8 +194,8 @@ export const UpdateOrder = async (req, res, next) => {
       updateData.shippingAddress = data.shippingAddress;
     }
 
-    if (data.orderStats && (role === "ADMIN" || role === "AUTHOR")) {
-      updateData.orderStats = data.orderStats;
+    if (data.orderStatus && (role === "ADMIN" || role === "AUTHOR")) {
+      updateData.orderStats = data.orderStatus;
     }
     if (data.deliveryDate && (role === "ADMIN" || role === "AUTHOR")) {
       updateData.deliveryDate = data.deliveryDate;

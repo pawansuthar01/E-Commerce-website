@@ -11,7 +11,6 @@ export const PaymentCart = ({ showPayment, Razorpay, payments }) => {
 
   const filteredPayments = payments?.filter((payment) => {
     if (activeButton === 1) {
-      console.log(payment);
       return payment.PaymentMethod === "cash on Delivery";
     }
   });
