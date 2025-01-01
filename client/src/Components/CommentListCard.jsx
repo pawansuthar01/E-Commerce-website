@@ -8,7 +8,7 @@ import {
   getAllPost,
   getPost,
   removeReplayToComment,
-} from "../Redux/Slice/ContenrSlice";
+} from "../Redux/Slice/ContentSlice";
 
 function CommentCard({ data, onAddComment }) {
   const dispatch = useDispatch();
@@ -55,11 +55,7 @@ function CommentCard({ data, onAddComment }) {
       onAddComment(BlogId);
     });
   }
-  useEffect(() => {
-    setTimeout(() => {
-      onAddComment(BlogId);
-    }, 3000);
-  });
+
   async function addComment() {
     const res = await dispatch(
       AddCommentToPost({ id: data._id, comment: newComment })

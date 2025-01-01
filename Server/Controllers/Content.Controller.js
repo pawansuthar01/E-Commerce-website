@@ -44,10 +44,7 @@ export const PostUpload = async (req, res, next) => {
 
         post.Post.secure_url = PostUpload.secure_url;
       }
-      fs.rm(`uploads/${req.file.filename}`);
     } catch (error) {
-      fs.rm(`uploads/${req.file.filename}`);
-
       return next(
         new AppError(
           JSON.stringify(error.message) || "file is not uploaded",
@@ -77,6 +74,7 @@ export const postUpdate = async (req, res, next) => {
         $set: req.body,
       },
       {
+        new: true,
         runValidators: true,
       }
     );
@@ -285,20 +283,20 @@ export const exitCommentInPostById = async (req, res, next) => {
       {
         _id: postId,
         "comments._id": commentId,
-        "comments.userName": userName,
       },
       { $set: { "comments.$.comment": comment } },
       {
         runValidators: true,
-      },
-      { new: true }
+
+        new: true,
+      }
     );
     if (!updateComment) {
       return next(new AppError("post does not Update..,please try again", 400));
     }
     res.status(200).json({
       success: true,
-      comment,
+      updateComment,
       message: "comment successfully edit...",
     });
   } catch (error) {

@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Layout from "../layout/layout";
-import BlogCard from "../Components/BLogCard";
+import BlogCard from "../Components/Blog/BLogCard";
 import { useEffect, useState } from "react";
-import { getAllPost } from "../Redux/Slice/ContenrSlice";
+import { DeleteBlog, getAllPost } from "../Redux/Slice/ContentSlice";
 import FeedbackForm from "../Components/feedbackfrom";
 import FeedbackList from "../Components/feedbackList";
 
@@ -20,12 +20,26 @@ function Blog() {
     handelBlogLoad();
     setShowPost(PostData);
   }, []);
+  async function handleDeleteBlog(blogId) {
+    setShowPost((prevProducts) =>
+      prevProducts.filter((blog) => blog._id !== blogId)
+    );
+    const res = await dispatch(DeleteBlog(blogId));
+    console.log(res);
+  }
+
   return (
     <Layout>
       <div className="min-h-[100vh]">
         <div className="flex flex-wrap  max-sm:justify-center justify-evenly  gap-10 my-10 w-full">
           {showPost?.map((blog) => {
-            return <BlogCard key={blog._id} data={blog} />;
+            return (
+              <BlogCard
+                key={blog._id}
+                data={blog}
+                onDelete={handleDeleteBlog}
+              />
+            );
           })}
         </div>
         {/* feedback section */}

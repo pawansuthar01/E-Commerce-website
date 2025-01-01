@@ -24,6 +24,7 @@ import CarouselUpload from "./Page/ADMIN/CarouselUpload/CarouselUpload";
 import { CarouselUpdate } from "./Page/ADMIN/CarouselUpload/carouselUpdate";
 import SingleProduct from "./Page/Product/Proudct";
 import OrderDetails from "./Page/Order/OrderDetails";
+import BlogUpload from "./Page/ADMIN/Blog/uploadBlog";
 function App() {
   return (
     <ThemeProvider>
@@ -40,6 +41,7 @@ function App() {
           <Route path="/AllProduct" element={<Product />}></Route>
           <Route path="/Contact" element={<Contact />}></Route>
           <Route path="/api/v3/user/order/:id" element={<OrderDetails />} />
+          <Route path="/product/:id" element={<ProductDescription />}></Route>
           <Route
             element={<RequireAuth allowedRole={["USER", "ADMIN", "AUTHOR"]} />}
           >
@@ -49,7 +51,6 @@ function App() {
             <Route path="/UpdateProfile" element={<UpdateProfile />}></Route>
             <Route path="/Cart" element={<Cart />}></Route>
             <Route path="/Blog" element={<Blog />}></Route>
-            <Route path="/Description" element={<ProductDescription />}></Route>
           </Route>
           <Route path="/About" element={<About />}></Route>
           <Route element={<RequireAuth allowedRole={["USER"]} />}>
@@ -61,6 +62,7 @@ function App() {
           <Route element={<RequireAuth allowedRole={["ADMIN", "AUTHOR"]} />}>
             <Route path="/AddProduct" element={<AddProduct />}></Route>
             <Route path="/CarouselUpdate" element={<CarouselUpdate />}></Route>
+            <Route path="/BlogUpload" element={<BlogUpload />}></Route>
             <Route path="/SingleProduct" element={<SingleProduct />}></Route>
             <Route path="/CarouselUpload" element={<CarouselUpload />}></Route>
             <Route path="/DashBoard" element={<AdminDashboard />}></Route>

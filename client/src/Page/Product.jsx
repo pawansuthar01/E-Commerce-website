@@ -101,7 +101,6 @@ function Product() {
                     data={product}
                     loadProduct={() => fetchProducts()}
                     onProductDelete={handleProductDelete}
-                    onSave={handleSave}
                   />
                 ))}
               </div>

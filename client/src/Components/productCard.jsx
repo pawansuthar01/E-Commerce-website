@@ -119,11 +119,7 @@ function ProductCard({ data, onSave, onProductDelete }) {
           className="rounded-lg max-w-xs:w-[100%] max-w-xs:object-contain  max-w-xs:h-[100%]  transition-transform duration-500 ease-in-out group-hover:scale-110"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          onClick={() =>
-            navigate("/Description", {
-              state: { ...data },
-            })
-          }
+          onClick={() => navigate(`/product/${data._id}`)}
         />
       </section>
 

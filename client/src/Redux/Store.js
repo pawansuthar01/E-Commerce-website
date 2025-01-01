@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authSliceRedux from "./Slice/authSlice";
-import PostSliceRedux from "./Slice/ContenrSlice";
+import PostSliceRedux from "./Slice/ContentSlice.js";
 import ProductRedux from "./Slice/ProductSlice";
 import OrderRedux from "./Slice/OrderSlice";
 import NotificationSliceRedux from "./Slice/notification.Slice";

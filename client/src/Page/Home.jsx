@@ -64,12 +64,14 @@ function HomePage() {
   }, [show]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setIsAnimating(true);
-      setCurrentSlide((prev) => prev + 1);
-    }, 3000);
+    if (!loading) {
+      const interval = setInterval(() => {
+        setIsAnimating(true);
+        setCurrentSlide((prev) => prev + 1);
+      }, 3000);
 
-    return () => clearInterval(interval);
+      return () => clearInterval(interval);
+    }
   }, []);
 
   useEffect(() => {

@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Layout from "../../layout/layout";
 import {
   AddProductCard,
+  getProduct,
   getSearchProduct,
   RemoveProductCard,
 } from "../../Redux/Slice/ProductSlice";
@@ -19,21 +20,34 @@ function ProductDescription() {
   const [loading, setLoading] = useState(false);
   const [transformOrigin, setTransformOrigin] = useState("center center");
   const [Search, setSearch] = useState([]);
-  const ProductDetails = useLocation().state;
+  const [ProductData, setProductData] = useState();
+  const { pathname } = useLocation();
   const [Image, setImage] = useState();
-
+  const orderId = pathname.split("/").pop();
   const { data } = useSelector((state) => state.auth);
+  const endOfCommentsRef = useRef(null);
+  const fetchOrderDetails = async () => {
+    try {
+      const data = await dispatch(getProduct(orderId));
+      setProductData(data?.payload?.data);
+    } finally {
+    }
+  };
+  useEffect(() => {
+    if (orderId) fetchOrderDetails();
+  }, [orderId]);
+
   const productExists = data?.walletAddProducts?.some(
     (item) =>
-      (item.product && item.product.toString() === ProductDetails?._id) ||
-      ProductDetails?.product
+      (item.product && item.product.toString() === ProductData?._id) ||
+      ProductData?.product
   );
   const dispatch = useDispatch();
   useEffect(() => {
     setImage(
-      ProductDetails?.images[0]?.secure_url || ProductDetails?.image.secure_url
+      ProductData?.images[0]?.secure_url || ProductData?.image.secure_url
     );
-  }, [ProductDetails]);
+  }, [ProductData]);
   const LoadProfile = async () => {
     await dispatch(LoadAccount());
   };
@@ -57,6 +71,11 @@ function ProductDescription() {
     }
     setLoading(false);
   };
+  useEffect(() => {
+    if (endOfCommentsRef.current) {
+      endOfCommentsRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [ProductData]);
 
   const handleMouseMove = (event) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -71,28 +90,31 @@ function ProductDescription() {
   };
 
   useEffect(() => {
-    if (!ProductDetails) {
+    if (!orderId) {
       navigate(-1);
     }
-  }, [ProductDetails, navigate]);
+  }, [orderId, navigate]);
 
   useEffect(() => {
     const fetchSearch = async () => {
-      if (ProductDetails?.name) {
+      if (ProductData?.name) {
         const res = await dispatch(
           getSearchProduct({
-            name: ProductDetails.name,
+            name: ProductData.name,
           })
         );
         setSearch(res.payload?.data || []);
       }
     };
     fetchSearch();
-  }, [ProductDetails?.name, dispatch]);
+  }, [ProductData?.name, dispatch]);
 
   return (
     <Layout>
-      <div className="min-h-[90vh] bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
+      <div
+        ref={endOfCommentsRef}
+        className="min-h-[90vh] bg-white text-gray-900 dark:bg-gray-900 dark:text-white"
+      >
         {/* Product Details */}
         <div className="grid md:grid-cols-2 gap-6 p-6">
           {/* Image Section */}
@@ -105,8 +127,7 @@ function ProductDescription() {
                 src={
                   Image
                     ? Image
-                    : ProductDetails?.images?.[0]?.secure_url ||
-                      ProductDetails?.image
+                    : ProductData?.images?.[0]?.secure_url || ProductData?.image
                 }
                 alt="product_image"
                 className="w-full h-full object-contain transform group-hover:scale-125 transition-transform duration-500"
@@ -115,9 +136,9 @@ function ProductDescription() {
             </div>
 
             {/* Thumbnail Carousel */}
-            {ProductDetails?.images?.length > 1 && (
+            {ProductData?.images?.length > 1 && (
               <div className="flex max-sm:flex-wrap gap-2">
-                {ProductDetails?.images?.map((productImage, index) => (
+                {ProductData?.images?.map((productImage, index) => (
                   <img
                     onClick={() => setImage(productImage.secure_url)}
                     key={index}
@@ -135,15 +156,15 @@ function ProductDescription() {
 
           {/* Details Section */}
           <div className="space-y-4">
-            <h1 className="text-3xl font-semibold">{ProductDetails?.name}</h1>
+            <h1 className="text-3xl font-semibold">{ProductData?.name}</h1>
             <h2 className="text-xl flex items-center">
-              <MdCurrencyRupee /> {ProductDetails?.price}/-
+              <MdCurrencyRupee /> {ProductData?.price}/-
             </h2>
 
             <div className="flex gap-4">
               {!productExists ? (
                 <LoadingButton
-                  onClick={() => ProductAddCard(ProductDetails._id)}
+                  onClick={() => ProductAddCard(ProductData._id)}
                   name="Add To Cart"
                   color="bg-green-500"
                   message="Loading..."
@@ -152,7 +173,7 @@ function ProductDescription() {
                 />
               ) : (
                 <LoadingButton
-                  onClick={() => ProductRemoveCard(ProductDetails._id)}
+                  onClick={() => ProductRemoveCard(ProductData._id)}
                   name="Remove From Cart"
                   color="bg-red-500"
                   message="Loading..."
@@ -172,7 +193,7 @@ function ProductDescription() {
         {/* Product Description */}
         <div className="p-6 border-t mt-6">
           <h2 className="text-2xl font-semibold mb-2">Product Description</h2>
-          <p>{ProductDetails?.description}</p>
+          <p>{ProductData?.description}</p>
         </div>
 
         {/* Related Products */}

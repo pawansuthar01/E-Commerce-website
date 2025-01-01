@@ -11,7 +11,7 @@ import {
 const ProductRouter = Router();
 ProductRouter.get("/", getAllProduct);
 ProductRouter.get("/Search", getSearchProduct);
-ProductRouter.route("/:id").put(isLoggedIn, OrderCount);
+ProductRouter.route("/:id").put(isLoggedIn, OrderCount).get(getProduct);
 ProductRouter.route("/:id/like")
   .get(isLoggedIn, getProduct)
   .put(isLoggedIn, LikeAndDisLikeProduct);
