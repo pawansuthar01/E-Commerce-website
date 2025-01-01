@@ -13,25 +13,30 @@ import CommentCard from "../CommentListCard";
 import { DeleteIcon, EditIcon } from "../../Page/Product/icon";
 import EditBlog from "./editBlog";
 
-function BlogCard({ data, onDelete }) {
+function BlogCard({ w, data, onDelete }) {
   const [showCommentForm, setShowCommentForm] = useState(false);
   const dispatch = useDispatch();
   const { userName } = useSelector((state) => state?.auth);
   const { role } = useSelector((state) => state.auth);
   const [Blog, setBlog] = useState(null);
   const [show, setShow] = useState(false);
+  const domain =
+    window.location.hostname +
+    (window.location.port ? `:${window.location.port}` : "");
   const productExists = Blog?.PostLikes?.some(
     (item) => item.userName && item.userName.toString() === userName
   );
   useEffect(() => {
     setBlog(data);
   }, [data]);
+
+  const url = `http://${domain}/Blog/${data._id}`;
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
         title: data.title,
         text: data.description,
-        url: window.location.href,
+        url: url,
       });
     }
   };
@@ -42,6 +47,7 @@ function BlogCard({ data, onDelete }) {
   }
 
   async function handelLikeDisLike(id) {
+    console.log(id);
     if (!id) return;
     const res = await dispatch(LikeAndDisLikePost(id));
     if (res.payload.success) {
@@ -80,7 +86,11 @@ function BlogCard({ data, onDelete }) {
         </div>
       )}
 
-      <div className="  card card-compact bg-base-100 dark:bg-gray-800 dark:text-white w-96 shadow-xl">
+      <div
+        className={`card card-compact bg-base-100 dark:bg-gray-800 dark:text-white ${
+          w ? w : "w-96"
+        } shadow-xl `}
+      >
         <figure>
           <img
             src={Blog?.Post?.secure_url}
@@ -113,8 +123,8 @@ function BlogCard({ data, onDelete }) {
                   className={`${
                     productExists
                       ? "text-red-800 dark:text-red-800"
-                      : "bg-white"
-                  } rounded-lg text-black dark:text-white font-bold`}
+                      : "bg-white dark:bg-gray-800"
+                  } rounded-lg   font-bold `}
                   size={20}
                 />
                 <span> Like</span>

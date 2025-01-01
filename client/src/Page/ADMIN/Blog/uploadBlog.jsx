@@ -7,7 +7,7 @@ import { FiEdit } from "react-icons/fi";
 import Layout from "../../../layout/layout";
 import LoadingButton from "../../../constants/LoadingBtn";
 import { AddNewCarousel } from "../../../Redux/Slice/CarouselSlice";
-import { getAllPost, UploadBlog } from "../../../Redux/Slice/ContentSlice";
+import { UploadBlog } from "../../../Redux/Slice/ContentSlice";
 
 function BlogUpload() {
   const dispatch = useDispatch();
@@ -76,18 +76,18 @@ function BlogUpload() {
       toast.error("Product name should be at least 5 characters.");
       return;
     }
-    if (BlogUpData.price < 1) {
+    if (BlogUpData.description.length < 5) {
       setLoading(false);
-      toast.error("Product price should be at least 1 Rupee.");
+      toast.error("Product name should be at least 5 characters.");
       return;
     }
+
     const formData = new FormData();
     formData.append("title", BlogUpData.name);
     formData.append("description", BlogUpData.description);
     formData.append("post", BlogUpData.images);
 
     const response = await dispatch(UploadBlog(formData));
-    console.log(response);
     if (response) {
       setShowLoading(false);
       setLoading(false);
@@ -95,8 +95,9 @@ function BlogUpload() {
 
     if (response?.payload?.success) {
       setLoading(false);
-      await dispatch(getAllPost());
-      navigate("/");
+      console.log(response);
+      const id = response?.payload?.post._id;
+      navigate(`/Blog/${id}`);
       setBlogUpData({
         name: "",
         description: "",

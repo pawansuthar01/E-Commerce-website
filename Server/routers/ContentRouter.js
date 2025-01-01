@@ -16,7 +16,7 @@ const ContentRouter = Router();
 
 ContentRouter.route("/Post/:id")
   .post(isLoggedIn, addCommentPost)
-  .get(isLoggedIn, getPost)
+  .get(getPost)
   .put(isLoggedIn, LikeAndDisLikePost);
 
 ContentRouter.route("/posts/:postId/comments/:commentId/AddNewComment").put(

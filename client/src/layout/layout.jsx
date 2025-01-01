@@ -243,7 +243,7 @@ function Layout({ children, load }) {
                     <Link to="/CarouselUpload">CarouselUpload</Link>
                   </li>
                   <li onClick={hideSide}>
-                    <Link to="/BlogUpload">CarouselUpload</Link>
+                    <Link to="/BlogUpload">BlogUpload</Link>
                   </li>
                 </>
               )}

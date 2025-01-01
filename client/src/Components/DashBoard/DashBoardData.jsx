@@ -140,19 +140,20 @@ export const DashBoard = ({ show, stats, orders }) => {
           <Pie data={orderStatusChartData} />
         </div>
         <div className="grid grid-cols-4  gap-2">
-          <div className="flex items-center justify-between  p-1 gap-2 rounded-md shadow-md">
+          <div className="flex items-center justify-center  p-1 max-sm:flex-col gap-2   rounded-md shadow-md">
+            <FiCheckCircle className="text-green-500 text-3xl" />
             <div className="flex flex-col items-center ">
               <p className="font-semibold"> Delivered</p>
-              <h3 className="text-2xl  font-bold">
+              <p className="text-2xl  font-bold">
                 {
                   orders.filter((order) => order.orderStats === "Delivered")
                     .length
                 }
-              </h3>
+              </p>
             </div>
-            <FiCheckCircle className="text-green-500 text-3xl" />
           </div>
-          <div className="flex items-center justify-between p-2 gap-2 rounded-md shadow-md">
+          <div className="flex items-center justify-center  p-1 max-sm:flex-col gap-2  rounded-md shadow-md">
+            <FiXCircle className="text-red-500  text-3xl" />
             <div className="flex flex-col items-center">
               <p className="font-semibold">Canceled</p>
               <h3 className="text-2xl font-bold">
@@ -162,9 +163,9 @@ export const DashBoard = ({ show, stats, orders }) => {
                 }
               </h3>
             </div>
-            <FiXCircle className="text-red-500  text-3xl" />
           </div>
-          <div className="flex items-center justify-between p-2 gap-2 rounded-md shadow-md">
+          <div className="flex items-center justify-center  p-1 max-sm:flex-col gap-2  rounded-md shadow-md">
+            <FiLoader className="text-blue-500  text-3xl" />
             <div className="flex flex-col items-center">
               <p className="font-semibold">Processing</p>
               <h3 className="text-2xl font-bold">
@@ -174,10 +175,9 @@ export const DashBoard = ({ show, stats, orders }) => {
                 }
               </h3>
             </div>
-
-            <FiLoader className="text-blue-500  text-3xl" />
           </div>
-          <div className="flex items-center justify-between p-2 gap-2 rounded-md shadow-md">
+          <div className="flex items-center justify-center max-sm:flex-col  p-1  gap-2  rounded-md shadow-md">
+            <FiTruck className="text-yellow-500 text-3xl " />
             <div className="flex flex-col items-center">
               <p className="font-semibold">Shipping</p>
               <h3 className="text-2xl font-bold">
@@ -187,7 +187,6 @@ export const DashBoard = ({ show, stats, orders }) => {
                 }
               </h3>
             </div>
-            <FiTruck className="text-yellow-500 text-3xl " />
           </div>
         </div>
       </div>

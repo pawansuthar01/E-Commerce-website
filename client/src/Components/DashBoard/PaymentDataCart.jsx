@@ -107,7 +107,7 @@ export const PaymentCart = ({ showPayment, Razorpay, payments }) => {
                         <FiXCircle className="text-red-500 text-xl" />
                       ) : (
                         <AiOutlineClockCircle
-                          className="mr-2 text-yellow-200"
+                          className="mr-2 text-yellow-500"
                           size={20}
                         />
                       )}

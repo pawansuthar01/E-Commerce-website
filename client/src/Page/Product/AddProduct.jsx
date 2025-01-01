@@ -125,7 +125,8 @@ function AddProduct() {
 
     if (response?.payload?.success) {
       setLoading(false);
-      navigate("/AllProduct");
+      const id = response?.payload?.data?._id;
+      navigate(`/Product/${id}`);
       setProductUpData({
         name: "",
         price: "",

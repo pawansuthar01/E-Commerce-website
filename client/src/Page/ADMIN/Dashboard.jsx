@@ -107,7 +107,7 @@ const AdminDashboard = () => {
     <Layout>
       <div className="p-8 select-none">
         <h1 className="text-3xl font-bold text-center mb-6">Admin Dashboard</h1>
-        <div className="flex space-x-4 w-full justify-evenly bg-[#EFF3EA] py-2">
+        <div className="flex space-x-4 w-full justify-evenly bg-[#EFF3EA] py-2 flex-wrap gap-2 rounded-lg">
           {/* Dashboard Button */}
           <button
             className={`p-3 rounded-md transition-all duration-300 flex justify-center gap-1 items-center ${
