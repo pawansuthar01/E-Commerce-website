@@ -13,6 +13,7 @@ import upload from "../Middleware/multerMiddleware.js";
 import { isLoggedIn } from "../Middleware/authMiddleware.js";
 import {
   getFeedback,
+  MessageSubmit,
   SubmitFeedback,
 } from "../Controllers/feedback.Controller.js";
 import {
@@ -22,7 +23,8 @@ import {
 const UserRouter = Router();
 UserRouter.post("/register", upload.single("avatar"), RegisterUser);
 UserRouter.post("/login", login);
-UserRouter.post("/SubmitFeedback", SubmitFeedback);
+UserRouter.post("/SubmitFeedback", isLoggedIn, SubmitFeedback);
+UserRouter.post("/messageSubmit", isLoggedIn, MessageSubmit);
 UserRouter.get("/getFeedback", getFeedback);
 UserRouter.get("/logout", logout);
 UserRouter.get("/Carousel", getAllCarousel);

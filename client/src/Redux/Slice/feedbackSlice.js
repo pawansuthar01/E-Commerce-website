@@ -13,12 +13,15 @@ export const SubmitFeedback = createAsyncThunk(
     const token = localStorage.getItem("Authenticator");
 
     try {
-      const res = await axiosInstance.post("/api/v3/user/SubmitFeedback", {
+      const res = await axiosInstance.post(
+        "/api/v3/user/SubmitFeedback",
         data,
-        headers: {
-          Authorization: `${token}`,
-        },
-      });
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
 
       return res.data;
     } catch (error) {
@@ -26,6 +29,21 @@ export const SubmitFeedback = createAsyncThunk(
     }
   }
 );
+export const SendMassage = createAsyncThunk("massage/Submit", async (data) => {
+  const token = localStorage.getItem("Authenticator");
+
+  try {
+    const res = await axiosInstance.post("/api/v3/user/messageSubmit", data, {
+      headers: {
+        Authorization: `${token}`,
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    return error?.response?.data || error?.message || "Something went wrong";
+  }
+});
 export const getFeedback = createAsyncThunk(
   "feedback/get",
   async ({ page = 1, limit = 10 }) => {
