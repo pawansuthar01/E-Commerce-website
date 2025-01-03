@@ -105,7 +105,6 @@ export const orderCountUpdate = createAsyncThunk(
 export const updateProduct = createAsyncThunk(
   "/product/update",
   async ({ data, id }) => {
-    console.log(data);
     try {
       const token = localStorage.getItem("Authenticator");
 

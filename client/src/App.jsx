@@ -22,10 +22,10 @@ import SlowInternetPage from "./helper/CheckInternet";
 import AdminDashboard from "./Page/ADMIN/Dashboard";
 import CarouselUpload from "./Page/ADMIN/CarouselUpload/CarouselUpload";
 import { CarouselUpdate } from "./Page/ADMIN/CarouselUpload/carouselUpdate";
-import SingleProduct from "./Page/Product/Proudct";
 import OrderDetails from "./Page/Order/OrderDetails";
 import BlogUpload from "./Page/ADMIN/Blog/uploadBlog";
 import BlogDetails from "./Page/ADMIN/Blog/BlogDetails";
+import SingleProduct from "./Page/Product/ProudctDetalis";
 function App() {
   return (
     <ThemeProvider>

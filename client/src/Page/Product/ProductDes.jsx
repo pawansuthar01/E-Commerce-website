@@ -18,34 +18,38 @@ import FeedbackList from "../../Components/feedbackList";
 function ProductDescription() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [showLoading, setShowLoading] = useState(false);
   const [transformOrigin, setTransformOrigin] = useState("center center");
   const [Search, setSearch] = useState([]);
+  const [quantities, setQuantities] = useState(1);
   const [ProductData, setProductData] = useState();
   const { pathname } = useLocation();
   const [Image, setImage] = useState();
-  const orderId = pathname.split("/").pop();
+  const ProductId = pathname.split("/").pop();
   const { data } = useSelector((state) => state.auth);
   const endOfCommentsRef = useRef(null);
   const fetchOrderDetails = async () => {
     try {
-      const data = await dispatch(getProduct(orderId));
+      setShowLoading(true);
+      const data = await dispatch(getProduct(ProductId));
       setProductData(data?.payload?.data);
+      setShowLoading(false);
     } finally {
     }
   };
   useEffect(() => {
-    if (orderId) fetchOrderDetails();
-  }, [orderId]);
+    if (ProductId) fetchOrderDetails();
+  }, [ProductId]);
 
   const productExists = data?.walletAddProducts?.some(
     (item) =>
-      (item.product && item.product.toString() === ProductData?._id) ||
+      (item.product && item?.product?.toString() === ProductData?._id) ||
       ProductData?.product
   );
   const dispatch = useDispatch();
   useEffect(() => {
     setImage(
-      ProductData?.images[0]?.secure_url || ProductData?.image.secure_url
+      ProductData?.images[0]?.secure_url || ProductData?.image?.secure_url
     );
   }, [ProductData]);
   const LoadProfile = async () => {
@@ -88,12 +92,24 @@ function ProductDescription() {
     const originY = (y / height) * 100;
     setTransformOrigin(`${originX}% ${originY}%`);
   };
+  const minQuantity = () => {
+    setQuantities((prevQuantities) => {
+      if (prevQuantities > 1) {
+        return prevQuantities - 1;
+      }
+      return prevQuantities;
+    });
+  };
+
+  const setQuantity = () => {
+    setQuantities((prevQuantities) => prevQuantities + 1);
+  };
 
   useEffect(() => {
-    if (!orderId) {
+    if (!ProductId) {
       navigate(-1);
     }
-  }, [orderId, navigate]);
+  }, [ProductId, navigate]);
 
   useEffect(() => {
     const fetchSearch = async () => {
@@ -109,6 +125,18 @@ function ProductDescription() {
     fetchSearch();
   }, [ProductData?.name, dispatch]);
 
+  if (showLoading) {
+    return (
+      <div
+        className="flex flex-col items-center justify-center min-h-screen bg-gray-100  dark:bg-gray-900 
+          fixed inset-0  bg-opacity-30 z-10
+      "
+      >
+        <div className="loader border-t-4 border-blue-500 rounded-full w-12 h-12 animate-spin"></div>
+        <p>Loading...</p>
+      </div>
+    );
+  }
   return (
     <Layout>
       <div
@@ -160,31 +188,73 @@ function ProductDescription() {
             <h2 className="text-xl flex items-center">
               <MdCurrencyRupee /> {ProductData?.price}/-
             </h2>
-
-            <div className="flex gap-4">
-              {!productExists ? (
-                <LoadingButton
-                  onClick={() => ProductAddCard(ProductData._id)}
-                  name="Add To Cart"
-                  color="bg-green-500"
-                  message="Loading..."
-                  loading={loading}
-                  width="w-full"
-                />
-              ) : (
-                <LoadingButton
-                  onClick={() => ProductRemoveCard(ProductData._id)}
-                  name="Remove From Cart"
-                  color="bg-red-500"
-                  message="Loading..."
-                  loading={loading}
-                  width="w-full"
-                />
-              )}
-              {(data.role === "ADMIN" || data.role === "AUTHOR") && (
-                <button className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 transition">
-                  Delete
+            <div className="space-y-4 p-4 border  rounded-md shadow-sm bg-white dark:bg-[#1f2937]">
+              {/* Quantity Selector */}
+              <div className="flex items-center space-x-3">
+                <button
+                  onClick={() => minQuantity()}
+                  className="px-3 py-1 border rounded text-gray-700 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-600"
+                >
+                  &minus;
                 </button>
+                <input
+                  type="text"
+                  className="w-12 text-center border rounded bg-gray-100 dark:bg-[#111827] text-gray-700 dark:text-gray-300"
+                  value={quantities || 1}
+                  readOnly
+                />
+                <button
+                  onClick={() => setQuantity()}
+                  className="px-3 py-1 border rounded text-gray-700 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-600"
+                >
+                  +
+                </button>
+              </div>
+
+              {/* Place Order Button */}
+              <div>
+                <button
+                  onClick={() => {
+                    navigate("/CheckoutForm", {
+                      state: { quantities, ProductId },
+                    });
+                  }}
+                  className="w-full px-5 py-3 text-lg font-semibold text-white bg-green-500 rounded-md hover:bg-green-600 transition"
+                >
+                  Place Order
+                </button>
+              </div>
+
+              {/* Add/Remove from Cart */}
+              <div className="flex gap-4">
+                {!productExists ? (
+                  <LoadingButton
+                    onClick={() => ProductAddCard(ProductData._id)}
+                    name="Add To Cart"
+                    color="bg-green-500"
+                    message="Loading..."
+                    loading={loading}
+                    width="w-full"
+                  />
+                ) : (
+                  <LoadingButton
+                    onClick={() => ProductRemoveCard(ProductData._id)}
+                    name="Remove From Cart"
+                    color="bg-red-500"
+                    message="Loading..."
+                    loading={loading}
+                    width="w-full"
+                  />
+                )}
+              </div>
+
+              {/* Delete Button for Admin/Author */}
+              {(data.role === "ADMIN" || data.role === "AUTHOR") && (
+                <div>
+                  <button className="w-full px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-700 transition">
+                    Delete
+                  </button>
+                </div>
               )}
             </div>
           </div>

@@ -11,6 +11,7 @@ import { isEmail, isPhoneNumber } from "../../helper/regexMatch";
 import { PlaceOrder } from "../../Redux/Slice/OrderSlice";
 import {
   AllRemoveCardProduct,
+  getProduct,
   orderCountUpdate,
   updateProduct,
 } from "../../Redux/Slice/ProductSlice";
@@ -61,15 +62,32 @@ function CheckoutPage() {
     setEmail(res?.payload?.data?.email);
     setPhone(res?.payload?.data?.phoneNumber);
     setName(res?.payload?.data?.fullName);
+    if (!ProductDetails.ProductId) {
+      const updatedCart = res?.payload?.data?.walletAddProducts?.map(
+        (product) => {
+          const productQuantity = ProductDetails[product.product] || 1;
+          return { ...product, quantity: productQuantity };
+        }
+      );
+      setCart(updatedCart || []);
+      setShowLoading(false);
+    } else {
+      const res = await dispatch(getProduct(ProductDetails.ProductId));
+      const data = {
+        addedAt: new Date().toISOString(),
+        description:
+          res?.payload?.data?.description || "No description available",
 
-    const updatedCart = res?.payload?.data?.walletAddProducts?.map(
-      (product) => {
-        const productQuantity = ProductDetails[product.product] || 1;
-        return { ...product, quantity: productQuantity };
-      }
-    );
-    setCart(updatedCart || []);
-    setShowLoading(false);
+        image: res?.payload?.data.images.map((images) => images),
+        name: res?.payload?.data?.name || "Unknown Product",
+        price: res?.payload?.data?.price || 0,
+        product: res?.payload?.data?._id || "",
+        quantity: ProductDetails?.quantities || 1,
+        _id: res?.payload?.data?._id || "",
+      };
+      setCart([data]);
+      setShowLoading(false);
+    }
   };
 
   const calculateTotalAmount = () => {
@@ -139,8 +157,6 @@ function CheckoutPage() {
           description: "Order Description",
           order_id: orderId,
           handler: async function (response) {
-            toast.success("Payment Successful");
-
             const res = await dispatch(checkPayment(response));
 
             if (res?.payload?.success) {
@@ -185,13 +201,12 @@ function CheckoutPage() {
       };
 
       const res = await dispatch(PlaceOrder(orderData));
-      setShowLoading(false);
       setLoading(false);
       setError(false);
       if (res?.payload?.success) {
         await dispatch(AllRemoveCardProduct(UserId));
         for (const product of cart) {
-          const res = await dispatch(
+          await dispatch(
             orderCountUpdate({
               id: product.product,
               data: {
@@ -199,9 +214,9 @@ function CheckoutPage() {
               },
             })
           );
-          console.log(res);
         }
         loadProfile();
+        setShowLoading(false);
         navigate("/ThankYou", { state: { data: res?.payload?.data } });
       }
     }
@@ -228,13 +243,14 @@ function CheckoutPage() {
       phoneNumber: phone,
     });
   }, [name, email, phone]);
-  if (showLoading) {
-    return (
-      <Layout>
+
+  return (
+    <Layout>
+      {showLoading && (
         <div
-          className={`flex flex-col items-center justify-center min-h-screen bg-gray-100  dark:bg-gray-900 ${
-            loading ? "fixed inset-0 bg-black bg-opacity-30 z-10" : ""
-          }`}
+          className="flex flex-col items-center justify-center min-h-screen bg-gray-100  dark:bg-gray-900 
+          fixed inset-0  bg-opacity-30 z-10
+          "
         >
           <div className="loader border-t-4 border-blue-500 rounded-full w-12 h-12 animate-spin"></div>
           <p>
@@ -244,11 +260,7 @@ function CheckoutPage() {
               : "Loading..."}
           </p>
         </div>
-      </Layout>
-    );
-  }
-  return (
-    <Layout>
+      )}
       <div className="pb-10 ">
         {error && (
           <div className="flex  z-20  items-center gap-10 fixed bg-red-200   w-full mx-2 border-2 border-red-500 text-red-500 font-medium p-3">
@@ -454,16 +466,21 @@ function CheckoutPage() {
                             <MdCurrencyRupee />{" "}
                             <span>{Number(product.price).toFixed(2)}</span>
                           </td>
-                          <td className="p-4 text-center bg-white  ">
+                          <td className="p-4 text-center   ">
                             {product.quantity}{" "}
                           </td>
 
-                          <td className="p-4 items-center flex  justify-center">
+                          <td className="p-4 items-center flex justify-center">
                             <MdCurrencyRupee />{" "}
-                            {(
-                              Number(product.price) *
-                              ProductDetails[product.product]
-                            ).toFixed(2)}
+                            {ProductDetails.ProductId
+                              ? (
+                                  Number(product.price) *
+                                  ProductDetails.quantities
+                                ).toFixed(2)
+                              : (
+                                  Number(product.price) *
+                                  ProductDetails[product.product]
+                                ).toFixed(2)}
                           </td>
                         </tr>
                       </tbody>
@@ -502,7 +519,7 @@ function CheckoutPage() {
                       Cash on Delivery
                     </label>
                   </div>
-                  <div className="text-xl justify-end  w-full flex pr-3 items-center">
+                  <div className="text-xl  w-full flex pr-3 items-center">
                     <span className="flex items-center my-2 ">
                       Total price : <MdCurrencyRupee />
                     </span>

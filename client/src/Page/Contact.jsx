@@ -56,11 +56,11 @@ function Contact() {
     }
     const res = await dispatch(SendMassage(formData));
     console.log(res);
-    // setFormData({
-    //   number: "",
-    //   email: "",
-    //   message: "",
-    // });
+    setFormData({
+      number: "",
+      email: "",
+      message: "",
+    });
   };
 
   return (
