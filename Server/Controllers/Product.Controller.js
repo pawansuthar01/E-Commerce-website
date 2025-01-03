@@ -217,13 +217,14 @@ export const getSearchProduct = async (req, res, next) => {
     let filter = {};
     let name = "";
     let maxPrice = null;
-
     const regex = /(\w+)\s*under\s*(\d+)/;
     const match = query.match(regex);
 
     if (match) {
       name = match[1];
       maxPrice = match[2];
+    } else if (!isNaN(query)) {
+      maxPrice = query;
     } else {
       name = query;
     }

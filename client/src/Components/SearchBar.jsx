@@ -10,24 +10,28 @@ const SearchBar = ({ setQueryBarTitle, onSearch, width, TopMargin }) => {
 
   useEffect(() => {
     const fetchSuggestions = () => {
-      if (query.trim() == "") {
+      if (!query.trim()) {
         setSuggestions([]);
         return;
       }
 
-      const filteredSuggestions = products?.filter((product) => {
-        const regex = new RegExp(query, "i");
-        return (
-          product.name.match(regex) ||
-          product.price <= parseInt(query.split("under")[1]?.trim(), 10)
+      if (!isNaN(query)) {
+        // If the query is a number, filter products by price
+        const filteredSuggestions = products?.filter(
+          (product) => product.price === parseInt(query, 10)
         );
-      });
-
-      setSuggestions(filteredSuggestions);
+        setSuggestions(filteredSuggestions || []);
+      } else {
+        // If the query is not a number, filter by product name
+        const regex = new RegExp(query, "i");
+        const filteredSuggestions = products?.filter((product) =>
+          regex.test(product.name)
+        );
+        setSuggestions(filteredSuggestions || []);
+      }
     };
 
     const debounce = setTimeout(fetchSuggestions, 300);
-
     return () => clearTimeout(debounce);
   }, [query, products]);
 
@@ -42,41 +46,27 @@ const SearchBar = ({ setQueryBarTitle, onSearch, width, TopMargin }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleFocus = () => setShow(true);
-  const handleBlur = () => {
-    setTimeout(() => {
-      if (!query) {
-        setShow(false);
-      }
-    }, 300);
-  };
-
   const handleSearchClick = () => {
-    setShow(false);
     if (query.trim()) {
+      setShow(false);
       setSuggestions([]);
-      document.getElementById("defaultSearch").value = query;
-      onSearch(query.trim()); // Trigger search with current query
+      onSearch(query.trim());
     }
   };
 
   return (
     <div
       className={`relative ${!width && "max-sm:hidden"} flex ${
-        width ? width : "w-full"
-      } mx-auto justify-center ${TopMargin && TopMargin}`}
+        width || "w-full"
+      } mx-auto justify-center ${TopMargin || ""}`}
     >
-      <label
-        htmlFor="defaultSearch"
-        className="mb-2 text-sm font-medium dark:text-white text-gray-900 sr-only"
-      >
+      <label htmlFor="defaultSearch" className="sr-only">
         Search
       </label>
-      <div className={`relative ${width ? width : "w-1/2"}`}>
-        <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+      <div className={`relative ${width || "w-1/2"}`}>
+        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
           <svg
-            className="w-4 h-4 dark:text-gray-400 text-gray-400"
-            aria-hidden="true"
+            className="w-4 h-4 text-gray-400 dark:text-gray-400"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 20 20"
@@ -93,42 +83,39 @@ const SearchBar = ({ setQueryBarTitle, onSearch, width, TopMargin }) => {
         <input
           type="search"
           id="defaultSearch"
-          className="w-[100%] p-4 ps-10 text-sm outline-none dark:text-white dark:bg-gray-700 dark:border-gray-600 text-gray-900 bg-gray-50 border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-          placeholder="Search products..."
+          className="w-full p-4 pl-10 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg outline-none dark:bg-gray-700 dark:text-white focus:ring-blue-500 focus:border-blue-500"
+          placeholder="Type a number to search by price..."
           autoComplete="off"
           value={query}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
           onChange={(e) => setQuery(e.target.value)}
-          required
+          onFocus={() => setShow(true)}
         />
         <button
           type="submit"
-          onClick={() => (handleSearchClick(), setSuggestions([]))}
-          className="text-white absolute end-2.5 bottom-2.5 dark:bg-blue-600 bg-blue-700 border-blue-700 hover:bg-transparent hover:text-blue-700 hover:border-2 font-medium rounded-lg text-sm px-4 py-2"
+          onClick={handleSearchClick}
+          className="absolute right-2.5 bottom-2.5 bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-600 focus:ring-2 focus:ring-blue-500"
         >
           Search
         </button>
       </div>
 
-      {query && show && suggestions?.length > 0 && (
+      {query && show && suggestions && suggestions.length > 1 && (
         <div
           ref={dropdownRef}
-          className="absolute w-full bg-white border rounded max-h-40 overflow-x-auto hide-scrollbar shadow-md mt-14 z-10 dark:text-white dark:bg-gray-700"
+          className="absolute w-full bg-white border rounded-lg shadow-md max-h-40 mt-14 overflow-y-auto z-10 dark:bg-gray-700 dark:text-white"
         >
-          {suggestions?.map((suggestion) => (
+          {suggestions.map((suggestion) => (
             <div
               key={suggestion._id}
-              className="p-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-500"
+              className="px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer"
               onClick={() => {
-                const formattedQuery = `${suggestion.name} under ${suggestion.price}`;
+                setQuery(suggestion.price.toString());
                 setSuggestions([]);
                 setShow(false);
-                setQuery(formattedQuery);
-                onSearch(formattedQuery);
+                onSearch(suggestion.price.toString());
               }}
             >
-              {suggestion.name} under ₹{suggestion.price}
+              {suggestion.name} - ₹{suggestion.price}
             </div>
           ))}
         </div>

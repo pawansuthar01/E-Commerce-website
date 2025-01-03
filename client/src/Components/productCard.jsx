@@ -12,11 +12,15 @@ import { MdCurrencyRupee } from "react-icons/md";
 import { AiOutlineDelete } from "react-icons/ai";
 import toast from "react-hot-toast";
 import { LoadAccount } from "../Redux/Slice/authSlice";
+import LoginPrompt from "./loginProment";
 
 function ProductCard({ data, onSave, onProductDelete }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isLike, setIsLike] = useState(false);
+  const isLoggedIn = useSelector((state) => state?.auth?.isLoggedIn);
+
+  const [show, setShow] = useState(false);
   const [productExists, setProductExists] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
   const {
@@ -47,6 +51,10 @@ function ProductCard({ data, onSave, onProductDelete }) {
     await dispatch(LoadAccount());
   };
   const handleLikeDislike = async (id) => {
+    if (!isLoggedIn) {
+      setShow(true);
+      return;
+    }
     setIsLike((prev) => !prev);
 
     await dispatch(LikeAndDisLike(id));
@@ -54,6 +62,10 @@ function ProductCard({ data, onSave, onProductDelete }) {
   };
 
   const handleAddToCart = async (productId) => {
+    if (!isLoggedIn) {
+      setShow(true);
+      return;
+    }
     if (!productExists) {
       setProductExists(true);
 
@@ -123,7 +135,7 @@ function ProductCard({ data, onSave, onProductDelete }) {
           className="rounded-lg max-w-xs:w-[100%] max-w-xs:object-contain  max-w-xs:h-[100%]  transition-transform duration-500 ease-in-out group-hover:scale-110"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          onClick={() => navigate(`/product/${data._id}`)}
+          onClick={() => navigate(`/product/${data?._id}`)}
         />
       </section>
 
@@ -174,6 +186,7 @@ function ProductCard({ data, onSave, onProductDelete }) {
           />
         </button>
       </div>
+      {show && <LoginPrompt show={show} setShow={setShow} />}
     </div>
   );
 }

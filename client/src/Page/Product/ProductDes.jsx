@@ -14,6 +14,7 @@ import { MdCurrencyRupee } from "react-icons/md";
 import ProductCard from "../../Components/productCard";
 import FeedbackForm from "../../Components/feedbackfrom";
 import FeedbackList from "../../Components/feedbackList";
+import { IoPaperPlaneOutline } from "react-icons/io5";
 
 function ProductDescription() {
   const navigate = useNavigate();
@@ -25,6 +26,9 @@ function ProductDescription() {
   const [ProductData, setProductData] = useState();
   const { pathname } = useLocation();
   const [Image, setImage] = useState();
+  const domain =
+    window.location.hostname +
+    (window.location.port ? `:${window.location.port}` : "");
   const ProductId = pathname.split("/").pop();
   const { data } = useSelector((state) => state.auth);
   const endOfCommentsRef = useRef(null);
@@ -32,9 +36,12 @@ function ProductDescription() {
     try {
       setShowLoading(true);
       const data = await dispatch(getProduct(ProductId));
-      setProductData(data?.payload?.data);
-      setShowLoading(false);
-    } finally {
+      if (data?.payload?.success) {
+        setProductData(data?.payload?.data);
+        setShowLoading(false);
+      }
+    } catch {
+      navigate("/");
     }
   };
   useEffect(() => {
@@ -125,6 +132,16 @@ function ProductDescription() {
     fetchSearch();
   }, [ProductData?.name, dispatch]);
 
+  const url = `http://${domain}/product/${ProductId}`;
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: ProductData.name,
+        text: ProductData.description,
+        url: url,
+      });
+    }
+  };
   if (showLoading) {
     return (
       <div
@@ -209,6 +226,15 @@ function ProductDescription() {
                 >
                   +
                 </button>
+                <div>
+                  <button
+                    onClick={handleShare}
+                    className="flex items-start gap-1 font-serif"
+                  >
+                    <IoPaperPlaneOutline className="rounded-lg" size={20} />
+                    <span>Share</span>
+                  </button>
+                </div>
               </div>
 
               {/* Place Order Button */}
