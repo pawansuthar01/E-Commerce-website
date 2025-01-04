@@ -212,9 +212,8 @@ const AdminDashboard = () => {
           products={products}
           fetchProducts={fetchProducts}
         />
-        <div className="flex flex-wrap gap-1">
-          {activeButton === 3 && <OrderCart />}
-        </div>
+
+        {activeButton === 3 && <OrderCart />}
       </div>
     </Layout>
   );
