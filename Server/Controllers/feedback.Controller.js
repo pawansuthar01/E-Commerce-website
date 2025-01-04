@@ -52,6 +52,46 @@ export const MessageSubmit = async (req, res, next) => {
   }
 };
 
+export const editFeedback = async (req, res, next) => {
+  try {
+    const { data } = req.body;
+    if (data) {
+      new AppError("something went wrong , please tyr Again  ", 400);
+    }
+    const findFeedback = await Feedback.findByIdAndUpdate(
+      data.id,
+      {
+        $set: { comment: data.comment },
+      },
+      {
+        new: true,
+      }
+    );
+    res.status(200).json({
+      success: true,
+      message: "SuccessFully updated feedback...",
+      data: findFeedback,
+    });
+  } catch (error) {
+    return next(new AppError(error.message, 400));
+  }
+};
+export const FeedbackDelete = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      new AppError("something went wrong , please tyr Again  ", 400);
+    }
+    const handelDelete = await Feedback.findByIdAndDelete(id);
+    res.status(200).json({
+      success: true,
+      message: "SuccessFully delete feedback...",
+      data: handelDelete,
+    });
+  } catch (error) {
+    return next(new AppError(error.message, 400));
+  }
+};
 export const getFeedback = async (req, res, next) => {
   try {
     const { page = 1, limit = 10 } = req.query;

@@ -5,10 +5,12 @@ import toast from "react-hot-toast";
 import { AiOutlineArrowLeft } from "react-icons/ai";
 import { LoadAccount, UpdateAccount } from "../../Redux/Slice/authSlice";
 import Layout from "../../layout/layout";
+import LoadingButton from "../../constants/LoadingBtn";
 
 function UpdateProfile() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const UserData = useSelector((state) => state?.auth?.data);
 
   const [profileData, setProfileData] = useState({
@@ -42,13 +44,16 @@ function UpdateProfile() {
     });
   }
   async function OnFormSubmit(event) {
+    setLoading(true);
     event.preventDefault();
     if (!profileData.fullName) {
       toast.error("please enter your name");
+      setLoading(false);
       return;
     }
 
     if (profileData.fullName.length < 5) {
+      setLoading(false);
       toast.error("name should be atLeast 5 character");
       return;
     }
@@ -60,6 +65,7 @@ function UpdateProfile() {
     formData.append("avatar", profileData.avatar);
 
     const UpdateData = await dispatch(UpdateAccount(formData));
+    setLoading(false);
     if (!UpdateData?.payload?.success) {
       toast.error("profile is not updated ,try again..");
       return;
@@ -83,7 +89,7 @@ function UpdateProfile() {
         <form
           noValidate
           onSubmit={OnFormSubmit}
-          className="flex flex-col  justify-center gap-3  rounded-lg p-4 text-white w-96  shadow-[0_0_10px_white] "
+          className="flex flex-col  justify-center gap-3  rounded-lg p-4 dark:text-white text-black w-96  dark:shadow-[0_0_10px_white]  shadow-[0_0_10px_black] "
         >
           <h1 className="text-2xl text-center font-bold">Update Page</h1>
           <label htmlFor="image_uploads" className=" cursor-pointer">
@@ -92,7 +98,7 @@ function UpdateProfile() {
                 <img
                   src={profileData.previewImage}
                   alt="user_image"
-                  className="w-40 h-40 m-auto rounded-full border-2 border-white"
+                  className="w-40 h-40 m-auto rounded-full border-2 border-black dark:border-white"
                 />
               </div>
             ) : (
@@ -100,7 +106,7 @@ function UpdateProfile() {
                 <img
                   src={UserData?.avatar?.secure_url}
                   alt="user_image"
-                  className="w-40 m-auto h-40 rounded-full border-2 border-white"
+                  className="w-40 m-auto h-40 rounded-full border-2 border-black dark:border-white"
                 />
               </div>
             )}
@@ -123,7 +129,7 @@ function UpdateProfile() {
               required
               id="fullName"
               placeholder="Enter your Name.."
-              className="px-2 py-4 bg-transparent border "
+              className="px-2 py-4 bg-transparent border  "
             />
           </div>
           <div className="flex flex-col gap-1">
@@ -139,9 +145,13 @@ function UpdateProfile() {
               className="px-2 py-4 bg-transparent border "
             />
           </div>
-          <button type="submit" className="btn btn-primary font-bold ">
-            Change Profile
-          </button>
+          <LoadingButton
+            message={"Wait update profile"}
+            loading={loading}
+            name={"Change Profile"}
+            textSize={"py-3"}
+            color={"bg-green-500 hover:bg-green-600 "}
+          />
 
           <Link
             to="/Profile"

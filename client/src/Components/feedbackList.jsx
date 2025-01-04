@@ -2,16 +2,22 @@ import React, { useEffect, useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { FiEdit } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
-import { getFeedback } from "../Redux/Slice/feedbackSlice";
+import {
+  editFeedback,
+  FeedbackDelete,
+  getFeedback,
+} from "../Redux/Slice/feedbackSlice";
 
 const FeedbackList = () => {
   const dispatch = useDispatch();
   const { Feedback: feedback } = useSelector((state) => state?.feedback);
   const { userName } = useSelector((state) => state?.auth);
 
-  const [displayedFeedback, setDisplayedFeedback] = useState([]); // Feedback to display
-  const [filter, setFilter] = useState("all"); // Filter (all, 1-3 stars, 4-5 stars)
-  const [page, setPage] = useState(1); // Current page
+  const [displayedFeedback, setDisplayedFeedback] = useState([]);
+  const [filter, setFilter] = useState("all");
+  const [page, setPage] = useState(1);
+  const [editingFeedbackId, setEditingFeedbackId] = useState(null);
+  const [editedComment, setEditedComment] = useState("");
 
   useEffect(() => {
     const fetchFeedbacks = async () => {
@@ -22,7 +28,6 @@ const FeedbackList = () => {
     fetchFeedbacks();
   }, [dispatch, feedback.length, page]);
 
-  // Apply filtering and sorting
   useEffect(() => {
     const filteredFeedback =
       filter === "1-3"
@@ -32,30 +37,55 @@ const FeedbackList = () => {
         : feedback;
 
     const sortedFeedback = [
-      ...filteredFeedback.filter((fb) => fb.userName === userName), // Current user's feedback
-      ...filteredFeedback.filter((fb) => fb.userName !== userName), // Other feedback
+      ...filteredFeedback.filter((fb) => fb.userName === userName),
+      ...filteredFeedback.filter((fb) => fb.userName !== userName),
     ];
 
     const startIndex = (page - 1) * 10;
-    const paginatedFeedback = sortedFeedback.slice(
-      0,
-      startIndex + 10 // Accumulate feedback for pagination
-    );
+    const paginatedFeedback = sortedFeedback.slice(startIndex, startIndex + 10);
 
     setDisplayedFeedback(paginatedFeedback);
   }, [filter, page, feedback, userName]);
 
-  // Handle filter change
   const handleFilterChange = (newFilter) => {
     setFilter(newFilter);
-    setPage(1); // Reset to page 1 on filter change
+    setPage(1);
   };
 
-  // Load more feedback
   const loadMore = async () => {
     const nextPage = page + 1;
     setPage(nextPage);
-    await dispatch(getFeedback({ page: nextPage, limit: 0 })); // Fetch next page of feedback
+    await dispatch(getFeedback({ page: nextPage, limit: 0 }));
+  };
+
+  const handleEditClick = (fb) => {
+    setEditingFeedbackId(fb._id);
+    setEditedComment(fb.comment);
+  };
+
+  const handleSaveEdit = async () => {
+    const updatedFeedback = { id: editingFeedbackId, comment: editedComment };
+    const res = await dispatch(editFeedback({ data: updatedFeedback }));
+    if (res?.payload?.success) {
+      setDisplayedFeedback((prev) =>
+        prev.map((fb) =>
+          fb._id === res?.payload?.data._id
+            ? { ...fb, comment: res?.payload?.data.comment }
+            : fb
+        )
+      );
+    }
+    setEditingFeedbackId(null);
+  };
+  async function handelDeleteFeedback(id) {
+    if (!id) return;
+    setDisplayedFeedback((prev) =>
+      prev.filter((feedback) => feedback._id !== id)
+    );
+    await dispatch(FeedbackDelete(id));
+  }
+  const handleCancelEdit = () => {
+    setEditingFeedbackId(null);
   };
 
   return (
@@ -64,7 +94,6 @@ const FeedbackList = () => {
         User Feedbacks
       </h2>
 
-      {/* Filter Buttons */}
       <div className="flex justify-center gap-4 mb-6">
         <button
           className={`px-4 py-2 rounded ${
@@ -98,14 +127,12 @@ const FeedbackList = () => {
         </button>
       </div>
 
-      {/* Feedback List */}
       <div className="space-y-6">
         {displayedFeedback?.map((fb, index) => (
           <div
             key={index}
-            className="w-full p-6 bg-white dark:bg-gray-800 border border-gray-200 rounded-lg shadow-md hover:shadow-xl transition-all"
+            className="w-full p-6 bg-white dark:text-white text-black dark:bg-gray-800 border border-gray-200 rounded-lg shadow-md hover:shadow-xl transition-all"
           >
-            {/* Username Display */}
             <div className="flex items-center mb-4 justify-between">
               <span className="text-lg font-medium text-gray-800 dark:text-white">
                 {fb.userName || "Anonymous"}
@@ -116,18 +143,18 @@ const FeedbackList = () => {
                     size={26}
                     className="text-red-400 cursor-pointer"
                     onClick={() => {
-                      // Add delete logic
+                      handelDeleteFeedback(fb._id);
                     }}
                   />
                   <FiEdit
                     size={26}
                     className="cursor-pointer text-blue-400 hover:text-blue-300"
+                    onClick={() => handleEditClick(fb)}
                   />
                 </span>
               )}
             </div>
 
-            {/* Stars Rating */}
             <div className="flex items-center space-x-2 mb-4">
               {[1, 2, 3, 4, 5].map((star) => (
                 <span
@@ -141,8 +168,31 @@ const FeedbackList = () => {
               ))}
             </div>
 
-            {/* Comment */}
-            <p className="text-gray-700 dark:text-gray-300">{fb.comment}</p>
+            {editingFeedbackId === fb._id ? (
+              <div>
+                <textarea
+                  value={editedComment}
+                  onChange={(e) => setEditedComment(e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded-md mb-4"
+                />
+                <div className="flex justify-between">
+                  <button
+                    className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                    onClick={handleSaveEdit}
+                  >
+                    Save
+                  </button>
+                  <button
+                    className="bg-gray-400 text-white px-4 py-2 rounded-md"
+                    onClick={handleCancelEdit}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <p className="text-gray-700 dark:text-gray-300">{fb.comment}</p>
+            )}
           </div>
         ))}
       </div>

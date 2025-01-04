@@ -12,20 +12,21 @@ import {
 import upload from "../Middleware/multerMiddleware.js";
 import { isLoggedIn } from "../Middleware/authMiddleware.js";
 import {
+  editFeedback,
+  FeedbackDelete,
   getFeedback,
   MessageSubmit,
   SubmitFeedback,
 } from "../Controllers/feedback.Controller.js";
-import {
-  getAllCarousel,
-  getCarousel,
-} from "../Controllers/CarouselController.js";
+import { getAllCarousel } from "../Controllers/CarouselController.js";
 const UserRouter = Router();
 UserRouter.post("/register", upload.single("avatar"), RegisterUser);
 UserRouter.post("/login", login);
 UserRouter.post("/SubmitFeedback", isLoggedIn, SubmitFeedback);
 UserRouter.post("/messageSubmit", isLoggedIn, MessageSubmit);
 UserRouter.get("/getFeedback", getFeedback);
+UserRouter.put("/feedback/:id", isLoggedIn, editFeedback);
+UserRouter.delete("/feedback/:id", isLoggedIn, FeedbackDelete);
 UserRouter.get("/logout", logout);
 UserRouter.get("/Carousel", getAllCarousel);
 UserRouter.get("/getProfile", isLoggedIn, getProfile);

@@ -47,7 +47,6 @@ function HomePage() {
     setLoading(false);
   };
   const handleProductDelete = (productId) => {
-    console.log(productId);
     setProducts((prev) => prev.filter((product) => product._id !== productId));
     setTopProduct((prevProducts) =>
       prevProducts.filter((product) => product._id !== productId)
@@ -64,14 +63,12 @@ function HomePage() {
   }, [show]);
 
   useEffect(() => {
-    if (!loading) {
-      const interval = setInterval(() => {
-        setIsAnimating(true);
-        setCurrentSlide((prev) => prev + 1);
-      }, 3000);
+    const interval = setInterval(() => {
+      setIsAnimating(true);
+      setCurrentSlide((prev) => prev + 1);
+    }, 3000);
 
-      return () => clearInterval(interval);
-    }
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {

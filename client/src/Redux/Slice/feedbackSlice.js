@@ -44,6 +44,25 @@ export const SendMassage = createAsyncThunk("massage/Submit", async (data) => {
     return error?.response?.data || error?.message || "Something went wrong";
   }
 });
+export const editFeedback = createAsyncThunk("feedback/edit", async (data) => {
+  const token = localStorage.getItem("Authenticator");
+
+  try {
+    const res = await axiosInstance.put(
+      `/api/v3/user/feedback/${data.id}`,
+      data,
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+      }
+    );
+
+    return res.data;
+  } catch (error) {
+    return error?.response?.data || error?.message || "Something went wrong";
+  }
+});
 export const getFeedback = createAsyncThunk(
   "feedback/get",
   async ({ page = 1, limit = 10 }) => {
@@ -58,6 +77,24 @@ export const getFeedback = createAsyncThunk(
           },
         }
       );
+
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
+    }
+  }
+);
+export const FeedbackDelete = createAsyncThunk(
+  "feedback/delete",
+  async (id) => {
+    try {
+      const token = localStorage.getItem("Authenticator");
+
+      const res = await axiosInstance.delete(`/api/v3/user/feedback/${id}`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
 
       return res.data;
     } catch (error) {

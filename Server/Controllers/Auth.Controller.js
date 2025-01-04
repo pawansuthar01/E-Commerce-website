@@ -314,9 +314,9 @@ export const UpdateUserProfile = async (req, res, next) => {
           userExist.avatar.public_id = avatarUpload.public_id;
           userExist.avatar.secure_url = avatarUpload.secure_url;
         }
-        await fs.rm(file.path, { force: true });
+        await fs.rm(req.file.path, { force: true });
       } catch (error) {
-        await fs.rm(file.path, { force: true });
+        await fs.rm(req.file.path, { force: true });
         return next(
           new AppError(`file upload file try again ${error.message}`, 400)
         );
@@ -353,6 +353,100 @@ export const getAllDate = async (req, res, next) => {
       allUser,
       message: "successfully allUser get..",
     });
+  } catch (error) {
+    return next(new AppError(error.message, 400));
+  }
+};
+export const handelPromotion = async (req, res, next) => {
+  try {
+    const { data } = req.body;
+    if (!data.role || !data.id) {
+      return next(new AppError(" All felids is required", 400));
+    }
+
+    if (data.role == "ADMIN") {
+      const ADMINCount = await User.countDocuments({
+        role: "ADMIN",
+      });
+      if (ADMINCount >= 5) {
+        return next(new AppError("Maximum 5 ADMIN can remain.", 400));
+      }
+    }
+    if (data.role == "AUTHOR") {
+      const AUTHORCount = await User.countDocuments({
+        role: "AUTHOR",
+      });
+      if (AUTHORCount >= 2) {
+        return next(new AppError("Maximum 2 AUTHOR can remain..", 400));
+      }
+    }
+    const handelUpdateRole = await User.findByIdAndUpdate(
+      data.id,
+      {
+        role: data.role,
+      },
+      {
+        new: true,
+      }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "User role updated successfully.",
+      data: handelUpdateRole,
+    });
+  } catch (error) {
+    return next(new AppError(error.message, 400));
+  }
+};
+export const handelDelete = async (req, res, next) => {
+  try {
+    const { role } = req.user;
+    const { data } = req.body;
+    if (!data.role || !data.id) {
+      return next(new AppError(" All felids is required", 400));
+    }
+
+    if (role == "ADMIN" || data.role == "AUTHOR") {
+      return next(new AppError("you cannot delete AUTHOR", 400));
+    }
+    if (data.role == "ADMIN") {
+      const ADMINCount = await User.countDocuments({
+        role: "ADMIN",
+      });
+      if (ADMINCount <= 1) {
+        return next(new AppError("At least one ADMIN must remain.", 400));
+      }
+      const deletedAdmin = await User.findByIdAndDelete(data.id);
+      return res.status(200).json({
+        success: true,
+        message: "ADMIN user deleted successfully.",
+        data: deletedAdmin,
+      });
+    }
+    if (data.role == "AUTHOR") {
+      const AUTHORCount = await User.countDocuments({
+        role: "AUTHOR",
+      });
+      if (AUTHORCount <= 1) {
+        return next(new AppError("At least one AUTHOR must remain.", 400));
+      }
+      const deletedAuthor = await User.findByIdAndDelete(data.id);
+      return res.status(200).json({
+        success: true,
+        message: "AUTHOR user deleted successfully.",
+        data: deletedAuthor,
+      });
+    }
+    if (data.role == "USER") {
+      const deletedUser = await User.findByIdAndDelete(data.id);
+      return res.status(200).json({
+        success: true,
+        message: "user deleted successfully.",
+        data: deletedUser,
+      });
+    }
+    return next(new AppError("Invalid role specified", 400));
   } catch (error) {
     return next(new AppError(error.message, 400));
   }

@@ -111,6 +111,38 @@ export const getAllUsers = createAsyncThunk("/auth/User", async () => {
     return error?.response?.data || error?.message || "Something went wrong";
   }
 });
+export const HandelDelete = createAsyncThunk("delete/", async (data) => {
+  try {
+    const token = localStorage.getItem("Authenticator");
+    const res = await axiosInstance.delete("/api/v3/Admin/User", {
+      data: data,
+      headers: {
+        Authorization: `${token}`,
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    return error?.response?.data || error?.message || "Something went wrong";
+  }
+});
+export const HandelPromotion = createAsyncThunk(
+  "user/roleUpdate",
+  async (data) => {
+    try {
+      const token = localStorage.getItem("Authenticator");
+      const res = await axiosInstance.put("/api/v3/Admin/User", data, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
+    }
+  }
+);
 
 const authSliceRedux = createSlice({
   name: "auth",

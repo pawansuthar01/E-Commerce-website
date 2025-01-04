@@ -1,16 +1,23 @@
 import React, { useState } from "react";
 
-function LoadingButton({ onClick, name, loading, message, color, width }) {
-  const [Loading] = useState(loading);
-
+function LoadingButton({
+  onClick,
+  name,
+  loading,
+  message,
+  color,
+  width,
+  textSize,
+  ADMIN,
+}) {
   return (
     <button
       onClick={onClick}
       type="submit"
-      disabled={loading}
+      disabled={ADMIN || loading}
       className={`${
         width ? width : `w-full`
-      } py-3 rounded-lg transition-colors ${color} text-white`}
+      }   rounded-lg transition-colors ${color} text-white ${textSize} `}
     >
       {loading ? (
         <>

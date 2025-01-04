@@ -1,6 +1,10 @@
 import { Router } from "express";
 import { authorizeRoles, isLoggedIn } from "../Middleware/authMiddleware.js";
-import { getAllDate } from "../Controllers/Auth.Controller.js";
+import {
+  getAllDate,
+  handelDelete,
+  handelPromotion,
+} from "../Controllers/Auth.Controller.js";
 import upload from "../Middleware/multerMiddleware.js";
 
 import {
@@ -23,12 +27,10 @@ import {
 } from "../Controllers/CarouselController.js";
 import { getPaymentData } from "../Controllers/payment.Controller.js";
 const ADMINRouter = Router();
-ADMINRouter.get(
-  "/User",
-  isLoggedIn,
-  authorizeRoles("ADMIN", "AUTHOR"),
-  getAllDate
-);
+ADMINRouter.route("/User")
+  .get(isLoggedIn, authorizeRoles("ADMIN", "AUTHOR"), getAllDate)
+  .delete(isLoggedIn, authorizeRoles("ADMIN", "AUTHOR"), handelDelete)
+  .put(isLoggedIn, authorizeRoles("AUTHOR"), handelPromotion);
 ADMINRouter.get(
   "/Order",
   isLoggedIn,
