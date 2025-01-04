@@ -15,18 +15,20 @@ function BlogDetails() {
   const PostId = pathname.split("/").pop();
   async function handelBlogLoad() {
     const res = await dispatch(getPost(PostId));
-    setShowPost(res.payload.data);
+    setShowPost(res?.payload?.data);
   }
   useEffect(() => {
     handelBlogLoad();
     setShowPost(PostData);
   }, []);
   async function handleDeleteBlog(blogId) {
-    setShowPost((prevProducts) =>
-      prevProducts.filter((blog) => blog._id !== blogId)
-    );
-    const res = await dispatch(DeleteBlog(blogId));
-    console.log(res);
+    setShowPost((prevBlog) => {
+      return Array.isArray(prevBlog)
+        ? prevBlog.filter((blog) => blog._id !== blogId)
+        : [];
+    });
+    navigate("/Blog");
+    await dispatch(DeleteBlog(blogId));
   }
 
   return (

@@ -29,8 +29,12 @@ function BlogCard({ w, data, onDelete }) {
   useEffect(() => {
     setBlog(data);
   }, [data]);
-
-  const url = `http://${domain}/Blog/${data._id}`;
+  useEffect(() => {
+    if (!data) {
+      navigator(-1);
+    }
+  }, []);
+  const url = `http://${domain}/Blog/${data?._id}`;
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
@@ -65,7 +69,7 @@ function BlogCard({ w, data, onDelete }) {
   }
   return (
     <div>
-      {["ADMIN", "AUTHOR"].includes(role) && (
+      {role && ["ADMIN", "AUTHOR"].includes(role) && (
         <div className=" relative flex justify-evenly  gap-24 ">
           <button
             onClick={() => handleDeleteBlog(Blog._id)}

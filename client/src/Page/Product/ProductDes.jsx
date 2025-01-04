@@ -275,13 +275,14 @@ function ProductDescription() {
               </div>
 
               {/* Delete Button for Admin/Author */}
-              {(data.role === "ADMIN" || data.role === "AUTHOR") && (
-                <div>
-                  <button className="w-full px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-700 transition">
-                    Delete
-                  </button>
-                </div>
-              )}
+              {data?.role &&
+                (data?.role === "ADMIN" || data?.role === "AUTHOR") && (
+                  <div>
+                    <button className="w-full px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-700 transition">
+                      Delete
+                    </button>
+                  </div>
+                )}
             </div>
           </div>
         </div>

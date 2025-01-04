@@ -14,18 +14,15 @@ function Blog() {
   const [showPost, setShowPost] = useState([]);
   async function handelBlogLoad() {
     const res = await dispatch(getAllPost());
-    setShowPost(res.payload.AllPostGet);
+    setShowPost(res?.payload?.AllPostGet);
   }
   useEffect(() => {
     handelBlogLoad();
     setShowPost(PostData);
   }, []);
   async function handleDeleteBlog(blogId) {
-    setShowPost((prevProducts) =>
-      prevProducts.filter((blog) => blog._id !== blogId)
-    );
-    const res = await dispatch(DeleteBlog(blogId));
-    console.log(res);
+    setShowPost((prevBlog) => prevBlog.filter((blog) => blog._id !== blogId));
+    await dispatch(DeleteBlog(blogId));
   }
 
   return (
