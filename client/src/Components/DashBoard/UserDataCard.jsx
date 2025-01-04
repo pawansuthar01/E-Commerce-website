@@ -100,10 +100,7 @@ export const UsersCart = ({ showUser, users }) => {
                     <td className="p-4 text-sm">{user.role}</td>
                     <td className="p-4 flex space-x-4">
                       <LoadingButton
-                        ADMIN={
-                          ["ADMIN", "AUTHOR"].includes(user.role) ||
-                          user._id == data._id
-                        }
+                        ADMIN={user._id == data._id}
                         message={"Removing..."}
                         width={"w-[100px]"}
                         textSize={"text-sm py-2"}

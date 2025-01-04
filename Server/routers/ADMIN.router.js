@@ -26,7 +26,12 @@ import {
   getCarousel,
 } from "../Controllers/CarouselController.js";
 import { getPaymentData } from "../Controllers/payment.Controller.js";
+import {
+  AllMessageGet,
+  messageMarkARead,
+} from "../Controllers/feedback.Controller.js";
 const ADMINRouter = Router();
+
 ADMINRouter.route("/User")
   .get(isLoggedIn, authorizeRoles("ADMIN", "AUTHOR"), getAllDate)
   .delete(isLoggedIn, authorizeRoles("ADMIN", "AUTHOR"), handelDelete)
@@ -98,5 +103,17 @@ ADMINRouter.route("/Product/:id")
     upload.array("images", 10),
     productUpdate
   )
+
   .delete(isLoggedIn, authorizeRoles("ADMIN", "AUTHOR"), productDelete);
+ADMINRouter.route("/message").get(
+  isLoggedIn,
+  authorizeRoles("ADMIN", "AUTHOR"),
+  AllMessageGet
+);
+ADMINRouter.put(
+  "/message/:id",
+  isLoggedIn,
+  authorizeRoles("ADMIN", "AUTHOR"),
+  messageMarkARead
+);
 export default ADMINRouter;

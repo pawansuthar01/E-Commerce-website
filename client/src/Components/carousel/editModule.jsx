@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ImageUpload } from "./imageUpload";
 import { XMarkIcon } from "@heroicons/react/24/solid";
+import { FaXmarksLines } from "react-icons/fa6";
 
 export const EditModal = ({ slide, onClose, onSave }) => {
   const [name, setName] = useState(slide.name);
@@ -22,7 +23,7 @@ export const EditModal = ({ slide, onClose, onSave }) => {
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700"
           >
-            <XMarkIcon className="h-6 w-6 text-gray-600 dark:text-gray-400" />
+            <FaXmarksLines className="h-6 w-6 text-gray-600 dark:text-gray-400" />
           </button>
         </div>
 

@@ -84,6 +84,49 @@ export const getFeedback = createAsyncThunk(
     }
   }
 );
+export const GetMessage = createAsyncThunk(
+  "feedback/get",
+  async ({ page = 1, limit = 20 }) => {
+    try {
+      const token = localStorage.getItem("Authenticator");
+
+      const res = await axiosInstance.get(
+        `/api/v3/Admin/message?page=${page}&limit=${limit}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
+    }
+  }
+);
+export const messageMarkARead = createAsyncThunk(
+  "feedback/delete",
+  async (id) => {
+    try {
+      const token = localStorage.getItem("Authenticator");
+
+      const res = await axiosInstance.put(
+        `/api/v3/Admin/message/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
+    }
+  }
+);
 export const FeedbackDelete = createAsyncThunk(
   "feedback/delete",
   async (id) => {

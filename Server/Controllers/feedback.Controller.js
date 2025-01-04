@@ -119,3 +119,53 @@ export const getFeedback = async (req, res, next) => {
     return next(new AppError(error.message, 400));
   }
 };
+
+export const AllMessageGet = async (req, res, next) => {
+  try {
+    const { page = 1, limit = 10 } = req.query;
+    const skip = (page - 1) * limit;
+    const messages = await Message.find({}).skip(skip).limit(parseInt(limit));
+    const messagesCount = await Message.countDocuments({});
+    if (!messages) {
+      return next(
+        new AppError("something went wrong , please tyr Again  ", 400)
+      );
+    }
+
+    res.status(201).json({
+      success: true,
+      message: "message get successfully!",
+      data: messages,
+      messagesCount: messagesCount,
+      currentPage: page,
+      totalPages: Math.ceil(messagesCount / limit),
+    });
+  } catch (error) {
+    return next(new AppError(error.message, 400));
+  }
+};
+export const messageMarkARead = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      new AppError("something went wrong , please tyr Again  ", 400);
+    }
+    const readMessage = await Message.findByIdAndUpdate(
+      id,
+      {
+        $set: { read: true },
+      },
+      {
+        new: true,
+      }
+    );
+    res.status(200).json({
+      success: true,
+      message: "SuccessFully readMessage...",
+      data: readMessage,
+    });
+  } catch (error) {
+    return next(new AppError(error.message, 400));
+  }
+};

@@ -4,7 +4,7 @@ import { getAllUsers, LoadAccount } from "../../Redux/Slice/authSlice";
 import { getPaymentRecord, PaymentData } from "../../Redux/Slice/paymentSlice";
 import { AllOrder, UpdateOrder } from "../../Redux/Slice/OrderSlice";
 import { getAllProduct } from "../../Redux/Slice/ProductSlice";
-import { FaArrowLeft, FaBoxOpen } from "react-icons/fa6";
+import { FaArrowLeft, FaBoxOpen, FaEnvelope } from "react-icons/fa6";
 import Layout from "../../layout/layout";
 import { OrderShow } from "../../Components/ShowOrder";
 import { FaUser, FaBox, FaCreditCard, FaThLarge } from "react-icons/fa";
@@ -14,6 +14,8 @@ import { DashBoard } from "../../Components/DashBoard/DashBoardData";
 import { PaymentCart } from "../../Components/DashBoard/PaymentDataCart";
 import { LoadingCart } from "../../Components/DashBoard/Loader";
 import { OrderCart } from "../../Components/OrderDataCart";
+import { GetMessage } from "../../Redux/Slice/feedbackSlice";
+import Messages from "../../Components/DashBoard/MessageData";
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
@@ -61,6 +63,7 @@ const AdminDashboard = () => {
     try {
       const usersRes = await dispatch(getAllUsers());
       const ordersRes = await dispatch(AllOrder());
+
       const paymentsRes = await dispatch(getPaymentRecord());
       const paymentsRe = await dispatch(PaymentData());
       setRazorpay(paymentsRes?.payload?.allPayments?.items);
@@ -107,7 +110,8 @@ const AdminDashboard = () => {
     <Layout>
       <div className="p-8 select-none">
         <h1 className="text-3xl font-bold text-center mb-6">Admin Dashboard</h1>
-        <div className="flex space-x-4 w-full justify-evenly bg-[#EFF3EA] py-2 flex-wrap gap-2 rounded-lg">
+        {/* Dashboard Button */}
+        <div className="grid grid-cols-3 gap-4 w-full bg-[#EFF3EA] py-4 rounded-lg px-4">
           {/* Dashboard Button */}
           <button
             className={`p-3 rounded-md transition-all duration-300 flex justify-center gap-1 items-center ${
@@ -116,6 +120,7 @@ const AdminDashboard = () => {
                 : "bg-gray-200 text-gray-700"
             }`}
             onClick={() => handleClick(1)}
+            aria-label="Dashboard"
           >
             <FaThLarge />
             <span>DashBoard</span>
@@ -123,56 +128,77 @@ const AdminDashboard = () => {
 
           {/* User Button */}
           <button
-            className={`p-3 rounded-md transition-all duration-300 flex  items-center gap-1 ${
+            className={`p-3 rounded-md transition-all duration-300 flex justify-center gap-1 items-center ${
               activeButton === 2
                 ? "bg-gradient-to-r from-green-500 to-teal-500 text-white shadow-lg"
                 : "bg-gray-200 text-gray-700"
             }`}
             onClick={() => handleClick(2)}
+            aria-label="Users"
           >
             <FaUser />
             <span>Users</span>
           </button>
 
-          {/* Package Button */}
+          {/* Order Button */}
           <button
-            className={`p-3 rounded-md transition-all duration-300  flex  items-center gap-1 ${
+            className={`p-3 rounded-md transition-all duration-300 flex justify-center gap-1 items-center ${
               activeButton === 3
                 ? "bg-gradient-to-r from-yellow-500 to-orange-500 text-white shadow-lg"
                 : "bg-gray-200 text-gray-700"
             }`}
             onClick={() => handleClick(3)}
+            aria-label="Order"
           >
             <FaBox />
             <span>Order</span>
           </button>
+
+          {/* Products Button */}
           <button
-            className={`p-3 rounded-md transition-all duration-300  flex  items-center gap-1 ${
+            className={`p-3 rounded-md transition-all duration-300 flex justify-center gap-1 items-center ${
               activeButton === 4
                 ? "bg-gradient-to-r from-green-500 to-orange-500 text-white shadow-lg"
                 : "bg-gray-200 text-gray-700"
             }`}
             onClick={() => handleClick(4)}
+            aria-label="Products"
           >
             <FaBoxOpen />
             <span>Products</span>
           </button>
 
-          {/* Notification Button */}
+          {/* Payments Button */}
           <button
-            className={`p-3 rounded-md transition-all duration-300 flex gap-1 items-center ${
+            className={`p-3 rounded-md transition-all duration-300 flex justify-center gap-1 items-center ${
               activeButton === 5
                 ? "bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-lg"
                 : "bg-gray-200 text-gray-700"
             }`}
             onClick={() => handleClick(5)}
+            aria-label="Payments"
           >
             <FaCreditCard />
             <span>Payments</span>
           </button>
+
+          {/* Messages Button */}
+          <button
+            className={`p-3 rounded-md transition-all duration-300 flex justify-center gap-1 items-center ${
+              activeButton === 6
+                ? "bg-gradient-to-r from-purple-500 to-indigo-500 text-white shadow-lg"
+                : "bg-gray-200 text-gray-700"
+            }`}
+            onClick={() => handleClick(6)}
+            aria-label="Messages"
+          >
+            <FaEnvelope />
+            <span>Messages</span>
+          </button>
         </div>
 
         <DashBoard show={activeButton === 1} orders={orders} stats={stats} />
+        {activeButton == 6 && <Messages />}
         <UsersCart showUser={activeButton === 2} users={users} />
         <PaymentCart
           showPayment={activeButton === 5}
