@@ -56,11 +56,11 @@ function Product() {
     }
   };
 
-  const handleProductDelete = (productId) => {
+  function handleProductDelete(productId) {
     setProducts((prevProducts) =>
       prevProducts.filter((product) => product._id !== productId)
     );
-  };
+  }
 
   useEffect(() => {
     fetchProducts(1); // Load the first page initially

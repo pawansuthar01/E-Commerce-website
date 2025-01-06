@@ -1,45 +1,136 @@
-import { Link, useNavigate } from "react-router-dom";
-import { BsPersonCircle } from "react-icons/bs";
-import { useState, useEffect } from "react";
+import React, { useState } from "react";
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
-import Layout from "../../layout/layout";
-import LoadingButton from "../../constants/LoadingBtn";
-import { FiEdit, FiPenTool } from "react-icons/fi";
+import { FaPlus } from "react-icons/fa6";
+import { FiSave } from "react-icons/fi";
 import { AddNewProduct } from "../../Redux/Slice/ProductSlice";
-
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import LoadingButton from "../../constants/LoadingBtn";
+import Layout from "../../layout/layout";
 function AddProduct() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [previewImages, setPreviewImages] = useState([]);
+  const [showCategoryForm, setShowCategoryForm] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [showLoading, setShowLoading] = useState(false);
 
-  const [ProductUpData, setProductUpData] = useState({
+  const [productData, setProductData] = useState({
     name: "",
     price: "",
     description: "",
-    images: [], // For multiple images
+    category: "",
+    gst: "",
+    subCategory: "",
+    discount: "",
+    images: [],
   });
 
-  // Disable scrolling when loading
-  useEffect(() => {
-    if (showLoading) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-    return () => {
-      document.body.style.overflow = "auto"; // Cleanup on component unmount
-    };
-  }, [showLoading]);
+  const [categories, setCategories] = useState([
+    "Sofas",
+    "Coffee Tables",
+    "TV Units",
+    "Recliners",
+    "Bookshelves",
+    "Beds",
+    "Wardrobes",
+    "Nightstands",
+    "Dresser",
+    "Mattresses",
+    "Dining Tables",
+    "Chairs",
+    "Buffet Tables",
+    "Bar Stools",
+    "Sideboards",
+    "Office Desks",
+    "Chairs",
+    "Shelves",
+    "Filing Cabinets",
+    "Conference Tables",
+    "Kitchen Cabinets",
+    "Kitchen Islands",
+    "Bar Stools",
+    "Dish Racks",
+    "Pantry Shelves",
+    "Vanities",
+    "Shower Units",
+    "Bathroom Cabinets",
+    "Toilet Roll Holders",
+    "Towel Racks",
+    "Outdoor Sofas",
+    "Outdoor Tables",
+    "Garden Chairs",
+    "Hammocks",
+    "Patio Umbrellas",
+    "Storage Bins",
+    "Shelving Units",
+    "Closet Organizers",
+    "Storage Cabinets",
+    "Garage Storage",
+    "Ceiling Lights",
+    "Floor Lamps",
+    "Wall Sconces",
+    "Table Lamps",
+    "Pendant Lights",
+    "Rugs",
+    "Curtains",
+    "Wall Art",
+    "Throw Pillows",
+    "Mirrors",
+    "Desk Organizers",
+    "Office Chairs",
+    "Monitor Stands",
+    "Lamps",
+    "Keyboard Trays",
+    "Coat Racks",
+    "Shoe Racks",
+    "Console Tables",
+    "Doormats",
+    "Wall Hooks",
+    "Bunk Beds",
+    "Toy Storage",
+    "Kids Desks",
+    "Toy Boxes",
+    "Bookshelves",
+    "Hallway Tables",
+    "Mirrors",
+    "Shoe Cabinets",
+    "Wall Hooks",
+    "Rugs",
+    "Laundry Baskets",
+    "Ironing Boards",
+    "Drying Racks",
+    "Laundry Cabinets",
+    "Washing Machine Stands",
+    "Pet Beds",
+    "Pet Houses",
+    "Pet Stairs",
+    "Pet Crates",
+    "Pet Feeding Stations",
+    "Smart Lights",
+    "Smart Thermostats",
+    "Smart Plugs",
+    "Smart Speakers",
+    "Smart Cameras",
+    "Planters",
+    "Garden Tools",
+    "Garden Benches",
+    "Fountains",
+    "Flower Pots",
+    "Memory Foam",
+    "Innerspring",
+    "Hybrid",
+    "Adjustable",
+    "Kids Mattresses",
+    "Cleaning Carts",
+    "Brooms",
+    "Mops",
+    "Vacuum Cleaners",
+    "Trash Cans",
+  ]);
 
-  // Handle multiple image inputs with validation
   const handelImageInput = (e) => {
-    e.preventDefault();
-    const files = Array.from(e.target.files); // Convert file list to array
+    const files = Array.from(e.target.files);
 
-    // Validate minimum and maximum number of files
     if (files.length < 2) {
       toast.error("You must upload at least 2 images.");
       return;
@@ -49,12 +140,8 @@ function AddProduct() {
       return;
     }
 
-    setProductUpData({
-      ...ProductUpData,
-      images: files,
-    });
+    setProductData({ ...productData, images: files });
 
-    // Generate previews for selected images
     const fileReaders = files.map((file) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
@@ -64,211 +151,292 @@ function AddProduct() {
     });
 
     Promise.all(fileReaders).then((previews) => {
-      setPreviewImages(previews); // Set preview images
+      setPreviewImages(previews);
     });
   };
 
-  const handelUserInput = (e) => {
+  const handleInputChange = (e) => {
     e.preventDefault();
-    const { name, value } = e.target;
-    setProductUpData({
-      ...ProductUpData,
-      [name]: value,
-    });
+    setProductData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    document.getElementById(e.target.name).style.borderColor = "";
+    if (e.target.name == "name") {
+      document.getElementById(e.target.name).previousElementSibling.innerHTML =
+        "Product Name";
+    }
+
+    if (e.target.name == "description") {
+      document.getElementById(e.target.name).previousElementSibling.innerHTML =
+        "Description";
+    }
   };
 
   const handleCreate = async (event) => {
     event.preventDefault();
     setLoading(true);
 
-    // Validate form fields and image count
-    if (
-      !ProductUpData.name ||
-      !ProductUpData.price ||
-      !ProductUpData.description ||
-      ProductUpData.images.length < 2 ||
-      ProductUpData.images.length > 6
-    ) {
+    if (productData.name.length > 30 || productData.name.length < 20) {
+      document.getElementById("name").style.borderColor = "red";
+      if (productData.name.length > 30) {
+        document.getElementById("name").previousElementSibling.innerHTML =
+          "Maximum length is 30 characters";
+      } else if (productData.name.length < 20) {
+        document.getElementById("name").previousElementSibling.innerHTML =
+          "Minimum length is 20 characters";
+      }
       setLoading(false);
-      toast.error(
-        "All fields are required. Ensure you upload between 2 and 6 images."
-      );
       return;
     }
 
-    if (ProductUpData.name.length < 5) {
+    if (productData.images.length < 2 || productData.images.length > 6) {
       setLoading(false);
-      toast.error("Product name should be at least 5 characters.");
+      document.getElementById("images").style.borderColor = "red";
       return;
     }
-    if (ProductUpData.price < 1) {
+    if (!productData.price) {
+      document.getElementById("price").style.borderColor = "red";
       setLoading(false);
-      toast.error("Product price should be at least 1 Rupee.");
+      return;
+    }
+    if (!productData.description) {
+      document.getElementById("price").style.borderColor = "red";
+      setLoading(false);
+      return;
+    }
+    if (productData.description.length > 100) {
+      document.getElementById("description").style.borderColor = "red";
+      document.getElementById("description").previousElementSibling.innerHTML =
+        "Maximum length is 100 characters";
+      setLoading(false);
+      return;
+    }
+    if (!productData.category) {
+      document.getElementById("category").style.borderColor = "red";
+      setLoading(false);
       return;
     }
 
     const formData = new FormData();
-    formData.append("name", ProductUpData.name);
-    formData.append("price", ProductUpData.price);
-    formData.append("description", ProductUpData.description);
+    formData.append("name", productData.name);
+    formData.append("price", productData.price);
+    formData.append("description", productData.description);
+    formData.append("category", productData.category);
+    formData.append("gst", productData.gst);
+    formData.append("discount", productData.discount);
+    productData.images.forEach((image) => formData.append("images", image));
 
-    // Append multiple images to FormData
-    ProductUpData.images.forEach((image) => {
-      formData.append("images", image);
-    });
-    setShowLoading(true);
     const response = await dispatch(AddNewProduct(formData));
-    if (response) {
-      setShowLoading(false);
-      setLoading(false);
-    }
-
     if (response?.payload?.success) {
-      setLoading(false);
-      const id = response?.payload?.data?._id;
-      navigate(`/Product/${id}`);
-      setProductUpData({
+      navigate(`/Product/${response?.payload?.data?._id}`);
+      setProductData({
         name: "",
         price: "",
         description: "",
+        category: "",
+        subCategory: "",
+        gst: "",
+        discount: "",
         images: [],
       });
       setPreviewImages([]);
     }
+    setLoading(false);
   };
 
   return (
     <Layout>
-      <div className="w-full">
-        <div className="relative justify-center flex items-center">
-          <div className="bg-white dark:bg-[#111827] mt-44 mb-10 w-[400px] rounded-lg shadow-[0_0_5px_black] p-8">
-            {showLoading && (
-              <div
-                className={`flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 ${
-                  loading ? "fixed inset-0 bg-black bg-opacity-30 z-10" : ""
-                }`}
-              >
-                <div className="loader border-t-4 border-blue-500 rounded-full w-12 h-12 animate-spin"></div>
-                <p>
-                  {loading
-                    ? "Please wait, product is uploading..."
-                    : "Loading..."}
-                </p>
-              </div>
-            )}
-            <>
-              <h1 className="text-center text-3xl font-semibold mb-6 text-[#9e6748]">
+      <div className="min-h-screen sm:p-8">
+        <div className="max-w-4xl mx-auto  rounded-xl shadow-lg ">
+          <div className="p-8">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
                 Add Product
               </h1>
-              <form>
-                {/* File Input for Images */}
-                <label
-                  htmlFor="image_uploads"
-                  className="cursor-pointer justify-center flex"
-                >
-                  {previewImages.length > 0 ? (
-                    <div className="grid grid-cols-3 gap-2">
-                      {previewImages.map((img, index) => (
-                        <img
-                          key={index}
-                          src={img}
-                          alt="preview"
-                          className="h-20 w-20 object-contain bg-white dark:bg-[#111827] dark:shadow-[0_0_1px_white] shadow-[0_0_1px_black]"
-                        />
-                      ))}
-                    </div>
-                  ) : (
-                    <FiEdit className="w-full" size={"100px"} />
-                  )}
-                </label>
+              <button
+                onClick={() => setShowCategoryForm(!showCategoryForm)}
+                className="flex items-center px-4 py-2 bg-blue-600 dark:text-white text-black rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                <FaPlus className="w-5 h-5 mr-2" />
+                Manage Categories
+              </button>
+            </div>
+            {showCategoryForm && (
+              <Category categories={categories} setCategories={setCategories} />
+            )}
+            <form onSubmit={handleCreate} className="space-y-6">
+              <div
+                id="images"
+                className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center"
+              >
+                {previewImages.length > 0 ? (
+                  <div className="flex gap-1 flex-wrap justify-evenly">
+                    {previewImages.map((img, idx) => (
+                      <img
+                        key={idx}
+                        src={img}
+                        alt={`Preview ${idx + 1}`}
+                        className="h-32 w-32 object-contain rounded-lg"
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center">
+                    <FaPlus className="h-12 w-12 text-gray-400 mb-3" />
+                    <p className="text-gray-500">
+                      Drop images here or click to upload
+                    </p>
+                    <p className="text-sm text-gray-400 mt-1">
+                      2 Up to 6 images
+                    </p>
+                  </div>
+                )}
                 <input
                   type="file"
+                  multiple
+                  accept="image/*"
                   onChange={handelImageInput}
                   className="hidden"
-                  name="image_uploads"
-                  id="image_uploads"
-                  accept=".png,.svg,.jpeg,.jpg"
-                  multiple
+                  id="images_upload"
                 />
+                <label
+                  htmlFor="images_upload"
+                  className="mt-4 inline-flex items-center px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
+                >
+                  Select Images
+                </label>
+              </div>
 
-                {/* Product Name */}
-                <div className="relative mb-6 mt-5">
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Product Name
+                  </label>
                   <input
                     type="text"
-                    onChange={handelUserInput}
-                    value={ProductUpData.name}
                     name="name"
-                    required
-                    className="peer w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent"
+                    id="name"
+                    value={productData.name}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border dark:bg-gray-800 dark:text-white text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    placeholder="Enter product name"
                   />
-                  {ProductUpData.name ? (
-                    <label className="absolute left-0 top-[-20px] text-sm text-gray-500">
-                      Product Name
-                    </label>
-                  ) : (
-                    <label className="absolute left-0 top-2 text-lg text-gray-500 peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
-                      Product Name
-                    </label>
-                  )}
                 </div>
 
-                {/* Product Price */}
-                <div className="relative mb-6">
+                <div>
+                  <label
+                    htmlFor="price"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Price
+                  </label>
                   <input
                     type="number"
-                    onChange={handelUserInput}
-                    value={ProductUpData.price}
                     name="price"
-                    required
-                    className="peer w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent"
+                    id="price"
+                    value={productData.price}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    placeholder="Enter price"
                   />
-                  {ProductUpData.price ? (
-                    <label className="absolute left-0 top-[-20px] text-sm text-gray-500">
-                      Product Price
-                    </label>
-                  ) : (
-                    <label className="absolute left-0 top-2 text-lg text-gray-500 peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
-                      Product Price
-                    </label>
-                  )}
                 </div>
+              </div>
 
-                {/* Product Description */}
-                <div className="relative mb-6">
-                  <textarea
-                    onChange={handelUserInput}
-                    value={ProductUpData.description}
-                    name="description"
-                    required
-                    className="peer resize-none overflow-y-auto h-[250px] w-full pl-2 border-2 border-gray-300 focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent"
-                  />
-                  {ProductUpData.description ? (
-                    <label className="absolute left-0 pl-2 top-[-20px] text-sm text-gray-500">
-                      Product Description
-                    </label>
-                  ) : (
-                    <label className="absolute left-0 pl-2 top-2 text-lg text-gray-500 peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm">
-                      Product Description
-                    </label>
-                  )}
-                </div>
+              <div>
+                <label
+                  htmlFor="Description"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Description
+                </label>
+                <textarea
+                  name="description"
+                  id="description"
+                  value={productData.description}
+                  onChange={handleInputChange}
+                  rows={4}
+                  className="w-full px-4 py-2 border dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  placeholder="Enter product description"
+                />
+              </div>
 
-                {/* Submit Button */}
-                <div onClick={handleCreate}>
-                  <LoadingButton
-                    loading={loading}
-                    color={"bg-green-600"}
-                    message={"Loading..."}
-                    name={"Add Product"}
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <label
+                    htmlFor="Category"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Category
+                  </label>
+                  <select
+                    id="category"
+                    name="category"
+                    value={productData.category}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  >
+                    <option value="">Select Category</option>
+                    {categories.map((cat, i) => (
+                      <option key={i} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label
+                    htmlFor="discount"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Discount (%)
+                  </label>
+                  <input
+                    id="discount"
+                    type="number"
+                    name="discount"
+                    value={productData.discount}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    placeholder="Enter discount percentage"
+                    min="0"
+                    max="100"
                   />
                 </div>
-              </form>
-            </>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="gst"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  GST (%)
+                </label>
+                <input
+                  type="number"
+                  name="gst"
+                  id="gst"
+                  value={productData.gst}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 dark:bg-gray-800 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  placeholder="Enter discount percentage"
+                  min="0"
+                  max="100"
+                />
+              </div>
+              <LoadingButton
+                type="submit"
+                message={"Adding Product..."}
+                textSize={"py-2"}
+                loading={loading}
+                name={"Add Product"}
+                color={"bg-green-500 hover:bg-blue-700 transition-colors"}
+              />
+            </form>
           </div>
         </div>
       </div>
     </Layout>
   );
 }
-
 export default AddProduct;

@@ -6,10 +6,11 @@ import cloudinary from "cloudinary";
 import fs from "fs/promises";
 
 export const ProductUpload = async (req, res, next) => {
-  const { name, description, price } = req.body;
+  const { name, description, price, discount, category, gst } = req.body;
+  console.log(discount);
   const { userName } = req.user;
 
-  if (!name || !description || !price) {
+  if (!name || !description || !price || !category) {
     return next(new AppError("All fields are required", 400));
   }
 
@@ -42,6 +43,9 @@ export const ProductUpload = async (req, res, next) => {
       name,
       description,
       price,
+      ...(discount && { discount }),
+      category,
+      ...(gst && { gst }),
       images: imageUploads,
     });
 
@@ -105,7 +109,18 @@ export const OrderCount = async (req, res, next) => {
 
 export const productUpdate = async (req, res, next) => {
   const { id } = req.params;
-  const { name, orderCount, description, price, images, index } = req.body;
+  const {
+    name,
+    orderCount,
+    description,
+    price,
+    images,
+    index,
+    discount,
+    category,
+    gst,
+    stock,
+  } = req.body;
   if (!id) {
     return next(new AppError("Product ID is required for update.", 400));
   }
@@ -167,6 +182,11 @@ export const productUpdate = async (req, res, next) => {
       ...(name && { name }),
       ...(price && { price }),
       ...(description && { description }),
+
+      ...(discount && { discount }),
+      ...(category && { category }),
+      ...(gst && { gst }),
+      ...(stock && { stock }),
       images: updatedImageData,
     };
 
@@ -276,8 +296,8 @@ export const getProduct = async (req, res, next) => {
 };
 export const getAllProduct = async (req, res, next) => {
   try {
-    const page = parseInt(req.query.page) || 1; // Default to page 1
-    const limit = parseInt(req.query.limit) || 50; // Default to 50 products per page
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 50;
     const skip = (page - 1) * limit;
 
     const products = await Product.find({}).skip(skip).limit(limit);

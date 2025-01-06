@@ -85,7 +85,6 @@ function ProductCard({ data, onSave, onProductDelete }) {
     );
 
     if (!isConfirmed) return;
-
     onProductDelete(productId);
 
     await dispatch(DeleteProduct(productId));
@@ -105,29 +104,19 @@ function ProductCard({ data, onSave, onProductDelete }) {
         data.image
     );
   };
+  function isProductUploadedToday(data) {
+    const today = new Date();
+    const uploadDate = new Date(data);
+
+    const timeDifference = today - uploadDate;
+
+    const daysDifference = timeDifference / (1000 * 3600 * 24);
+
+    return daysDifference <= 2 && daysDifference >= 0;
+  }
 
   return (
-    <div className="w-[250px] flex-shrink-0 max-w-xs:w-[250px] max-w-xs:h-[350px] max-sm:w-[150px] flex flex-col cursor-pointer max-sm:h-[250px]  sm:h-[400px] bg-white border border-gray-200 rounded-lg shadow p-2 dark:bg-gray-800 dark:border-gray-700">
-      {role && (role === "ADMIN" || role === "AUTHOR") && (
-        <div className="flex w-full justify-between ">
-          <AiOutlineDelete
-            size={20}
-            className="text-red-400"
-            onClick={() => {
-              handleDeleteProduct(data._id);
-            }}
-          />
-          <FiEdit
-            onClick={() => {
-              navigate("/SingleProduct", {
-                state: { ...data },
-              });
-            }}
-            size={20}
-            className="text-red-400"
-          />
-        </div>
-      )}
+    <div className="w-[250px] relative flex-shrink-0 max-w-xs:w-[260px] max-w-xs:h-[350px] max-sm:w-[200px] flex flex-col cursor-pointer max-sm:h-[250px]  sm:h-[400px] bg-white border border-gray-200 rounded-lg shadow p-2 dark:bg-gray-800 dark:border-gray-700">
       <section className="relative h-full flex justify-center rounded-lg p-5 w-full  group overflow-hidden">
         <img
           src={imageUrl}
@@ -138,27 +127,74 @@ function ProductCard({ data, onSave, onProductDelete }) {
           onClick={() => navigate(`/product/${data?._id}`)}
         />
       </section>
-
-      <h1 className="text-black text-center capitalize font-semibold mt-3 dark:text-white">
+      <div className="absolute text-sm flex justify-between w-full ">
+        {data?.discount && (
+          <p className=" ml-2 rounded-xl py-1 px-3 bg-red-300 shadow-[0_1px_0_black] dark:shadow-[0_1px_0_white] ">
+            {data?.discount}% off
+          </p>
+        )}
+        {isProductUploadedToday(data.createdAt) && (
+          <p className="   mr-6 rounded-xl py-1 px-3 bg-red-300 shadow-[0_1px_0_black] dark:shadow-[0_1px_0_white]">
+            New
+          </p>
+        )}
+      </div>
+      <p className="text-black text-center capitalize font-semibold mt-3 dark:text-white break-words">
         {data.name}
-      </h1>
-      <p className="font-serif text-black text-center flex justify-center items-center pb-2 dark:text-gray-300">
-        Price : <MdCurrencyRupee />
-        {data.price}
       </p>
+      <p className="dark:text-white text-black font-bold flex justify-center    items-center">
+        <MdCurrencyRupee />{" "}
+        {data?.discount
+          ? (
+              data?.price +
+              (data?.price * data?.gst) / 100 -
+              ((data?.price + (data?.price * data?.gst) / 100) *
+                data?.discount) /
+                100
+            ).toFixed(2)
+          : (data?.price + (data?.price * data?.gst) / 100).toFixed(2)}
+        {data?.discount > 0 && (
+          <span className="line-through text-gray-500 text-sm flex  items-center">
+            <MdCurrencyRupee />{" "}
+            {(data?.price + (data?.price * data?.gst) / 100).toFixed(2)}
+            /-
+          </span>
+        )}
+      </p>
+      {data?.category && (
+        <div className="flex justify-center items-end pb-1 font-serif gap-1">
+          <p>Category :</p>
+          {data?.category}
+        </div>
+      )}
       <div className="flex justify-between w-full rounded-sm gap-1 border-2 dark:border-white border-black">
-        <button
-          title="Add to Cart"
-          onClick={() => handleAddToCart(data._id)}
-          className={`dark:text-white text-2xl text-black w-1/3 flex justify-center `}
-        >
-          <FiShoppingCart
-            className={`${
-              productExists ? "text-green-300 dark:text-green-400" : ""
-            } p-2 max-sm:h-[32px] max-sm:w-[32px]`}
-            size={36}
-          />
-        </button>
+        {role && (role === "ADMIN" || role === "AUTHOR") ? (
+          <button
+            title="Delete"
+            className={`dark:text-white text-2xl text-black w-1/3 flex justify-center `}
+          >
+            <AiOutlineDelete
+              onClick={() => {
+                handleDeleteProduct(data._id);
+              }}
+              className="text-red-400  p-2 h-[35px] w-[40px]"
+            />
+          </button>
+        ) : (
+          <button
+            title="Add to Cart"
+            onClick={() => handleAddToCart(data._id)}
+            className={`dark:text-white text-2xl text-black w-1/3 flex justify-center `}
+          >
+            <FiShoppingCart
+              className={`${
+                productExists ? "text-green-300 dark:text-green-400" : ""
+              } p-2 max-sm:h-[32px] max-sm:w-[32px]`}
+              size={36}
+            />
+          </button>
+        )}
+
         <button
           title="More..."
           className="text-white text-2xl w-1/3 flex justify-center"
@@ -173,18 +209,35 @@ function ProductCard({ data, onSave, onProductDelete }) {
             size={36}
           />
         </button>
-        <button
-          title="Like"
-          onClick={() => handleLikeDislike(data._id)}
-          className="text-black text-2xl w-1/3 flex justify-center"
-        >
-          <FiHeart
-            className={`${
-              isLike ? "text-red-500 dark:text-red-500" : "dark:text-white"
-            } p-2 `}
-            size={36}
-          />
-        </button>
+        {role && (role === "ADMIN" || role === "AUTHOR") ? (
+          <button
+            title="Edit"
+            className="text-black text-2xl w-1/3 flex justify-center"
+          >
+            <FiEdit
+              onClick={() => {
+                navigate("/SingleProduct", {
+                  state: { ...data },
+                });
+              }}
+              size={36}
+              className="text-red-400 p-2"
+            />
+          </button>
+        ) : (
+          <button
+            title="Like"
+            onClick={() => handleLikeDislike(data._id)}
+            className="text-black text-2xl w-1/3 flex justify-center"
+          >
+            <FiHeart
+              className={`${
+                isLike ? "text-red-500 dark:text-red-500" : "dark:text-white"
+              } p-2 `}
+              size={36}
+            />
+          </button>
+        )}
       </div>
       {show && <LoginPrompt show={show} setShow={setShow} />}
     </div>

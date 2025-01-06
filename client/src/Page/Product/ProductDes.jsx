@@ -44,6 +44,7 @@ function ProductDescription() {
       navigate("/");
     }
   };
+  console.log(ProductData);
   useEffect(() => {
     if (ProductId) fetchOrderDetails();
   }, [ProductId]);
@@ -154,11 +155,12 @@ function ProductDescription() {
       </div>
     );
   }
+
   return (
     <Layout>
       <div
         ref={endOfCommentsRef}
-        className="min-h-[90vh] bg-white text-gray-900 dark:bg-gray-900 dark:text-white"
+        className="min-h-[90vh] bg-white text-gray-900 dark:bg-gray-900 dark:text-white "
       >
         {/* Product Details */}
         <div className="grid md:grid-cols-2 gap-6 p-6">
@@ -168,28 +170,33 @@ function ProductDescription() {
               className="relative overflow-hidden group w-full h-[400px] border rounded-md shadow-md"
               onMouseMove={handleMouseMove}
             >
+              {ProductData?.discount && (
+                <p className=" absolute text-sm mt-2 ml-2 rounded-xl py-1 px-3 bg-red-300 ">
+                  {ProductData?.discount}% off
+                </p>
+              )}
               <img
                 src={
-                  Image
-                    ? Image
-                    : ProductData?.images?.[0]?.secure_url || ProductData?.image
+                  Image ||
+                  ProductData?.images?.[0]?.secure_url ||
+                  ProductData?.image
                 }
                 alt="product_image"
-                className="w-full h-full object-contain transform group-hover:scale-125 transition-transform duration-500"
+                className="w-full h-full absolute object-contain transform group-hover:scale-125 transition-transform duration-500"
                 style={{ transformOrigin }}
               />
             </div>
 
             {/* Thumbnail Carousel */}
             {ProductData?.images?.length > 1 && (
-              <div className="flex max-sm:flex-wrap gap-2">
+              <div className="  flex gap-2 justify-center p-2">
                 {ProductData?.images?.map((productImage, index) => (
                   <img
-                    onClick={() => setImage(productImage.secure_url)}
                     key={index}
+                    onClick={() => setImage(productImage.secure_url)}
                     src={productImage.secure_url}
                     alt="thumbnail"
-                    className={`cursor-pointer w-16 h-16 border rounded-md ${
+                    className={`cursor-pointer w-16 h-16 border hover:shadow-2xl   rounded-md overflow-hidden transition-all${
                       Image === productImage.secure_url &&
                       "ring-2 ring-gray-500"
                     }`}
@@ -200,66 +207,126 @@ function ProductDescription() {
           </div>
 
           {/* Details Section */}
-          <div className="space-y-4">
-            <h1 className="text-3xl font-semibold">{ProductData?.name}</h1>
-            <h2 className="text-xl flex items-center">
-              <MdCurrencyRupee /> {ProductData?.price}/-
-            </h2>
-            <div className="space-y-4 p-4 border  rounded-md shadow-sm bg-white dark:bg-[#1f2937]">
+          <div className="space-y-4 relative">
+            <h1 className="text-2xl font-semibold  break-words">
+              {ProductData?.name}
+            </h1>
+            {/* Product Name */}
+
+            {/* Discounted Price and Original Price */}
+            <div className="text-lg flex flex-col">
+              <span className="dark:text-white text-black font-bold flex   items-center">
+                <MdCurrencyRupee size={20} />{" "}
+                {ProductData?.discount
+                  ? (
+                      ProductData?.price +
+                      (ProductData?.price * ProductData?.gst) / 100 -
+                      ((ProductData?.price +
+                        (ProductData?.price * ProductData?.gst) / 100) *
+                        ProductData?.discount) /
+                        100
+                    ).toFixed(2)
+                  : (
+                      ProductData?.price +
+                      (ProductData?.price * ProductData?.gst) / 100
+                    ).toFixed(2)}
+                {ProductData?.discount > 0 && (
+                  <span className="line-through text-gray-500 text-sm flex  items-center">
+                    <MdCurrencyRupee />{" "}
+                    {(
+                      ProductData?.price +
+                      (ProductData?.price * ProductData?.gst) / 100
+                    ).toFixed(2)}
+                    /-
+                  </span>
+                )}
+              </span>
+
+              <div className="">
+                <p className="text-sm font-mono text-gray-600">
+                  With GST: {ProductData?.gst}
+                </p>
+              </div>
+            </div>
+
+            {/* {/* {/* Stock Status * /} */}
+            <div className="flex items-center space-x-2">
+              <div
+                className={`h-2.5 w-2.5 rounded-full ${
+                  ProductData?.stock === "In stock"
+                    ? "bg-green-500"
+                    : "bg-red-500"
+                }`}
+              ></div>
+              <p
+                className={`text-sm font-medium text-gray-700 ${
+                  ProductData?.stock === "In stock"
+                    ? "text-green-500"
+                    : "text-red-500"
+                }`}
+              >
+                {ProductData?.stock}
+              </p>
+            </div>
+            <h1 className="text-sm font-semibold">
+              {" "}
+              Category:{" "}
+              <span className="text-sm text-gray-500">
+                {ProductData?.category}
+              </span>
+            </h1>
+            <button
+              onClick={handleShare}
+              className="flex  right-0 mx-auto bottom-[55%] text-center  gap-1 font-serif items-center justify-end  absolute pr-[30px] bg-green-500 px-2 rounded-md hover:bg-green-700"
+            >
+              <IoPaperPlaneOutline className="rounded-lg" size={20} />
+              <span>Share</span>
+            </button>
+            <div className=" grid grid-cols-2 mx-auto">
               {/* Quantity Selector */}
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3  border rounded w-44 dark:border-white border-gray-700 justify-evenly">
                 <button
-                  onClick={() => minQuantity()}
-                  className="px-3 py-1 border rounded text-gray-700 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-600"
+                  onClick={minQuantity}
+                  className="px-3 py-1 text-gray-700 hover:bg-gray-200 dark:hover:bg-gray-800"
                 >
                   &minus;
                 </button>
                 <input
                   type="text"
-                  className="w-12 text-center border rounded bg-gray-100 dark:bg-[#111827] text-gray-700 dark:text-gray-300"
                   value={quantities || 1}
                   readOnly
+                  className="w-12 text-center   dark:bg-gray-900 text-gray-700"
                 />
                 <button
-                  onClick={() => setQuantity()}
-                  className="px-3 py-1 border rounded text-gray-700 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-600"
+                  onClick={setQuantity}
+                  className="px-3 py-1  text-gray-700 hover:bg-gray-200 bg-gary-700 dark:hover:bg-gray-800"
                 >
                   +
                 </button>
-                <div>
-                  <button
-                    onClick={handleShare}
-                    className="flex items-start gap-1 font-serif"
-                  >
-                    <IoPaperPlaneOutline className="rounded-lg" size={20} />
-                    <span>Share</span>
-                  </button>
-                </div>
               </div>
+              <button
+                onClick={() =>
+                  navigate("/CheckoutForm", {
+                    state: { quantities, ProductId },
+                  })
+                }
+                className="w-full px-5 py-3 text-lg font-semibold shadow-xl text-white bg-black rounded-sm hover:bg-gray-800 transition dark:bg-[#002] dark:hover:bg-[#0109]"
+              >
+                Place Order
+              </button>
+            </div>
 
-              {/* Place Order Button */}
-              <div>
-                <button
-                  onClick={() => {
-                    navigate("/CheckoutForm", {
-                      state: { quantities, ProductId },
-                    });
-                  }}
-                  className="w-full px-5 py-3 text-lg font-semibold text-white bg-green-500 rounded-md hover:bg-green-600 transition"
-                >
-                  Place Order
-                </button>
-              </div>
-
-              {/* Add/Remove from Cart */}
+            {/* Place Order and Cart Buttons */}
+            <div className="space-y-4">
               <div className="flex gap-4">
                 {!productExists ? (
                   <LoadingButton
+                    textSize={"py-3"}
                     onClick={() => ProductAddCard(ProductData._id)}
                     name="Add To Cart"
                     color="bg-green-500"
                     message="Loading..."
-                    loading={loading}
+                    loading={false}
                     width="w-full"
                   />
                 ) : (
@@ -267,23 +334,24 @@ function ProductDescription() {
                     onClick={() => ProductRemoveCard(ProductData._id)}
                     name="Remove From Cart"
                     color="bg-red-500"
+                    textSize={"py-3"}
                     message="Loading..."
-                    loading={loading}
+                    loading={false}
                     width="w-full"
                   />
                 )}
               </div>
-
-              {/* Delete Button for Admin/Author */}
-              {data?.role &&
-                (data?.role === "ADMIN" || data?.role === "AUTHOR") && (
-                  <div>
-                    <button className="w-full px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-700 transition">
-                      Delete
-                    </button>
-                  </div>
-                )}
             </div>
+
+            {/* Delete Button for Admin/Author */}
+            {(data?.role === "ADMIN" || data?.role === "AUTHOR") && (
+              <button
+                onClick={() => handleDelete(ProductData?._id)}
+                className="w-full px-4 py-3 text-white bg-red-500 rounded-md hover:bg-red-700 transition"
+              >
+                Delete
+              </button>
+            )}
           </div>
         </div>
 

@@ -1,4 +1,5 @@
 import { model, Schema } from "mongoose";
+
 const ProductSchema = new Schema(
   {
     name: {
@@ -9,13 +10,24 @@ const ProductSchema = new Schema(
       type: Number,
       required: true,
     },
+    discount: {
+      type: Number,
+    },
     images: [
       {
         public_id: { type: String, required: true },
         secure_url: { type: String, required: true },
       },
     ],
-
+    category: {
+      type: String,
+      required: true,
+      index: true,
+    },
+    gst: {
+      type: Number,
+      default: 18,
+    },
     description: {
       type: String,
       required: true,
@@ -31,20 +43,25 @@ const ProductSchema = new Schema(
     ProductLikes: [
       {
         ProductLike: {
-          type: String,
-          enum: ["TRUE", "FALSE"],
-          default: "FALSE",
+          type: Boolean,
+          default: false,
         },
         userName: {
           type: String,
-          required: [true, "like be most required userName"],
+          required: [true, "A like must include a userName."],
         },
       },
     ],
+    stock: {
+      type: String,
+      enum: ["In stock", "Out stock"],
+      default: "In stock",
+    },
   },
   {
     timestamps: true,
   }
 );
+
 const Product = model("Product", ProductSchema);
 export default Product;

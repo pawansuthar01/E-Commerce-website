@@ -54,6 +54,10 @@ function SingleProduct() {
     formData.append("name", UpdatedProductData.name);
     formData.append("description", UpdatedProductData.description);
     formData.append("price", UpdatedProductData.price);
+    formData.append("discount", UpdatedProductData.discount);
+    formData.append("stock", UpdatedProductData.stock);
+    formData.append("gst", UpdatedProductData.gst);
+    formData.append("category", UpdatedProductData.category);
 
     UpdatedProductData.updatedImages.forEach((file) => {
       formData.append("images", file.file);
@@ -80,10 +84,14 @@ function SingleProduct() {
   return (
     <Layout>
       <div className=" shadow-xl overflow-hidden">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 ">
           <ProductGallery images={product?.images} />
-
-          <div className="p-8 flex flex-col">
+          <div className="p-8 flex flex-col relative">
+            {product?.discount && (
+              <p className=" absolute text-sm top-0 rounded-xl py-1 px-3 bg-red-300 ">
+                {product?.discount}% off
+              </p>
+            )}
             <ProductInfo product={product} />
 
             <div className="space-y-4">
