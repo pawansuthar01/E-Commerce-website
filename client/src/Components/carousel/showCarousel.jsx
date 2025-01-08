@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { EditModal } from "./editModule";
 
 export function CarouselGrid({ slides, onEdit, onDelete }) {
@@ -6,10 +6,8 @@ export function CarouselGrid({ slides, onEdit, onDelete }) {
   const handleEdit = (slide) => {
     setEditingSlide(slide);
   };
-
   const handleSave = (updatedSlide) => {
     onEdit(updatedSlide);
-    setEditingSlide(null);
   };
 
   return (

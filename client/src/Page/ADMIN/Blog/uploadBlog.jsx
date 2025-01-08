@@ -215,6 +215,7 @@ function BlogUpload() {
                 {/* Submit Button */}
                 <div onClick={handleCreate}>
                   <LoadingButton
+                    textSize={"py-2"}
                     loading={loading}
                     color={"bg-green-600"}
                     message={"Loading..."}

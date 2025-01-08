@@ -77,7 +77,7 @@ export const CreateOrder = async (req, res, next) => {
     <ul>
       <li><strong>Order ID:</strong> ${newOrder._id}</li>
       <li><strong>Total Amount:</strong> ₹${totalAmount}</li>
-      <li><strong>Shipping Address:</strong> ${shippingAddress.address}, ${shippingAddress.city}, ${shippingAddress.state}, ${shippingAddress.zip}</li>
+      <li><strong>Shipping Address:</strong> ${shippingAddress.address}, ${shippingAddress.city}, ${shippingAddress.state}, ${shippingAddress.pinCode}</li>
     </ul>
     <p>You can view or track your order by clicking the link below:</p>
     <p><a href="${orderConfirmationUrl}" style="color: #ffffff; background-color: #4CAF50; padding: 10px 20px; text-decoration: none; border-radius: 5px;" target="_blank">View My Order</a></p>

@@ -15,6 +15,10 @@ function NotificationCart({ data, onUpdate, handleReadNotification }) {
   };
 
   const handelClick = async (id) => {
+    handleReadNotification(id);
+    if (data.type == "New Account") {
+      navigate("/profile");
+    }
     const res = await dispatch(NotificationRead(id));
     if (res?.payload?.success) {
       onUpdate();
@@ -29,7 +33,7 @@ function NotificationCart({ data, onUpdate, handleReadNotification }) {
         className=" text-red-500 text-lg font-bold cursor-pointer text-end"
       >
         <IoCloseCircleOutline
-          onClick={() => handelClickBtn(data._id)}
+          onClick={() => handelhandelClickClickBtn(data._id)}
           size={26}
         />
       </button>

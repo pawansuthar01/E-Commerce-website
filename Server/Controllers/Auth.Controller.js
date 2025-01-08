@@ -84,10 +84,46 @@ export const RegisterUser = async (req, res, next) => {
 
     const notification = new Notification({
       userId: user._id,
-      message: `WellCome KGS DOORS shop ,Enjoy Shopping.. .`,
+      message: `Welcome to KGS DOORS! We’re thrilled to have you on board. Enjoy shopping with us!`,
       type: "New Account",
     });
     await notification.save();
+
+    const adminAndAuthors = await User.find({
+      role: { $in: ["ADMIN", "AUTHOR"] },
+    });
+    const notifications = adminAndAuthors.map((user) => ({
+      userId: user._id,
+      message: `A new account has been created with the phoneNumber: ${user.phoneNumber}. Please review the details.`,
+      type: "New Account",
+    }));
+    await Notification.insertMany(notifications);
+    const path = process.env.FRONTEND_URL;
+    const orderConfirmationUrl = `${path}/`;
+    const subject = "Welcome to KGS DOORS!";
+    const message = `
+<div style="font-family: Arial, sans-serif; line-height: 1.6;">
+  <h2 style="color: #4CAF50;">Welcome to KGS DOORS!</h2>
+  <p>Dear ${user.userName},</p>
+  <p>Congratulations on creating your account with us! We're excited to have you on board.</p>
+  <p>Here are your account details:</p>
+  <ul>
+    <li><strong>User ID:</strong> ${user._id}</li>
+    <li><strong>Email:</strong> ${user.email}</li>
+  </ul>
+  <p>You can manage your account or explore our offerings by clicking the link below:</p>
+  <p><a href="${orderConfirmationUrl}" style="color: #ffffff; background-color: #4CAF50; padding: 10px 20px; text-decoration: none; border-radius: 5px;" target="_blank">Go to Home</a></p>
+  <p>If the button above doesn't work, copy and paste this link into your browser:</p>
+  <p>${orderConfirmationUrl}</p>
+  <p>If you have any questions or need assistance, feel free to contact us at <a href="mailto:support@example.com">support@example.com</a>.</p>
+  <p>Thank you for joining KGS DOORS!</p>
+  <p>Best regards,</p>
+  <p><strong>KGS DOORS Team</strong></p>
+</div>
+`;
+
+    await SendEmail(user.email, subject, message);
+
     const Token = await user.generateJWTToken();
     user.password = undefined;
     res.cookie("token", Token, cookieOption);
@@ -223,7 +259,6 @@ export const resetPassword = async (req, res, next) => {
 export const changePassword = async (req, res, next) => {
   const { resetToken } = req.params;
   const { newPassword } = req.body;
-  console.log(resetToken);
   if (!newPassword) {
     return next(new AppError("Enter your new password", 400));
   }

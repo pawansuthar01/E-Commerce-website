@@ -9,7 +9,7 @@ export const UsersCart = ({ showUser, users }) => {
   const [loading, setLoadingStates] = useState({});
   const [loadingPromotion, setLoadingPromotion] = useState({});
   const { role, data } = useSelector((state) => state?.auth);
-
+  console.log(role);
   useEffect(() => {
     const sortedUsers = [
       ...users.filter((user) => user.role === "AUTHOR"),
@@ -23,16 +23,13 @@ export const UsersCart = ({ showUser, users }) => {
 
   async function handleDelete(data) {
     setLoadingStates((prev) => ({ ...prev, [data.id]: true }));
-    if (data.role === "AUTHOR") {
-      alert("You cannot delete an AUTHOR.");
-      setLoadingStates((prev) => ({ ...prev, [data.id]: false }));
-      return;
-    }
-    if (data.role === "ADMIN" || role !== "AUTHOR") {
+
+    if (data.role == "ADMIN" && role != "AUTHOR") {
       alert("Only an AUTHOR can delete an ADMIN.");
       setLoadingStates((prev) => ({ ...prev, [data.id]: false }));
       return;
     }
+
     if (data.id) {
       setUserData((prevUserData) =>
         prevUserData.filter((user) => user._id !== data.id)

@@ -12,24 +12,28 @@ export function CarouselUpdate() {
   const { Carousel } = useSelector((state) => state.carousel);
   const [slides, setSlides] = useState(Carousel);
   const dispatch = useDispatch();
-
+  const [show, setShow] = useState(false);
   async function LoadCarousel() {
     const res = await dispatch(getAllCarousel());
     setSlides(res?.payload?.data);
   }
   const handleEdit = async (updatedSlide) => {
-    const formData = new FormData();
-
-    formData.append("name", updatedSlide.name);
-    formData.append("description", updatedSlide.description);
-    formData.append("images", updatedSlide.images);
-    await dispatch(updateCarousel({ data: formData, id: updatedSlide._id }));
-    LoadCarousel();
+    setSlides((prevSlides) =>
+      prevSlides.map((carousel) =>
+        carousel._id === updatedSlide._id
+          ? { ...carousel, ...updatedSlide }
+          : carousel
+      )
+    );
   };
 
   const handleDelete = async (id) => {
-    console.log(id);
     window.confirm("you Delete this Carousel ?");
+
+    setSlides((prevSlide) =>
+      prevSlide.filter((carousel) => carousel._id !== id)
+    );
+
     await dispatch(DeleteCarousel(id));
   };
 
@@ -40,10 +44,13 @@ export function CarouselUpdate() {
     <Layout>
       <div className="min-h-screen bg-gray-100 dark:bg-[#111827] py-8">
         <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold text-center mb-8">Image Gallery</h1>
+          <h1 className="text-3xl font-bold text-center mb-8">
+            Carousel Gallery
+          </h1>
           <CarouselGrid
             slides={slides}
             onEdit={handleEdit}
+            onClose={show}
             onDelete={handleDelete}
           />
         </div>

@@ -97,8 +97,7 @@ function CarouselUpload() {
 
     if (response?.payload?.success) {
       setLoading(false);
-      await dispatch(getAllCarousel());
-      navigate("/");
+      navigate("/CarouselUpdate");
       setCarouselUpData({
         name: "",
         price: "",
@@ -203,6 +202,7 @@ function CarouselUpload() {
                 {/* Submit Button */}
                 <div onClick={handleCreate}>
                   <LoadingButton
+                    textSize={"py-2"}
                     loading={loading}
                     color={"bg-green-600"}
                     message={"Loading..."}

@@ -51,7 +51,6 @@ function BlogCard({ w, data, onDelete }) {
   }
 
   async function handelLikeDisLike(id) {
-    console.log(id);
     if (!id) return;
     const res = await dispatch(LikeAndDisLikePost(id));
     if (res.payload.success) {
@@ -69,32 +68,31 @@ function BlogCard({ w, data, onDelete }) {
   }
   return (
     <div>
-      {role && ["ADMIN", "AUTHOR"].includes(role) && (
-        <div className=" relative flex justify-evenly  gap-24 ">
-          <button
-            onClick={() => handleDeleteBlog(Blog._id)}
-            className="flex items-center justify-center relative bottom-[-3px] px-2 py-2 bg-red-600 text-white rounded-t-[200px] hover:bg-red-700 transition-colors"
-          >
-            <DeleteIcon className="w-5 h-5 mr-2 relative left-[4px]" />
-          </button>
-          <button
-            onClick={() => {
-              setShow(true);
-            }}
-            className="flex justify-center text-center relative bottom-[-2px] px-2 py-2 bg-blue-600 text-white rounded-t-[200px] hover:bg-blue-700 transition-colors"
-          >
-            <EditIcon className="w-5 h-5 mr-2 relative left-[5px]" />
-          </button>
-
-          {/* Delete Button */}
-        </div>
-      )}
-
       <div
         className={`card card-compact bg-base-100 dark:bg-gray-800 dark:text-white ${
           w ? w : "w-96"
         } shadow-xl `}
       >
+        {role && ["ADMIN", "AUTHOR"].includes(role) && (
+          <div className=" relative flex justify-evenly  gap-24 ">
+            <button
+              onClick={() => handleDeleteBlog(Blog._id)}
+              className="flex items-center justify-center  text-red-500"
+            >
+              <DeleteIcon className="w-7 h-7 " />
+            </button>
+            <button
+              onClick={() => {
+                setShow(true);
+              }}
+              className="flex justify-center text-green-500 text-center     "
+            >
+              <EditIcon className="w-7 h-7" />
+            </button>
+
+            {/* Delete Button */}
+          </div>
+        )}
         <figure>
           <img
             src={Blog?.Post?.secure_url}

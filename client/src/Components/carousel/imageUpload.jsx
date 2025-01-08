@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 
-export function ImageUpload({ onImageSelect }) {
-  const [preview, setPreview] = useState(null);
+export function ImageUpload({ onImageSelect, images }) {
+  const [preview, setPreview] = useState(images);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];

@@ -1,20 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ImageUpload } from "./imageUpload";
 import { XMarkIcon } from "@heroicons/react/24/solid";
+import { useDispatch } from "react-redux";
+import { updateCarousel } from "../../Redux/Slice/CarouselSlice";
 
 export const EditModal = ({ slide, onClose, onSave }) => {
+  const dispatch = useDispatch();
   const [name, setName] = useState(slide.name);
   const [description, setDescription] = useState(slide.description);
-  const [images, setImage] = useState(null);
-
-  const handleSubmit = (e) => {
+  const [images, setImage] = useState(slide?.images[0].secure_url);
+  const [loading, setLoading] = useState(false);
+  const handleSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
-    onSave({ ...slide, name, description, images: images || slide.images });
-    onClose();
+
+    const formData = new FormData();
+
+    formData.append("name", name);
+    formData.append("description", description);
+    formData.append("images", images);
+    const res = await dispatch(
+      updateCarousel({ data: formData, id: slide._id })
+    );
+    if (res?.payload?.success) {
+      onSave(res?.payload?.data);
+    }
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
       <div className="bg-white dark:bg-[#111827] rounded-lg p-6 w-full max-w-md">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">Edit Slide</h2>
@@ -50,7 +64,7 @@ export const EditModal = ({ slide, onClose, onSave }) => {
             />
           </div>
 
-          <ImageUpload onImageSelect={setImage} />
+          <ImageUpload onImageSelect={setImage} images={images} />
 
           <div className="mt-6 flex justify-end gap-2">
             <button
@@ -62,9 +76,10 @@ export const EditModal = ({ slide, onClose, onSave }) => {
             </button>
             <button
               type="submit"
+              disabled={loading}
               className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
             >
-              Save Changes
+              {loading ? "Loading..." : "Save Changes"}
             </button>
           </div>
         </form>

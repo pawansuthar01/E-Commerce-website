@@ -45,6 +45,7 @@ function SignUp() {
     }
 
     const fileReader = new FileReader();
+    if (!image) return;
     fileReader.readAsDataURL(image);
     fileReader.addEventListener("load", function () {
       setPreviewImage(this.result);
@@ -101,7 +102,6 @@ function SignUp() {
       document.getElementById("phoneNumber").style.borderColor = "red";
       document.getElementById("phoneNumber").nextElementSibling.style.color =
         "red";
-
       return;
     }
     if (!isUserName(SignUpData.userName)) {
@@ -131,6 +131,7 @@ function SignUp() {
     formData.append("avatar", SignUpData.avatar);
     formData.append("password", SignUpData.password);
     const response = await dispatch(CreateAccount(formData));
+    console.log(response);
     if (response) {
       setLoading(false);
       setShowLoading(false);
@@ -201,7 +202,7 @@ function SignUp() {
                     <BsPersonCircle
                       id="uploadImage"
                       name="uploadImage"
-                      className="w-24 h-24 rounded-full m-auto border-2"
+                      className="w-24 h-24 rounded-full  m-auto border-2 border-dashed p-1"
                     />
                     <label
                       htmlFor="uploadImage"
@@ -218,9 +219,9 @@ function SignUp() {
                 className="hidden"
                 name="image_uploads"
                 id="image_uploads"
-                accept=".png ,.svg ,.jpeg ,.jpg"
+                accept=".png ,.jpeg ,.jpg"
               />
-              <div className="relative mb-6">
+              <div className="relative mb-6 mt-1">
                 <input
                   type="text"
                   onChange={handelUserInput}
@@ -378,11 +379,12 @@ function SignUp() {
               </div>
               <div className="flex justify-center mt-5">
                 <LoadingButton
+                  textSize={"py-3"}
                   handleClick={handleCreate}
                   loading={loading}
                   message={"Loading"}
                   name={"SinUp"}
-                  color={"bg-green-500"}
+                  color={"bg-green-500 hover:bg-green-600"}
                 />
               </div>
             </form>
