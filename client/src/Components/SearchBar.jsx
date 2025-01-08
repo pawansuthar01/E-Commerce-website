@@ -7,7 +7,6 @@ const SearchBar = ({ setQueryBarTitle, onSearch, width, TopMargin }) => {
   const [suggestions, setSuggestions] = useState([]);
   const products = useSelector((state) => state.product.product);
   const dropdownRef = useRef(null);
-
   useEffect(() => {
     const fetchSuggestions = () => {
       if (!query.trim()) {
@@ -16,13 +15,11 @@ const SearchBar = ({ setQueryBarTitle, onSearch, width, TopMargin }) => {
       }
 
       if (!isNaN(query)) {
-        // If the query is a number, filter products by price
         const filteredSuggestions = products?.filter(
           (product) => product.price === parseInt(query, 10)
         );
         setSuggestions(filteredSuggestions || []);
       } else {
-        // If the query is not a number, filter by product name
         const regex = new RegExp(query, "i");
         const filteredSuggestions = products?.filter((product) =>
           regex.test(product.name)
@@ -84,9 +81,9 @@ const SearchBar = ({ setQueryBarTitle, onSearch, width, TopMargin }) => {
           type="search"
           id="defaultSearch"
           className="w-full p-4 pl-10 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg outline-none dark:bg-gray-700 dark:text-white focus:ring-blue-500 focus:border-blue-500"
-          placeholder="Type a number to search by price..."
+          placeholder="Search..."
           autoComplete="off"
-          value={query}
+          value={setQueryBarTitle || query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setShow(true)}
         />
@@ -109,13 +106,13 @@ const SearchBar = ({ setQueryBarTitle, onSearch, width, TopMargin }) => {
               key={suggestion._id}
               className="px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer"
               onClick={() => {
-                setQuery(suggestion.price.toString());
+                setQuery(`${suggestion.name} under ₹${suggestion.price}`);
                 setSuggestions([]);
                 setShow(false);
-                onSearch(suggestion.price.toString());
+                onSearch(`${suggestion.name} under ${suggestion.price}`);
               }}
             >
-              {suggestion.name} - ₹{suggestion.price}
+              {suggestion.name} nuder- ₹{suggestion.price}
             </div>
           ))}
         </div>

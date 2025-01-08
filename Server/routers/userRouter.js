@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   changePassword,
+  checkPasswordResatToken,
   getProfile,
   login,
   logout,
@@ -32,7 +33,8 @@ UserRouter.get("/Carousel", getAllCarousel);
 UserRouter.get("/getProfile", isLoggedIn, getProfile);
 UserRouter.post("/resetPassword", resetPassword);
 UserRouter.post("/changePassword:resetToken", changePassword);
-UserRouter.post("/updatePassword", isLoggedIn, updatePassword);
+UserRouter.post("/TokenCheck:resetToken", checkPasswordResatToken);
+UserRouter.put("/updatePassword", isLoggedIn, updatePassword);
 UserRouter.put(
   "/UpdateProfile",
   isLoggedIn,

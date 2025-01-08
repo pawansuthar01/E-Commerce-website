@@ -117,7 +117,7 @@ function Profile() {
               </h1>
             </div>
 
-            <div className="text-center text-black dark:text-white text-xl border-2 shadow-[0_0_2px_black] p-2 rounded-xl">
+            <div className="text-center mb-2 text-black dark:text-white text-xl border-2 shadow-[0_0_2px_black] p-2 rounded-xl">
               <h1 className="font-bold">
                 {UserData.data?.walletAddProducts?.length}
               </h1>
@@ -129,11 +129,8 @@ function Profile() {
           Your Orders.
         </h1>
         <hr className=" h-1" />
-        <>
-          <div className="flex flex-wrap gap-1">
-            <OrderCart />
-          </div>
-        </>
+
+        <OrderCart />
 
         {/* feedback section */}
         <div className="w-full  ">

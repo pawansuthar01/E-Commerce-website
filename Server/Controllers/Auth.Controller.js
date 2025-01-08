@@ -175,23 +175,33 @@ export const getProfile = async (req, res, next) => {
   }
 };
 export const resetPassword = async (req, res, next) => {
-  const { email } = req.body;
+  const { email } = req.query;
+
   try {
     if (!email) {
       return next(new AppError("Enter your email."));
     }
     const userExist = await User.findOne({ email });
     if (!userExist) {
-      return next(new AppError(" email not found...", 400));
+      return next(new AppError("email not found...", 400));
     }
     const resetToken = await userExist.generatePasswordResetToken();
 
     await userExist.save();
-    const resetPassword_url = `http://localhost:5000/api/v3/user/changePassword${resetToken}`;
+    console.log(process.env.FRONTEND_URL);
+    const resetPassword_url = `http://${process.env.FRONTEND_URL}/changePassword/${resetToken}`;
     const subject = "Reset Password ";
-    const message = `You can reset your password by clicking <a href=${resetPassword_url} target="_blank">Reset your password</a>.
-    If the above link does not work for some reason, copy-paste this link in a new tab:${resetPassword_url} 
-    If you did not request this, kindy ignore this email.`;
+    const message = `
+    <p>Hello,</p>
+    <p>We received a request to reset your password. To reset your password, please click the link below:</p>
+    <p><a href="${resetPassword_url}" target="_blank" style="color: #4CAF50; text-decoration: none; font-weight: bold;">Reset Your Password</a></p>
+    <p>If the link above doesn't work, copy and paste the following URL into a new browser tab:</p>
+    <p style="word-wrap: break-word;">${resetPassword_url}</p>
+    <p>This password reset request is valid for the next 10 minutes. If you didn't request a password reset, you can safely ignore this email.</p>
+    <p>If you have any concerns or need assistance, feel free to reach out to our support team.</p>
+    <p>Best regards,</p>
+    <p> KGS Doors Team</p>
+  `;
     try {
       await SendEmail(email, subject, message);
       res.status(200).json({
@@ -212,10 +222,46 @@ export const resetPassword = async (req, res, next) => {
 };
 export const changePassword = async (req, res, next) => {
   const { resetToken } = req.params;
-  const { password } = req.body;
-
-  if (!password) {
+  const { newPassword } = req.body;
+  console.log(resetToken);
+  if (!newPassword) {
     return next(new AppError("Enter your new password", 400));
+  }
+  try {
+    const forgotPasswordToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+    const user = await User.findOne({
+      forgotPasswordToken,
+      forgotPasswordExpiry: { $gt: Date.now() },
+    });
+    if (!user) {
+      return next(
+        new AppError("Token does not exit or expiry, please try again", 400)
+      );
+    }
+    console.log(user);
+    user.password = newPassword;
+    user.forgotPasswordToken = undefined;
+    user.forgotPasswordExpiry = undefined;
+
+    await user.save();
+
+    user.password = undefined;
+
+    res.status(200).json({
+      success: true,
+      message: "Password successfully updated.",
+    });
+  } catch (error) {
+    return next(new AppError(error.message, 400));
+  }
+};
+export const checkPasswordResatToken = async (req, res, next) => {
+  const { resetToken } = req.params;
+  if (!resetToken) {
+    return next(new AppError("resetToken not found", 400));
   }
 
   try {
@@ -233,17 +279,9 @@ export const changePassword = async (req, res, next) => {
       );
     }
 
-    user.password = password;
-    user.forgotPasswordToken = undefined;
-    user.forgotPasswordExpiry = undefined;
-
-    await user.save();
-
-    user.password = undefined;
-
     res.status(200).json({
       success: true,
-      message: "Password successfully updated.",
+      message: "Token is valid",
     });
   } catch (error) {
     return next(new AppError(error.message, 400));
@@ -251,7 +289,7 @@ export const changePassword = async (req, res, next) => {
 };
 
 export const updatePassword = async (req, res, next) => {
-  const { password, newPassword } = req.body;
+  const { oldPassword: password, newPassword } = req.body;
   try {
     if (!password || !newPassword) {
       return next(new AppError(" all filed is required..", 400));

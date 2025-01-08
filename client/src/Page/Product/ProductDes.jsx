@@ -275,14 +275,7 @@ function ProductDescription() {
                 {ProductData?.category}
               </span>
             </h1>
-            <button
-              onClick={handleShare}
-              className="flex  right-0 mx-auto bottom-[55%] text-center  gap-1 font-serif items-center justify-end  absolute pr-[30px] bg-green-500 px-2 rounded-md hover:bg-green-700"
-            >
-              <IoPaperPlaneOutline className="rounded-lg" size={20} />
-              <span>Share</span>
-            </button>
-            <div className=" grid grid-cols-2 mx-auto">
+            <div className=" grid grid-cols-3 mx-auto gap-2">
               {/* Quantity Selector */}
               <div className="flex items-center space-x-3  border rounded w-44 dark:border-white border-gray-700 justify-evenly">
                 <button
@@ -310,9 +303,16 @@ function ProductDescription() {
                     state: { quantities, ProductId },
                   })
                 }
-                className="w-full px-5 py-3 text-lg font-semibold shadow-xl text-white bg-black rounded-sm hover:bg-gray-800 transition dark:bg-[#002] dark:hover:bg-[#0109]"
+                className="w-full  px-5 py-3 text-lg font-semibold shadow-xl text-white bg-black rounded-sm hover:bg-gray-800 transition dark:bg-[#002] dark:hover:bg-[#0109]"
               >
                 Place Order
+              </button>
+              <button
+                onClick={handleShare}
+                className="flex py-5 w-full justify-center bg-green-500 hover:bg-green-300   mx-auto  text-center  gap-1 font-serif items-center    px-2 rounded-md "
+              >
+                <IoPaperPlaneOutline className="rounded-lg" size={30} />
+                <samp>share</samp>
               </button>
             </div>
 

@@ -36,9 +36,11 @@ function Product() {
 
     try {
       if (state) {
-        setQuery(state);
+        setSearchTitle(state);
         const res = await dispatch(getSearchProduct(state));
+
         setProducts(res?.payload?.data);
+
         setSearch(true);
       } else {
         setSearch(false);

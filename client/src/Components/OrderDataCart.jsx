@@ -311,11 +311,11 @@ export const OrderCart = () => {
     );
   }
   return (
-    <div className=" flex  flex-col">
+    <div className=" flex  flex-col justify-center">
       <select
         onChange={handleFilterChange}
         value={selectedStatus}
-        className="text-center my-10 w-44 mx-auto "
+        className="text-center my-10 w-44 mx-auto dark:bg-gray-900  border"
       >
         <option value="All">All</option>
         <option value="Processing">Processing</option>

@@ -237,25 +237,34 @@ export const getSearchProduct = async (req, res, next) => {
     let filter = {};
     let name = "";
     let maxPrice = null;
-    const regex = /(\w+)\s*under\s*(\d+)/;
-    const match = query.match(regex);
 
-    if (match) {
-      name = match[1];
-      maxPrice = match[2];
-    } else if (!isNaN(query)) {
-      maxPrice = query;
+    // Regex patterns for matching query
+    const regex1 = /(\w+)\s*under\s*(\d+)/; // Format: name under price
+    const regex2 = /^([a-zA-Z]+)\s*(\d+)$/;
+    const cleanQuery = query.trim();
+    const match1 = cleanQuery.match(regex1);
+    const match2 = cleanQuery.match(regex2);
+    if (match1) {
+      name = match1[1];
+      maxPrice = Number(match1[2]);
+    } else if (match2) {
+      name = match2[1];
+      maxPrice = Number(match2[2]);
+    } else if (!isNaN(Number(query))) {
+      maxPrice = Number(query);
     } else {
       name = query;
     }
 
     if (name) {
-      filter.name = { $regex: name, $options: "i" };
+      filter.$or = [
+        { name: { $regex: new RegExp(name, "i") } }, // Correct $regex syntax
+        { category: { $regex: new RegExp(name, "i") } },
+      ];
     }
     if (maxPrice) {
-      filter.price = { $lte: Number(maxPrice) };
+      filter.price = { $lte: maxPrice };
     }
-
     const products = await Product.find(filter);
 
     if (!products || products.length === 0) {
