@@ -93,6 +93,92 @@ export const LoadAccount = createAsyncThunk("/auth/getProfile", async () => {
     return error?.response?.data || error?.message || "Something went wrong";
   }
 });
+export const SendPasswordResatEmail = createAsyncThunk(
+  "/auth/passwordResat",
+  async (email) => {
+    try {
+      const token = localStorage.getItem("Authenticator");
+      const res = await axiosInstance.post(
+        `/api/v3/user/resetPassword?email=${email}`,
+
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
+    }
+  }
+);
+export const changePassword = createAsyncThunk(
+  "/auth/passwordResat",
+  async ({ oldPassword, newPassword }) => {
+    if (!(oldPassword, newPassword)) return;
+    try {
+      const token = localStorage.getItem("Authenticator");
+      const res = await axiosInstance.put(
+        `/api/v3/user/updatePassword`,
+        { oldPassword, newPassword },
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
+    }
+  }
+);
+export const UpdateNewPassword = createAsyncThunk(
+  "/auth/passwordResat",
+  async ({ resetToken, newPassword }) => {
+    try {
+      const token = localStorage.getItem("Authenticator");
+      const res = await axiosInstance.post(
+        `/api/v3/user/changePassword${resetToken}`,
+        { newPassword },
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
+    }
+  }
+);
+export const checkToken = createAsyncThunk(
+  "/auth/token",
+  async (resetToken) => {
+    try {
+      if (!resetToken) return;
+      const token = localStorage.getItem("Authenticator");
+      const res = await axiosInstance.post(
+        `/api/v3/user/TokenCheck${resetToken}`,
+
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
+    }
+  }
+);
 export const getAllUsers = createAsyncThunk("/auth/User", async () => {
   try {
     const token = localStorage.getItem("Authenticator");

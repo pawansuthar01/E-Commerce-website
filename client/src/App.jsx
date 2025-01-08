@@ -26,6 +26,9 @@ import OrderDetails from "./Page/Order/OrderDetails";
 import BlogUpload from "./Page/ADMIN/Blog/uploadBlog";
 import BlogDetails from "./Page/ADMIN/Blog/BlogDetails";
 import SingleProduct from "./Page/Product/ProudctDetalis";
+import ForgetPassword from "./Page/password/ForgetPassword";
+import UpdatePassword from "./Page/password/updatePassword";
+import ChangePassword from "./Page/password/changePassword";
 function App() {
   return (
     <ThemeProvider>
@@ -33,6 +36,11 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />}></Route>
           <Route path="/Login" element={<Login />}></Route>
+          <Route path="/ForgetPassword" element={<ForgetPassword />}></Route>
+          <Route
+            path="/changePassword/:token"
+            element={<UpdatePassword />}
+          ></Route>
           <Route path="/Signup" element={<SignUp />}></Route>
           <Route
             path="/SlowInternetPage"
@@ -47,6 +55,10 @@ function App() {
           <Route
             element={<RequireAuth allowedRole={["USER", "ADMIN", "AUTHOR"]} />}
           >
+            <Route
+              path="/profile/UpdatePassword"
+              element={<ChangePassword />}
+            ></Route>
             <Route path="/Profile" element={<Profile />}></Route>
             <Route path="/CheckoutForm" element={<CheckoutForm />}></Route>
             <Route path="/ThankYou" element={<ThankYou />}></Route>

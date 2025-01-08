@@ -176,12 +176,18 @@ function Login() {
               </div>
               <div onClick={handleLogin}>
                 <LoadingButton
+                  textSize={"py-2"}
                   loading={loading}
                   message={"Loading"}
                   name={"Login"}
                   color={"bg-green-500"}
                 />
               </div>
+              <p className="mt-1 text-center">
+                <Link to="/ForgetPassword" className="link text-blue-600 pl-1">
+                  Forget Password
+                </Link>
+              </p>
               <p className="mt-1 text-center">
                 Do not have an account?
                 <Link to="/SignUp" className="link text-blue-600 pl-1">

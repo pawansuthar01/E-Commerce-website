@@ -113,98 +113,62 @@ const AdminDashboard = () => {
         {/* Dashboard Button */}
         <div className="grid grid-cols-3 gap-4 w-full bg-[#EFF3EA] py-4 rounded-lg px-4">
           {/* Dashboard Button */}
-          <button
-            className={`p-3 rounded-md transition-all duration-300 flex justify-center gap-1 items-center ${
-              activeButton === 1
-                ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg"
-                : "bg-gray-200 text-gray-700"
-            }`}
-            onClick={() => handleClick(1)}
-            aria-label="Dashboard"
-          >
-            <FaThLarge />
-            <span>DashBoard</span>
-          </button>
-
-          {/* User Button */}
-          <button
-            className={`p-3 rounded-md transition-all duration-300 flex justify-center gap-1 items-center ${
-              activeButton === 2
-                ? "bg-gradient-to-r from-green-500 to-teal-500 text-white shadow-lg"
-                : "bg-gray-200 text-gray-700"
-            }`}
-            onClick={() => handleClick(2)}
-            aria-label="Users"
-          >
-            <FaUser />
-            <span>Users</span>
-          </button>
-
-          {/* Order Button */}
-          <button
-            className={`p-3 rounded-md transition-all duration-300 flex justify-center gap-1 items-center ${
-              activeButton === 3
-                ? "bg-gradient-to-r from-yellow-500 to-orange-500 text-white shadow-lg"
-                : "bg-gray-200 text-gray-700"
-            }`}
-            onClick={() => handleClick(3)}
-            aria-label="Order"
-          >
-            <FaBox />
-            <span>Order</span>
-          </button>
-
-          {/* Products Button */}
-          <button
-            className={`p-3 rounded-md transition-all duration-300 flex justify-center gap-1 items-center ${
-              activeButton === 4
-                ? "bg-gradient-to-r from-green-500 to-orange-500 text-white shadow-lg"
-                : "bg-gray-200 text-gray-700"
-            }`}
-            onClick={() => handleClick(4)}
-            aria-label="Products"
-          >
-            <FaBoxOpen />
-            <span>Products</span>
-          </button>
-
-          {/* Payments Button */}
-          <button
-            className={`p-3 rounded-md transition-all duration-300 flex justify-center gap-1 items-center ${
-              activeButton === 5
-                ? "bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-lg"
-                : "bg-gray-200 text-gray-700"
-            }`}
-            onClick={() => handleClick(5)}
-            aria-label="Payments"
-          >
-            <FaCreditCard />
-            <span>Payments</span>
-          </button>
-
-          {/* Messages Button */}
-          <button
-            className={`p-3 rounded-md transition-all duration-300 flex justify-center gap-1 items-center ${
-              activeButton === 6
-                ? "bg-gradient-to-r from-purple-500 to-indigo-500 text-white shadow-lg"
-                : "bg-gray-200 text-gray-700"
-            }`}
-            onClick={() => handleClick(6)}
-            aria-label="Messages"
-          >
-            <FaEnvelope />
-            <span>Messages</span>
-          </button>
+          {[
+            {
+              id: 1,
+              label: "Dashboard",
+              icon: FaThLarge,
+              colors: "from-blue-500 to-purple-500",
+            },
+            {
+              id: 2,
+              label: "Users",
+              icon: FaUser,
+              colors: "from-green-500 to-teal-500",
+            },
+            {
+              id: 3,
+              label: "Orders",
+              icon: FaBox,
+              colors: "from-yellow-500 to-orange-500",
+            },
+            {
+              id: 4,
+              label: "Products",
+              icon: FaBoxOpen,
+              colors: "from-green-500 to-orange-500",
+            },
+            {
+              id: 5,
+              label: "Payments",
+              icon: FaCreditCard,
+              colors: "from-red-500 to-pink-500",
+            },
+            {
+              id: 6,
+              label: "Messages",
+              icon: FaEnvelope,
+              colors: "from-purple-500 to-indigo-500",
+            },
+          ].map(({ id, label, icon: Icon, colors }) => (
+            <button
+              key={id}
+              className={`p-4 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 ${
+                activeButton === id
+                  ? `bg-gradient-to-r ${colors} text-white shadow-lg`
+                  : "bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
+              }`}
+              onClick={() => handleClick(id)}
+            >
+              <Icon className="text-xl" />
+              <span className="text-sm font-medium">{label}</span>
+            </button>
+          ))}
         </div>
 
-        <DashBoard show={activeButton === 1} orders={orders} stats={stats} />
-        {activeButton == 6 && <Messages />}
+        <DashBoard stats={stats} show={activeButton === 1} orders={orders} />
         <UsersCart showUser={activeButton === 2} users={users} />
-        <PaymentCart
-          showPayment={activeButton === 5}
-          Razorpay={Razorpay}
-          payments={payments}
-        />
+        {activeButton === 3 && <OrderCart />}
         <ProductsCart
           currentPage={currentPage}
           totalPages={totalPages}
@@ -212,8 +176,12 @@ const AdminDashboard = () => {
           products={products}
           fetchProducts={fetchProducts}
         />
-
-        {activeButton === 3 && <OrderCart />}
+        <PaymentCart
+          showPayment={activeButton === 5}
+          Razorpay={Razorpay}
+          payments={payments}
+        />
+        {activeButton == 6 && <Messages />}
       </div>
     </Layout>
   );

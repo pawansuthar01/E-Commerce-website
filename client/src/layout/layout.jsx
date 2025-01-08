@@ -281,6 +281,7 @@ function Layout({ children, load }) {
                 <div className="w-[90%] absolute bottom-4">
                   <div className="flex items-center justify-center w-full flex-wrap">
                     <LoadingButton
+                      textSize={"py-2"}
                       loading={loading}
                       message={"Loading.."}
                       onClick={handelLogout}
