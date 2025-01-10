@@ -20,7 +20,6 @@ export const CreateOrder = async (req, res, next) => {
   if (!userId || !products || !shippingAddress || !totalAmount) {
     return next(new AppError("All fields are required.", 400));
   }
-  console.log();
   const productDetails = await Promise.all(
     products.map(async (product) => {
       const productFound = await Product.findById(product.product);
@@ -104,7 +103,7 @@ export const CreateOrder = async (req, res, next) => {
 export const createOrderPayment = async (req, res, next) => {
   try {
     const { totalAmount } = req.body;
-
+    console.log(req.body);
     if (!totalAmount || totalAmount <= 0) {
       return next(new AppError("Invalid or missing totalAmount", 400));
     }
@@ -135,7 +134,8 @@ export const createOrderPayment = async (req, res, next) => {
       amount: order.amount,
     });
   } catch (error) {
-    return next(new AppError(error.message || "Internal Server Error", 500));
+    console.log(error);
+    return next(new AppError(error || "Internal Server Error", 500));
   }
 };
 
@@ -337,32 +337,37 @@ export const allOrderPayments = async (req, res, next) => {
       "November",
       "December",
     ];
+
     const finalMonths = monthNames.reduce((acc, month) => {
       acc[month] = 0;
       return acc;
     }, {});
 
-    // Calculate total amount and aggregate monthly payments
+    // Filter payments to include only 'captured' payments
+    const receivedPayments = allPayments.items.filter(
+      (payment) => payment.status === "captured"
+    );
+
+    // Calculate total received amount and aggregate monthly payments
     let totalAmount = 0;
-    allPayments.items.forEach((payment) => {
-      const paymentDate = new Date(payment.created_at * 1000); // Convert timestamp to date
+    receivedPayments.forEach((payment) => {
+      const paymentDate = new Date(payment.created_at * 1000);
       const monthName = monthNames[paymentDate.getMonth()];
 
-      totalAmount += payment.amount / 100; // Convert from paise to currency
+      totalAmount += payment.amount / 100; // Convert amount from paise to rupees
 
       if (monthName) {
         finalMonths[monthName] += 1;
       }
     });
 
-    // Generate the monthly sales record array
     const monthlySalesRecord = monthNames.map((month) => finalMonths[month]);
 
     res.status(200).json({
       success: true,
       message: "All payments fetched successfully",
       allPayments,
-      totalAmount, // Include total amount
+      totalAmount, // Total amount of only received payments
       finalMonths,
       monthlySalesRecord,
     });

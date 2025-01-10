@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import LoadingButton from "../../constants/LoadingBtn";
 import Layout from "../../layout/layout";
+import { Category } from "../../Components/Product/categoryData";
 function AddProduct() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -174,9 +175,9 @@ function AddProduct() {
     event.preventDefault();
     setLoading(true);
 
-    if (productData.name.length > 30 || productData.name.length < 20) {
+    if (productData.name.length > 40 || productData.name.length < 20) {
       document.getElementById("name").style.borderColor = "red";
-      if (productData.name.length > 30) {
+      if (productData.name.length > 40) {
         document.getElementById("name").previousElementSibling.innerHTML =
           "Maximum length is 30 characters";
       } else if (productData.name.length < 20) {

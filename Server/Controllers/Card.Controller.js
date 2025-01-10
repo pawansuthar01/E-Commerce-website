@@ -11,19 +11,16 @@ export const AddCardProduct = async (req, res, next) => {
   }
 
   try {
-    // Find the product by ID
     const FindProduct = await Product.findById(productId);
     if (!FindProduct) {
       return next(new AppError("Product not found.", 404));
     }
 
-    // Find the user by ID
     const userFind = await User.findById(id);
     if (!userFind) {
       return next(new AppError("User not found.", 404));
     }
 
-    // Check if the product already exists in the user's wallet
     const productExists = userFind.walletAddProducts.some(
       (item) => item.product && item.product.toString() === productId
     );
@@ -32,14 +29,18 @@ export const AddCardProduct = async (req, res, next) => {
       return next(new AppError("Product is already in the wallet.", 400));
     }
 
-    // Handle product image (use the first image if the array exists)
     const productImage = FindProduct.images
-      ? FindProduct.images[0] // Select the first image
-      : { public_id: null, secure_url: null }; // Fallback if no images
-
+      ? FindProduct.images[0]
+      : { public_id: null, secure_url: null };
+    console.log("GST:", FindProduct.gst);
+    console.log("Stock:", FindProduct.stock);
+    console.log("Discount:", FindProduct.discount);
     userFind.walletAddProducts.push({
-      product: FindProduct._id, // Product ID
+      product: FindProduct._id,
       name: FindProduct.name,
+      gst: FindProduct.gst,
+      stock: FindProduct?.stock,
+      discount: FindProduct?.discount,
       price: FindProduct.price,
       description: FindProduct.description,
       image: {
@@ -47,8 +48,7 @@ export const AddCardProduct = async (req, res, next) => {
         secure_url: productImage.secure_url,
       },
     });
-
-    // Save the updated user
+    console.log(userFind.walletAddProducts);
     await userFind.save();
 
     res.status(200).json({

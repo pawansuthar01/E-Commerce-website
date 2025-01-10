@@ -9,12 +9,25 @@ export const getPaymentData = async (req, res, next) => {
     ).lean();
 
     if (!paymentData) {
-      return next(new AppError("does not payment data get", 400));
+      return next(new AppError("No payment data found", 400));
     }
+
+    let totalAmount = 0;
+    let receivedAmount = 0;
+
+    paymentData.forEach((payment) => {
+      totalAmount += payment.totalAmount || 0;
+      if (payment.paymentStatus === "Completed") {
+        receivedAmount += payment.totalAmount || 0;
+      }
+    });
+
     res.status(200).json({
       success: true,
       data: paymentData,
-      message: "payment data get successfully",
+      totalAmount,
+      receivedAmount,
+      message: "Payment data retrieved successfully",
     });
   } catch (error) {
     return next(new AppError(error.message, 400));

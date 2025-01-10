@@ -9,7 +9,6 @@ export const UsersCart = ({ showUser, users }) => {
   const [loading, setLoadingStates] = useState({});
   const [loadingPromotion, setLoadingPromotion] = useState({});
   const { role, data } = useSelector((state) => state?.auth);
-  console.log(role);
   useEffect(() => {
     const sortedUsers = [
       ...users.filter((user) => user.role === "AUTHOR"),

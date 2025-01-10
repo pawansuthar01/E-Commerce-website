@@ -34,7 +34,7 @@ export const PaymentCart = ({ showPayment, Razorpay, payments }) => {
     <>
       <div
         className="
-        flex flex-col "
+        flex flex-col"
       >
         <div className="flex space-x-4 w-full justify-evenly bg-[#EFF3EA] py-2 mt-2 dark:bg-gray-800 shadow-2xl rounded-lg delay-500 transition-shadow">
           {/* Dashboard Button */}

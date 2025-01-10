@@ -379,3 +379,32 @@ export const LikeAndDisLikeProduct = async (req, res, next) => {
     return next(new AppError(error.message, 400));
   }
 };
+
+export const checkInStock = async (req, res, next) => {
+  try {
+    const { productId } = req.body;
+    if (!productId) return next(new AppError("productId is required ..", 400));
+
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({
+        message: "Product not found",
+      });
+    }
+
+    if (product.stock !== "In stock") {
+      return res.status(400).json({
+        success: false,
+        message: `Product ${product.name} is out of stock.`,
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: `Product ${product.name} is in stock.`,
+    });
+  } catch (error) {
+    return next(new AppError(error.message || error), 400);
+  }
+};

@@ -18,6 +18,7 @@ export function CarouselGrid({ slides, onEdit, onDelete }) {
           className="bg-white dark:bg-[#111827] rounded-lg dark:shadow-[0_0_1px_white] shadow-md overflow-hidden"
         >
           <img
+            crossOrigin="anonymous"
             src={slide?.images[0]?.secure_url}
             alt={slide?.name}
             className="w-full h-48 object-contain"

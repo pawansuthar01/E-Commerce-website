@@ -1,36 +1,46 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useSelector } from "react-redux";
 
 const SearchBar = ({ setQueryBarTitle, onSearch, width, TopMargin }) => {
   const [query, setQuery] = useState(setQueryBarTitle || "");
   const [show, setShow] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
+  const [loading, setLoading] = useState(false);
   const products = useSelector((state) => state.product.product);
   const dropdownRef = useRef(null);
+  const memoizedProducts = useMemo(() => products, [products]);
+
   useEffect(() => {
-    const fetchSuggestions = () => {
-      if (!query.trim()) {
-        setSuggestions([]);
-        return;
-      }
+    setQuery(setQueryBarTitle || "");
+  }, [setQueryBarTitle]);
 
-      if (!isNaN(query)) {
-        const filteredSuggestions = products?.filter(
-          (product) => product.price === parseInt(query, 10)
-        );
-        setSuggestions(filteredSuggestions || []);
-      } else {
-        const regex = new RegExp(query, "i");
-        const filteredSuggestions = products?.filter((product) =>
-          regex.test(product.name)
-        );
-        setSuggestions(filteredSuggestions || []);
-      }
-    };
+  const fetchSuggestions = () => {
+    setLoading(true);
+    if (!query.trim()) {
+      setSuggestions([]);
+      setLoading(false);
+      return;
+    }
 
-    const debounce = setTimeout(fetchSuggestions, 300);
-    return () => clearTimeout(debounce);
-  }, [query, products]);
+    if (!isNaN(query)) {
+      const filteredSuggestions = memoizedProducts.filter(
+        (product) => product.price === parseInt(query, 10)
+      );
+      setSuggestions(filteredSuggestions || []);
+    } else {
+      const regex = new RegExp(query, "i");
+      const filteredSuggestions = memoizedProducts.filter((product) =>
+        regex.test(product.name)
+      );
+      setSuggestions(filteredSuggestions || []);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    const debounceTimeout = setTimeout(fetchSuggestions, 300);
+    return () => clearTimeout(debounceTimeout);
+  }, [query]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -83,7 +93,7 @@ const SearchBar = ({ setQueryBarTitle, onSearch, width, TopMargin }) => {
           className="w-full p-4 pl-10 text-sm text-gray-900 bg-gray-50 border border-gray-300 rounded-lg outline-none dark:bg-gray-700 dark:text-white focus:ring-blue-500 focus:border-blue-500"
           placeholder="Search..."
           autoComplete="off"
-          value={setQueryBarTitle || query}
+          value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setShow(true)}
         />
@@ -96,25 +106,32 @@ const SearchBar = ({ setQueryBarTitle, onSearch, width, TopMargin }) => {
         </button>
       </div>
 
-      {query && show && suggestions && suggestions.length > 1 && (
+      {show && query && suggestions.length > 0 && (
         <div
           ref={dropdownRef}
           className="absolute w-full bg-white border rounded-lg shadow-md max-h-40 mt-14 overflow-y-auto z-10 dark:bg-gray-700 dark:text-white"
+          aria-live="polite"
         >
-          {suggestions.map((suggestion) => (
-            <div
-              key={suggestion._id}
-              className="px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer"
-              onClick={() => {
-                setQuery(`${suggestion.name} under ₹${suggestion.price}`);
-                setSuggestions([]);
-                setShow(false);
-                onSearch(`${suggestion.name} under ${suggestion.price}`);
-              }}
-            >
-              {suggestion.name} nuder- ₹{suggestion.price}
-            </div>
-          ))}
+          {loading ? (
+            <div className="px-4 py-2 text-gray-500">Loading...</div>
+          ) : suggestions.length === 0 ? (
+            <div className="px-4 py-2 text-gray-500">No suggestions found</div>
+          ) : (
+            suggestions.map((suggestion) => (
+              <div
+                key={suggestion._id}
+                className="px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer"
+                onClick={() => {
+                  setQuery(`${suggestion.name} under ₹${suggestion.price}`);
+                  setSuggestions([]);
+                  setShow(false);
+                  onSearch(`${suggestion.name} under ${suggestion.price}`);
+                }}
+              >
+                {suggestion.name} under ₹{suggestion.price}
+              </div>
+            ))
+          )}
         </div>
       )}
     </div>

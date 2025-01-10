@@ -11,6 +11,7 @@ import { isEmail, isPhoneNumber } from "../../helper/regexMatch";
 import { PlaceOrder } from "../../Redux/Slice/OrderSlice";
 import {
   AllRemoveCardProduct,
+  checkInStock,
   getProduct,
   orderCountUpdate,
   updateProduct,
@@ -20,6 +21,7 @@ import { IoCloseCircleOutline } from "react-icons/io5";
 import { useTheme } from "../../Components/ThemeContext";
 import FeedbackForm from "../../Components/feedbackfrom";
 import FeedbackList from "../../Components/feedbackList";
+import { formatPrice } from "../Product/format";
 
 function CheckoutPage() {
   const navigate = useNavigate();
@@ -34,9 +36,9 @@ function CheckoutPage() {
   const [name, setName] = useState("");
   const ProductDetails = useLocation().state;
   const [shippingInfo, setShippingInfo] = useState({
-    name: name,
-    email: email,
-    phoneNumber: phone,
+    name: name || "",
+    email: email || "",
+    phoneNumber: phone || "",
     address: "",
     address2: "",
     country: "",
@@ -54,6 +56,11 @@ function CheckoutPage() {
   const handlePaymentMethodChange = (event) => {
     setPaymentMethod(event.target.value);
   };
+  const formatCurrency = (amount) =>
+    new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+    }).format(amount);
 
   const loadProfile = async () => {
     const res = await dispatch(LoadAccount());
@@ -81,6 +88,8 @@ function CheckoutPage() {
         image: res?.payload?.data.images.map((images) => images),
         name: res?.payload?.data?.name || "Unknown Product",
         price: res?.payload?.data?.price || 0,
+        gst: res?.payload?.data?.gst,
+        discount: res?.payload?.data?.discount,
         product: res?.payload?.data?._id || "",
         quantity: ProductDetails?.quantities || 1,
         _id: res?.payload?.data?._id || "",
@@ -105,6 +114,7 @@ function CheckoutPage() {
   };
 
   const handelPlaceOrder = async () => {
+    setError(false);
     setLoading(true);
     if (
       !shippingInfo.name ||
@@ -140,17 +150,31 @@ function CheckoutPage() {
       setMessage("Something want Wrong try again..");
       return;
     }
+
+    for (const product of cart) {
+      const res = await dispatch(checkInStock(product.product));
+      if (!res?.payload?.success) {
+        setError(true);
+        setLoading(false);
+        setMessage(res?.payload?.message);
+        return;
+      }
+    }
+
     if (paymentMethod === "razorpay") {
       setLoading(false);
 
       try {
         setLoading(true);
-
         const orderResponse = await dispatch(paymentCreate(totalPrice));
-
+        if (!orderResponse?.payload?.success) {
+          setError(true);
+          setMessage("Something went wrong");
+          return;
+        }
         const { orderId, currency, amount } = orderResponse?.payload;
         const options = {
-          key: "rzp_test_ySodygWXmjNTgT",
+          key: "rzp_live_5kArCGfhMWUBe7",
           amount,
           currency,
           name: "Kgs Doors",
@@ -221,11 +245,34 @@ function CheckoutPage() {
       }
     }
   };
+  const calculateProductDetails = (product) => {
+    const gstPercent = Number(product.gst) || 0;
+    const basePrice = product.price * product.quantity;
+    const gst = (basePrice * gstPercent) / 100;
+    const totalPriceWithGst = basePrice + gst;
 
+    const discountPercent = Number(product.discount) || 0;
+    const discount = (totalPriceWithGst * discountPercent) / 100;
+
+    const finalPrice = totalPriceWithGst - discount;
+
+    return {
+      gst,
+      basePrice: totalPriceWithGst,
+      discount,
+      finalPrice,
+      totalPrice: finalPrice,
+    };
+  };
+  const calculateCartTotal = (cart) =>
+    cart.reduce((acc, product) => {
+      const { totalPrice } = calculateProductDetails(product);
+      const TotalPrice = acc + totalPrice;
+      return TotalPrice;
+    }, 0);
   useEffect(() => {
     if (calculateTotalAmount) {
-      const Total = calculateTotalAmount();
-      setTotalPrice(Total);
+      setTotalPrice(calculateCartTotal(cart));
     }
   }, [cart]);
 
@@ -243,7 +290,7 @@ function CheckoutPage() {
       phoneNumber: phone,
     });
   }, [name, email, phone]);
-
+  console.log(cart);
   return (
     <Layout>
       {showLoading && (
@@ -448,47 +495,73 @@ function CheckoutPage() {
                 <h2 className="text-2xl mb-3 font-bold dark:text-white text-black">
                   Your Order
                 </h2>
-                <div className="p-5 border bg-white dark:bg-[#111827]   overflow-x-auto ">
-                  <table className="w-full mb-5">
-                    <thead className="">
+                <div className="p-5 border bg-white dark:bg-[#111827] rounded-lg shadow-md overflow-x-auto">
+                  <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">
+                    Order Summary
+                  </h2>
+                  <table className="table-auto w-full mb-5 border-collapse border border-gray-300 rounded-lg">
+                    <thead className="bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
                       <tr>
-                        <th className=" p-4 text-center ">Product</th>
-                        <th className=" p-4 text-center">Price</th>
-                        <th className=" p-4 text-center">Quantity</th>
-                        <th className=" p-4 text-center">Total</th>
+                        <th className="p-4 text-center border border-gray-300">
+                          Product
+                        </th>
+                        <th className="p-4 text-center border border-gray-300">
+                          Price
+                        </th>
+                        <th className="p-4 text-center border border-gray-300">
+                          Discount
+                        </th>
+                        <th className="p-4 text-center border border-gray-300">
+                          Final Price
+                        </th>
+                        <th className="p-4 text-center border border-gray-300">
+                          Quantity
+                        </th>
+                        <th className="p-4 text-center border border-gray-300">
+                          Total
+                        </th>
                       </tr>
                     </thead>
-                    {cart.map((product) => (
-                      <tbody key={product.product}>
-                        <tr>
-                          <td className="p-4 text-center">{product.name}</td>
-                          <td className="p-4 text-center items-center flex justify-center ">
-                            <MdCurrencyRupee />{" "}
-                            <span>{Number(product.price).toFixed(2)}</span>
-                          </td>
-                          <td className="p-4 text-center   ">
-                            {product.quantity}{" "}
-                          </td>
+                    <tbody className="text-gray-700 dark:text-gray-300">
+                      {cart.map((product) => {
+                        const {
+                          gst,
+                          basePrice,
+                          discount,
+                          finalPrice,
+                          totalPrice,
+                        } = calculateProductDetails(product);
 
-                          <td className="p-4 items-center flex justify-center">
-                            <MdCurrencyRupee />{" "}
-                            {ProductDetails.ProductId
-                              ? (
-                                  Number(product.price) *
-                                  ProductDetails.quantities
-                                ).toFixed(2)
-                              : (
-                                  Number(product.price) *
-                                  ProductDetails[product.product]
-                                ).toFixed(2)}
-                          </td>
-                        </tr>
-                      </tbody>
-                    ))}
+                        return (
+                          <tr
+                            key={product.product}
+                            className="border-t border-gray-300"
+                          >
+                            <td className="text-center">{product.name}</td>
+                            <td className="text-center">
+                              {formatPrice(basePrice)}
+                            </td>
+                            <td className="text-center">
+                              {product?.discount ? formatPrice(discount) : "-"}
+                            </td>
+                            <td className="text-center">
+                              {formatPrice(finalPrice)}
+                            </td>
+                            <td className="text-center">{product.quantity}</td>
+                            <td className="text-center">
+                              {formatPrice(totalPrice)}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
                   </table>
-                  <div>
-                    PaymentMethod :
-                    <div>
+
+                  <div className="mb-5">
+                    <h3 className="text-lg font-medium text-gray-800 dark:text-white mb-2">
+                      Payment Method:
+                    </h3>
+                    <div className="flex items-center mb-3">
                       <input
                         type="radio"
                         name="payment_method"
@@ -496,43 +569,54 @@ function CheckoutPage() {
                         value="razorpay"
                         id="razorpay"
                         onChange={handlePaymentMethodChange}
+                        className="h-4 w-4 border-gray-300 focus:ring-blue-500"
                       />
                       <label
                         htmlFor="razorpay"
-                        className="text-sm font-medium pl-2"
+                        className="text-sm font-medium pl-2 text-gray-700 dark:text-gray-300"
                       >
-                        PhonePay,Paytm,Google Pay and Other...
+                        PhonePay, Paytm, Google Pay, and Other...
                       </label>
                     </div>
-                    <input
-                      type="radio"
-                      name="payment_method"
-                      checked={paymentMethod === "cash on Delivery"}
-                      value="cash on Delivery"
-                      id="cash_on_Delivery"
-                      onChange={handlePaymentMethodChange}
-                    />
-                    <label
-                      htmlFor="cash_on_Delivery"
-                      className="text-sm font-medium pl-2"
-                    >
-                      Cash on Delivery
-                    </label>
+                    <div className="flex items-center">
+                      <input
+                        type="radio"
+                        name="payment_method"
+                        checked={paymentMethod === "cash on Delivery"}
+                        value="cash on Delivery"
+                        id="cash_on_Delivery"
+                        onChange={handlePaymentMethodChange}
+                        className="h-4 w-4 border-gray-300 focus:ring-blue-500"
+                      />
+                      <label
+                        htmlFor="cash_on_Delivery"
+                        className="text-sm font-medium pl-2 text-gray-700 dark:text-gray-300"
+                      >
+                        Cash on Delivery
+                      </label>
+                    </div>
                   </div>
-                  <div className="text-xl  w-full flex pr-3 items-center">
-                    <span className="flex items-center my-2 ">
-                      Total price : <MdCurrencyRupee />
-                    </span>
 
-                    <h1>{totalPrice}</h1>
+                  <div className="text-xl w-full flex items-center justify-between px-4 py-3 bg-gray-100 dark:bg-gray-900 rounded-lg">
+                    <span className="flex items-center text-sm text-gray-800 dark:text-gray-200">
+                      Total Price (After Discount):
+                    </span>
+                    <span className="flex items-center text-green-600 dark:text-green-400">
+                      {formatPrice(calculateCartTotal(cart))}
+                    </span>
                   </div>
-                  <LoadingButton
-                    onClick={() => handelPlaceOrder()}
-                    color={"bg-green-500"}
-                    message={"wait !..."}
-                    loading={loading}
-                    name={"Place Order"}
-                  />
+
+                  <div className="mt-5 flex justify-end">
+                    <LoadingButton
+                      textSize={"py-2"}
+                      onClick={() => handelPlaceOrder()}
+                      color={"bg-green-500 hover:bg-green-600"}
+                      message={"wait!..."}
+                      loading={loading}
+                      name={"Place Order"}
+                      disabled={!paymentMethod || cart.length === 0}
+                    />
+                  </div>
                 </div>
               </div>
             </div>

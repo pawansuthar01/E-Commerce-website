@@ -32,10 +32,7 @@ function NotificationCart({ data, onUpdate, handleReadNotification }) {
         onClick={() => handelClickBtn(data._id)}
         className=" text-red-500 text-lg font-bold cursor-pointer text-end"
       >
-        <IoCloseCircleOutline
-          onClick={() => handelhandelClickClickBtn(data._id)}
-          size={26}
-        />
+        <IoCloseCircleOutline onClick={() => handelClick(data._id)} size={26} />
       </button>
     </div>
   );

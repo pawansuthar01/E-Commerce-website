@@ -25,6 +25,7 @@ function ProductDescription() {
   const [quantities, setQuantities] = useState(1);
   const [ProductData, setProductData] = useState();
   const { pathname } = useLocation();
+  const { state } = useLocation();
   const [Image, setImage] = useState();
   const domain =
     window.location.hostname +
@@ -35,16 +36,20 @@ function ProductDescription() {
   const fetchOrderDetails = async () => {
     try {
       setShowLoading(true);
-      const data = await dispatch(getProduct(ProductId));
-      if (data?.payload?.success) {
-        setProductData(data?.payload?.data);
-        setShowLoading(false);
+      if (!state) {
+        const data = await dispatch(getProduct(ProductId));
+        if (data?.payload?.success) {
+          setProductData(data?.payload?.data);
+          setShowLoading(false);
+        }
+        return;
       }
+      setProductData(state);
+      setShowLoading(false);
     } catch {
       navigate("/");
     }
   };
-  console.log(ProductData);
   useEffect(() => {
     if (ProductId) fetchOrderDetails();
   }, [ProductId]);
@@ -64,8 +69,9 @@ function ProductDescription() {
     await dispatch(LoadAccount());
   };
 
-  const ProductAddCard = async (productId) => {
+  const ProductAddCard = async (productId, status) => {
     setLoading(true);
+    if (status == "Out stock") return alert("Product Out Stock");
     const res = await dispatch(AddProductCard(productId));
 
     if (res) {
@@ -99,6 +105,13 @@ function ProductDescription() {
     const originX = (x / width) * 100;
     const originY = (y / height) * 100;
     setTransformOrigin(`${originX}% ${originY}%`);
+  };
+  const handelPlaceOrder = (productId, quantities, status) => {
+    if (status == "Out stock") return alert("Product Out Stock");
+    console.log(status);
+    navigate("/CheckoutForm", {
+      state: { quantities, ProductId },
+    });
   };
   const minQuantity = () => {
     setQuantities((prevQuantities) => {
@@ -171,7 +184,7 @@ function ProductDescription() {
               onMouseMove={handleMouseMove}
             >
               {ProductData?.discount && (
-                <p className=" absolute text-sm mt-2 ml-2 rounded-xl py-1 px-3 bg-red-300 ">
+                <p className=" absolute text-sm mt-2 ml-2 rounded-xl py-1 px-3 bg-red-300 z-10">
                   {ProductData?.discount}% off
                 </p>
               )}
@@ -208,6 +221,14 @@ function ProductDescription() {
 
           {/* Details Section */}
           <div className="space-y-4 relative">
+            <span className=" absolute  right-0 z-10 top-[-10px]">
+              {" "}
+              <IoPaperPlaneOutline
+                onClick={handleShare}
+                className="rounded-lg  cursor-pointer"
+                size={26}
+              />{" "}
+            </span>
             <h1 className="text-2xl font-semibold  break-words">
               {ProductData?.name}
             </h1>
@@ -268,6 +289,7 @@ function ProductDescription() {
                 {ProductData?.stock}
               </p>
             </div>
+
             <h1 className="text-sm font-semibold">
               {" "}
               Category:{" "}
@@ -275,9 +297,9 @@ function ProductDescription() {
                 {ProductData?.category}
               </span>
             </h1>
-            <div className=" grid grid-cols-3 mx-auto gap-2">
+            <div className=" grid grid-cols-2 mx-auto gap-2">
               {/* Quantity Selector */}
-              <div className="flex items-center space-x-3  border rounded w-44 dark:border-white border-gray-700 justify-evenly">
+              <div className="flex items-center space-x-3  border rounded w-[100%] dark:border-white border-gray-700 justify-evenly">
                 <button
                   onClick={minQuantity}
                   className="px-3 py-1 text-gray-700 hover:bg-gray-200 dark:hover:bg-gray-800"
@@ -299,20 +321,11 @@ function ProductDescription() {
               </div>
               <button
                 onClick={() =>
-                  navigate("/CheckoutForm", {
-                    state: { quantities, ProductId },
-                  })
+                  handelPlaceOrder(ProductId, quantities, ProductData?.stock)
                 }
                 className="w-full  px-5 py-3 text-lg font-semibold shadow-xl text-white bg-black rounded-sm hover:bg-gray-800 transition dark:bg-[#002] dark:hover:bg-[#0109]"
               >
                 Place Order
-              </button>
-              <button
-                onClick={handleShare}
-                className="flex py-5 w-full justify-center bg-green-500 hover:bg-green-300   mx-auto  text-center  gap-1 font-serif items-center    px-2 rounded-md "
-              >
-                <IoPaperPlaneOutline className="rounded-lg" size={30} />
-                <samp>share</samp>
               </button>
             </div>
 
@@ -322,7 +335,9 @@ function ProductDescription() {
                 {!productExists ? (
                   <LoadingButton
                     textSize={"py-3"}
-                    onClick={() => ProductAddCard(ProductData._id)}
+                    onClick={() =>
+                      ProductAddCard(ProductData._id, ProductData?.stock)
+                    }
                     name="Add To Cart"
                     color="bg-green-500"
                     message="Loading..."

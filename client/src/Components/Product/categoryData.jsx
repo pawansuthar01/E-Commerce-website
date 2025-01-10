@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { FaCircleXmark } from "react-icons/fa6";
 
 export const Category = ({ categories, setCategories }) => {
   const [newCategory, setNewCategory] = useState("");
@@ -17,6 +18,13 @@ export const Category = ({ categories, setCategories }) => {
     ]);
     setNewCategory("");
   };
+  function handelClickToRemove(category) {
+    const userConfirmed = confirm(`Remove this category: ${category}?`);
+    if (!userConfirmed) return;
+
+    const updatedCategories = categories.filter((cat) => cat !== category);
+    setCategories(updatedCategories);
+  }
   return (
     <div className="mb-8 p-6 rounded-lg bg-white dark:bg-gray-800 shadow-lg">
       <div className="flex flex-col sm:grid sm:grid-cols-2 sm:gap-6">
@@ -53,15 +61,21 @@ export const Category = ({ categories, setCategories }) => {
         <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
           Current Categories
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {Categories.map((category, i) => (
+        <div className="  grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {categories.map((category, i) => (
             <div
               key={i}
-              className="p-4 border border-gray-300 dark:bg-gray-700 rounded-lg shadow-sm"
+              className=" relative p-4 border border-gray-300 dark:bg-gray-700 rounded-lg shadow-sm"
             >
               <h4 className="font-medium text-gray-900 dark:text-white">
                 {category}
               </h4>
+              <p className="cursor-pointer  absolute top-0 text-red-500  right-0 pr-2 pt-2">
+                <FaCircleXmark
+                  size={20}
+                  onClick={() => handelClickToRemove(category)}
+                />
+              </p>
             </div>
           ))}
         </div>

@@ -41,6 +41,7 @@ export const ProductsCart = ({
                             ? product?.image?.secure_url
                             : product?.images[0]?.secure_url
                         }
+                        crossOrigin="anonymous"
                         alt={product.name}
                       />
                     </td>

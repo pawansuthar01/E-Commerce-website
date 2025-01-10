@@ -6,6 +6,7 @@ import { LoadAccount } from "../../Redux/Slice/authSlice";
 import { RemoveProductCard } from "../../Redux/Slice/ProductSlice";
 import LoadingButton from "../../constants/LoadingBtn";
 import { MdCurrencyRupee } from "react-icons/md";
+import { formatPrice } from "../Product/format";
 
 const Cart = () => {
   const [cart, setCart] = useState([]);
@@ -26,7 +27,6 @@ const Cart = () => {
     setQuantities(initialQuantities);
     setIsLoading(false);
   };
-
   const minQuantity = (productId) => {
     setQuantities((prev) => {
       const updatedQuantities = { ...prev };
@@ -55,6 +55,10 @@ const Cart = () => {
 
     setLoadingStates((prev) => ({ ...prev, [productId]: false }));
   };
+  const handelPlaceOrder = () => {
+    const data = cart.forEach((product) => product.stock == "In stock");
+    console.log(data);
+  };
 
   useEffect(() => {
     loadProfile();
@@ -64,7 +68,13 @@ const Cart = () => {
     return cart
       .reduce((total, product) => {
         const productTotal =
-          Number(product.price) * (quantities[product.product] || 1);
+          Number(
+            product?.price +
+              (product?.price * product?.gst) / 100 -
+              ((product?.price + (product?.price * product?.gst) / 100) *
+                product?.discount || 0) /
+                100
+          ) * (quantities[product.product] || 1);
         return total + productTotal;
       }, 0)
       .toFixed(2);
@@ -80,14 +90,14 @@ const Cart = () => {
         ) : (
           <>
             <h2 className="text-2xl font-bold mb-4">Your Cart</h2>
-            {cart.length === 0 ? (
+            {cart?.length === 0 ? (
               <div className="flex flex-col items-center gap-5">
                 <p className="text-gray-600 text-2xl capitalize">
                   No Product In cart...
                 </p>
                 <button
                   onClick={() => {
-                    navigate("/AllProduct");
+                    navigate("/Product");
                   }}
                   className="px-3 font-medium py-2 bg-green-400 rounded-xl hover:bg-transparent hover:border-2 border-green-400"
                 >
@@ -109,31 +119,42 @@ const Cart = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {cart.map((product) => (
+                      {cart?.map((product) => (
                         <tr
-                          key={product.product}
-                          className="border-t border-gray-200"
+                          key={product?.product}
+                          className="border-t border-gray-200 justify-center items-center"
                         >
                           <td className="p-4">
                             <img
-                              src={product.image.secure_url}
-                              alt={product.name}
+                              src={product?.image?.secure_url}
+                              alt={product?.name}
                               className="max-w-20"
                             />
                           </td>
                           <td className="p-4 ">
-                            <h2 className="text-black dark:text-white font-medium">
-                              {product.name}
+                            <h2 className="text-black dark:text-white font-medium line-clamp-1">
+                              {product?.name}
                             </h2>
                           </td>
-                          <td className="p-4 flex items-center  ">
-                            <MdCurrencyRupee />
-                            {Number(product.price).toFixed(2)}
+                          <td className="p-4  ">
+                            {product?.discount
+                              ? formatPrice(
+                                  product?.price +
+                                    (product?.price * product?.gst) / 100 -
+                                    ((product?.price +
+                                      (product?.price * product?.gst) / 100) *
+                                      product?.discount) /
+                                      100
+                                )
+                              : formatPrice(
+                                  product?.price +
+                                    (product?.price * product?.gst) / 100
+                                )}
                           </td>
                           <td className="p-4">
                             <div className="flex items-center space-x-2">
                               <button
-                                onClick={() => minQuantity(product.product)}
+                                onClick={() => minQuantity(product?.product)}
                                 className="px-2 py-1 border rounded text-gray-700 hover:bg-gray-200"
                               >
                                 &minus;
@@ -152,15 +173,26 @@ const Cart = () => {
                               </button>
                             </div>
                           </td>
-                          <td className="p-4 flex items-center">
-                            <MdCurrencyRupee />
-                            {(
-                              Number(product.price) *
-                              (quantities[product.product] || 1)
-                            ).toFixed(2)}
+                          <td className="p-4 ">
+                            {product?.discount
+                              ? formatPrice(
+                                  (product?.price +
+                                    (product?.price * product?.gst) / 100 -
+                                    ((product?.price +
+                                      (product?.price * product?.gst) / 100) *
+                                      product?.discount) /
+                                      100) *
+                                    (quantities[product.product] || 1)
+                                )
+                              : formatPrice(
+                                  (product?.price +
+                                    (product?.price * product?.gst) / 100) *
+                                    (quantities[product.product] || 1)
+                                )}
                           </td>
                           <td className="p-4">
                             <LoadingButton
+                              textSize={"py-2"}
                               message={"Removing..."}
                               width={"w-[150px]"}
                               name={"Remove"}

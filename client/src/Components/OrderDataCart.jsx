@@ -327,14 +327,16 @@ export const OrderCart = () => {
         {filteredOrders?.length == 0 ? (
           <div className="flex justify-center w-full items-center gap-10 mt-2 flex-col mb-10">
             <h1 className="text-center dark:text-white"> NO order....</h1>
-            <button
-              onClick={() => {
-                navigate("/AllProduct");
-              }}
-              className="px-3 dark:text-white font-medium py-2 bg-green-400 w-1/2 rounded-sm hover:bg-transparent hover:border-2 border-green-400"
-            >
-              Continue Shopping...
-            </button>
+            {!["ADMIN", "AUTHOR"].includes(Role) && (
+              <button
+                onClick={() => {
+                  navigate("/AllProduct");
+                }}
+                className="px-3 dark:text-white font-medium py-2 bg-green-400 w-1/2 rounded-sm hover:bg-transparent hover:border-2 border-green-400"
+              >
+                Continue Shopping...
+              </button>
+            )}
           </div>
         ) : (
           filteredOrders?.map((order, index) => (

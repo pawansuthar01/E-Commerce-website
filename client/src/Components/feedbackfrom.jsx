@@ -2,18 +2,29 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { getFeedback, SubmitFeedback } from "../Redux/Slice/feedbackSlice";
+import LoginPrompt from "./loginProment";
 
 const FeedbackForm = () => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
+  const [show, setShow] = useState(false);
   const dispatch = useDispatch();
-  const { userName } = useSelector((state) => state?.auth);
+  const { userName, isLoggedIn } = useSelector((state) => state?.auth);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!rating || !comment || !userName) {
-      toast.error("Please provide both a rating and a comment.");
+    if (!isLoggedIn) {
+      setShow(true);
+    }
+
+    if (!userName) return;
+
+    if (!rating) {
+      document.getElementById("star").classList.add("text-red-500");
+      return;
+    }
+    if (!comment) {
+      document.getElementById("comment").style.borderColor = "red";
       return;
     }
 
@@ -33,20 +44,26 @@ const FeedbackForm = () => {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label
+            id="star"
             htmlFor="rating"
-            className="block text-sm font-medium text-gray-700 dark:text-white"
+            className="block text-sm font-medium "
           >
             Rating
           </label>
-          <div className="mt-2 flex gap-2">
+          <div className="mt-2  flex gap-2">
             {[1, 2, 3, 4, 5].map((star) => (
               <button
                 type="button"
                 key={star}
-                className={`text-xl ${
-                  rating >= star ? "text-yellow-400" : "text-gray-400"
+                className={`text-xl   ${
+                  rating >= star ? "text-yellow-400" : ""
                 }`}
-                onClick={() => setRating(star)}
+                onClick={() => (
+                  setRating(star),
+                  document
+                    .getElementById("star")
+                    .classList.remove("text-red-500")
+                )}
               >
                 ★
               </button>
@@ -63,7 +80,10 @@ const FeedbackForm = () => {
           <textarea
             id="comment"
             value={comment}
-            onChange={(e) => setComment(e.target.value)}
+            onChange={(e) => (
+              setComment(e.target.value),
+              (document.getElementById("comment").style.borderColor = "")
+            )}
             rows="4"
             className="w-full p-2 mt-2 border rounded-md border-gray-300 focus:ring-2 outline-none bg-white focus:ring-blue-500 dark:text-gray-200 dark:bg-gray-700"
             placeholder="Your feedback here..."
@@ -79,6 +99,7 @@ const FeedbackForm = () => {
           {isSubmitting ? "Submitting..." : "Submit Feedback"}
         </button>
       </form>
+      <LoginPrompt setShow={setShow} show={show} />
     </div>
   );
 };

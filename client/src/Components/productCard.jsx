@@ -61,11 +61,12 @@ function ProductCard({ data, onSave, onProductDelete }) {
     loadProfile();
   };
 
-  const handleAddToCart = async (productId) => {
+  const handleAddToCart = async (productId, status) => {
     if (!isLoggedIn) {
       setShow(true);
       return;
     }
+    if (status == "Out stock") return alert("Product Out Stock");
     if (!productExists) {
       setProductExists(true);
 
@@ -120,11 +121,16 @@ function ProductCard({ data, onSave, onProductDelete }) {
       <section className="relative h-full flex justify-center rounded-lg p-5 w-full  group overflow-hidden">
         <img
           src={imageUrl}
+          crossOrigin="anonymous"
           alt="product_image"
           className="rounded-lg max-w-xs:w-[100%] max-w-xs:object-contain  max-w-xs:h-[100%]  transition-transform duration-500 ease-in-out group-hover:scale-110"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          onClick={() => navigate(`/product/${data?._id}`)}
+          onClick={() =>
+            navigate(`/product/${data?._id}`, {
+              state: { ...data },
+            })
+          }
         />
       </section>
       <div className="absolute text-sm flex justify-between w-full ">
@@ -183,7 +189,7 @@ function ProductCard({ data, onSave, onProductDelete }) {
         ) : (
           <button
             title="Add to Cart"
-            onClick={() => handleAddToCart(data._id)}
+            onClick={() => handleAddToCart(data._id, data?.stock)}
             className={`dark:text-white text-2xl text-black w-1/3 flex justify-center `}
           >
             <FiShoppingCart
@@ -201,7 +207,7 @@ function ProductCard({ data, onSave, onProductDelete }) {
         >
           <FiEye
             onClick={() =>
-              navigate("/Description", {
+              navigate(`/product/${data?._id}`, {
                 state: { ...data },
               })
             }

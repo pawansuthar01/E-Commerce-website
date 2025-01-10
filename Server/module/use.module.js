@@ -61,6 +61,11 @@ const UserSchema = new Schema(
           public_id: { type: String },
           secure_url: { type: String },
         },
+        gst: {
+          type: Number,
+        },
+        discount: { type: String },
+        stock: { type: String },
         price: { type: Number },
         description: { type: String },
         addedAt: { type: Date, default: Date.now },

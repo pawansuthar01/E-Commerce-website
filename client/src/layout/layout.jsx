@@ -1,9 +1,16 @@
-import { AiFillCloseCircle } from "react-icons/ai";
+import {
+  AiFillCloseCircle,
+  AiFillHome,
+  AiOutlineInfoCircle,
+  AiOutlinePlusCircle,
+} from "react-icons/ai";
 import { FiMenu } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import { GiShoppingCart } from "react-icons/gi";
 import {
   FaBell,
+  FaBlog,
+  FaBoxOpen,
   FaMagnifyingGlass,
   FaMoon,
   FaSun,
@@ -19,6 +26,14 @@ import { NotificationGet } from "../Redux/Slice/notification.Slice";
 import NotificationCart from "../Page/notification/notification";
 import { getFeedback } from "../Redux/Slice/feedbackSlice";
 import SearchBar from "../Components/SearchBar";
+import {
+  MdAddCircleOutline,
+  MdOutlineAdminPanelSettings,
+  MdOutlineContactPage,
+  MdSpaceDashboard,
+} from "react-icons/md";
+import { BsArrowsCollapse, BsCloudUpload } from "react-icons/bs";
+import { FaUsersCog } from "react-icons/fa";
 
 function Layout({ children, load }) {
   const [loading, setLoading] = useState("");
@@ -72,7 +87,7 @@ function Layout({ children, load }) {
 
   const handleSearch = async (query) => {
     try {
-      navigate("/AllProduct", { state: query });
+      navigate("/Product", { state: query });
     } catch (e) {}
   };
 
@@ -110,7 +125,7 @@ function Layout({ children, load }) {
       if (connection) {
         const slowConnectionTypes = ["slow-2g", "2g"];
         if (slowConnectionTypes.includes(connection.effectiveType)) {
-          navigate("/SlowInternetPage");
+          // navigate("/SlowInternetPage");
         }
       }
     };
@@ -226,41 +241,83 @@ function Layout({ children, load }) {
                 </button>
               </li>
               <li onClick={hideSide} className="pt-5">
-                <Link to="/">Home</Link>
+                <Link to="/">
+                  {" "}
+                  <AiFillHome />
+                  Home
+                </Link>
+              </li>
+
+              <li onClick={hideSide}>
+                <Link to="/Product">
+                  {" "}
+                  <FaBoxOpen />
+                  All Product
+                </Link>
+              </li>
+              <li onClick={hideSide}>
+                <Link to="/Blog">
+                  {" "}
+                  <FaBlog />
+                  Blog
+                </Link>
+              </li>
+
+              <li onClick={hideSide}>
+                <Link to="/Contact">
+                  {" "}
+                  <MdOutlineContactPage />
+                  Contact Us
+                </Link>
+              </li>
+              <li onClick={hideSide}>
+                <Link to="/About">
+                  {" "}
+                  <AiOutlineInfoCircle />
+                  About Us
+                </Link>
               </li>
               {["ADMIN", "AUTHOR"].includes(role) && (
                 <>
+                  <p className="flex items-center gap-1 text-xm">
+                    <MdOutlineAdminPanelSettings size={20} /> Admin Routes
+                  </p>
                   <li onClick={hideSide}>
-                    <Link to="/AddProduct">Add Product</Link>
+                    <Link to="/DashBoard">
+                      <MdSpaceDashboard />
+                      ADMIN Dashboard
+                    </Link>
                   </li>
                   <li onClick={hideSide}>
-                    <Link to="/CarouselUpdate">Carousel Update</Link>
+                    <Link to="/AddProduct">
+                      {" "}
+                      <BsCloudUpload />
+                      Add Product
+                    </Link>
                   </li>
                   <li onClick={hideSide}>
-                    <Link to="/DashBoard">ADMIN Dashboard</Link>
+                    <Link to="/CarouselUpdate">
+                      {" "}
+                      <BsArrowsCollapse />
+                      Carousel Update
+                    </Link>
                   </li>
                   <li onClick={hideSide}>
-                    <Link to="/CarouselUpload">CarouselUpload</Link>
+                    <Link to="/CarouselUpload">
+                      {" "}
+                      <BsCloudUpload />
+                      CarouselUpload
+                    </Link>
                   </li>
                   <li onClick={hideSide}>
-                    <Link to="/BlogUpload">BlogUpload</Link>
+                    <Link to="/BlogUpload">
+                      {" "}
+                      <BsCloudUpload />
+                      BlogUpload
+                    </Link>
                   </li>
                 </>
               )}
-
-              <li onClick={hideSide}>
-                <Link to="/AllProduct">All Product</Link>
-              </li>
-              <li onClick={hideSide}>
-                <Link to="/Blog">Blog</Link>
-              </li>
-
-              <li onClick={hideSide}>
-                <Link to="/Contact">Contact Us</Link>
-              </li>
-              <li onClick={hideSide}>
-                <Link to="/About">About Us</Link>
-              </li>
               {!isLoggedIn && (
                 <li className="w-[90%] absolute bottom-4">
                   <div className="flex items-center justify-center w-full flex-wrap">

@@ -29,6 +29,7 @@ export function ImageUpload({ onImageSelect, initialImages = [] }) {
             <div className=" w-full flex flex-col justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
               {image ? (
                 <img
+                  crossOrigin="anonymous"
                   src={image.secure_url || image}
                   alt={`Preview ${index + 1}`}
                   className="h-20  object-contain"

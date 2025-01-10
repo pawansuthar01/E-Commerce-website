@@ -95,6 +95,7 @@ function BlogCard({ w, data, onDelete }) {
         )}
         <figure>
           <img
+            crossOrigin="anonymous"
             src={Blog?.Post?.secure_url}
             alt="Shoes"
             className="max-h[250px]"

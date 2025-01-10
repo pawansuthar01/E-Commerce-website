@@ -16,7 +16,7 @@ function About() {
     } else if (count >= 1_000) {
       return (count / 1_000).toFixed(1).replace(/\.0$/, "") + "k";
     }
-    return count.toString();
+    return count?.toString();
   }
 
   return (
@@ -85,7 +85,7 @@ function About() {
               {" "}
               {formatCount(TotalFeedbackCount)}
             </h1>
-            <p className="text-xl  ">prodect reviews </p>
+            <p className="text-xl">prodect reviews </p>
           </div>
           <div className="flex flex-col justify-center cursor-pointer  p-5 rounded hover:bg-[#f1d6cb] bg-[#fce7de] dark:bg-[#111825] dark:border-2 border-[#182237] text-center line-clamp-2 sm:min-w-[200px] ">
             <h1 className="text-2xl font-bold capitalize">

@@ -6,6 +6,7 @@ export const Images = ({ images }) => {
         images?.map((productImage, index) => {
           return (
             <img
+              crossOrigin="anonymous"
               key={index}
               src={productImage.secure_url}
               alt="images"

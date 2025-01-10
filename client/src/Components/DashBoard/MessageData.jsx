@@ -62,8 +62,8 @@ const Messages = () => {
     await dispatch(messageMarkARead(id));
   }
   return (
-    <div className="min-h-screen   p-1">
-      <div className="max-w-7xl mx-auto  shadow-xl rounded-lg ">
+    <div className="min-h-screen   p-1 ">
+      <div className="max-w-7xl mx-auto  shadow-xl rounded-lg sm:p-6">
         {/* Filter by Read Status */}
         <div className="mb-6 flex items-center space-x-4">
           <label className="text-lg max-sm:text-sm text-gray-700">

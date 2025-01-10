@@ -29,6 +29,7 @@ export function ImageUpload({ onImageSelect, images }) {
           {preview && (
             <div className="mt-4">
               <img
+                crossOrigin="anonymous"
                 src={preview}
                 alt="Preview"
                 className="h-32 w-auto mx-auto"

@@ -56,14 +56,13 @@ const AdminDashboard = () => {
     }
   };
   const loadProfile = async () => {
-    const res = await dispatch(LoadAccount());
+    await dispatch(LoadAccount());
   };
 
   const fetchData = async () => {
     try {
       const usersRes = await dispatch(getAllUsers());
       const ordersRes = await dispatch(AllOrder());
-
       const paymentsRes = await dispatch(getPaymentRecord());
       const paymentsRe = await dispatch(PaymentData());
       setRazorpay(paymentsRes?.payload?.allPayments?.items);
@@ -76,7 +75,9 @@ const AdminDashboard = () => {
         Admin: usersRes?.payload?.allADMINCount,
         monthlySalesRecord: paymentsRes?.payload?.monthlySalesRecord,
         orders: ordersRes?.payload?.data.length,
-        totalPayments: paymentsRes?.payload?.totalAmount,
+        totalPayments:
+          paymentsRes?.payload?.totalAmount +
+          (paymentsRe?.payload?.data?.receivedAmount || 0),
       });
       setLoading(false);
     } catch (error) {

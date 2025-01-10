@@ -47,10 +47,11 @@ function App() {
             element={<SlowInternetPage />}
           ></Route>
           <Route path="/Search" element={<Product />}></Route>
-          <Route path="/AllProduct" element={<Product />}></Route>
+          <Route path="/Product" element={<Product />}></Route>
           <Route path="/Contact" element={<Contact />}></Route>
           <Route path="/api/v3/user/order/:id" element={<OrderDetails />} />
           <Route path="/blog/:id" element={<BlogDetails />} />
+          <Route path="/Description" element={<ProductDescription />}></Route>
           <Route path="/product/:id" element={<ProductDescription />}></Route>
           <Route
             element={<RequireAuth allowedRole={["USER", "ADMIN", "AUTHOR"]} />}
@@ -70,8 +71,6 @@ function App() {
           <Route element={<RequireAuth allowedRole={["USER"]} />}>
             <Route path="/Profile" element={<Profile />}></Route>
             <Route path="/Blog" element={<Blog />}></Route>
-
-            <Route path="/Description" element={<ProductDescription />}></Route>
           </Route>
           <Route element={<RequireAuth allowedRole={["ADMIN", "AUTHOR"]} />}>
             <Route path="/AddProduct" element={<AddProduct />}></Route>
