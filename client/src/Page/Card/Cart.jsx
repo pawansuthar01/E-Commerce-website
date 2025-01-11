@@ -7,6 +7,7 @@ import { RemoveProductCard } from "../../Redux/Slice/ProductSlice";
 import LoadingButton from "../../constants/LoadingBtn";
 import { MdCurrencyRupee } from "react-icons/md";
 import { formatPrice } from "../Product/format";
+import { FiShoppingCart } from "react-icons/fi";
 
 const Cart = () => {
   const [cart, setCart] = useState([]);
@@ -49,15 +50,11 @@ const Cart = () => {
     setLoadingStates((prev) => ({ ...prev, [productId]: true }));
 
     const res = await dispatch(RemoveProductCard(productId));
-    if (res) {
-      await loadProfile();
+    if (res.payload.success) {
+      setCart(res?.payload?.userFind?.walletAddProducts || 0);
     }
 
     setLoadingStates((prev) => ({ ...prev, [productId]: false }));
-  };
-  const handelPlaceOrder = () => {
-    const data = cart.forEach((product) => product.stock == "In stock");
-    console.log(data);
   };
 
   useEffect(() => {
@@ -91,17 +88,21 @@ const Cart = () => {
           <>
             <h2 className="text-2xl font-bold mb-4">Your Cart</h2>
             {cart?.length === 0 ? (
-              <div className="flex flex-col items-center gap-5">
-                <p className="text-gray-600 text-2xl capitalize">
-                  No Product In cart...
+              <div className="flex flex-col items-center justify-center h-screen text-center">
+                <FiShoppingCart size={80} className="text-gray-400 mb-4" />
+                <h2 className="text-2xl font-semibold text-gray-600">
+                  Your Cart is Empty
+                </h2>
+                <p className="text-gray-500 mt-2">
+                  Looks like you haven't added anything to your cart yet.
                 </p>
                 <button
                   onClick={() => {
                     navigate("/Product");
                   }}
-                  className="px-3 font-medium py-2 bg-green-400 rounded-xl hover:bg-transparent hover:border-2 border-green-400"
+                  className="mt-6 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                 >
-                  Continue Shopping...
+                  Start Shopping
                 </button>
               </div>
             ) : (
@@ -206,35 +207,39 @@ const Cart = () => {
                     </tbody>
                   </table>
                 </div>
-                <div className="flex justify-between flex-wrap max-sm:justify-center gap-10  px-5 mt-4 w-full items-start">
+                <div className="flex justify-between flex-wrap max-sm:justify-center gap-10   mt-4 w-full items-start">
                   <button
                     onClick={() => {
-                      navigate("/AllProduct");
+                      navigate("/Product");
                     }}
-                    className="px-3 font-medium py-2 bg-green-400 rounded-xl hover:bg-transparent hover:border-2 border-green-400"
+                    className="px-6 py-3 bg-gradient-to-r from-green-500 to-green-400 text-white font-medium text-sm rounded-lg shadow-md hover:from-transparent hover:to-transparent hover:text-green-500 hover:border hover:border-green-400 transition-all duration-300"
                   >
                     Continue Shopping...
                   </button>
 
-                  <div className="flex gap-2 flex-col   p-2 rounded-md">
-                    <header className="text-black dark:text-white font-medium text-2xl">
+                  <div className="flex flex-col gap-4 p-4 bg-white dark:bg-[#1f2937] shadow-md rounded-lg">
+                    {/* Header Section */}
+                    <header className="text-gray-800 dark:text-gray-100 font-semibold text-2xl text-center">
                       Cart Total
-                      <hr className="h-1 bg-slate-500" />
+                      <hr className="h-1 mt-2 bg-green-500 rounded-md" />
                     </header>
-                    <div className="text-xl grid grid-cols-2 dark:text-white text-black font-normal ">
-                      <p>Total Amount =</p>{" "}
-                      <h1 className="flex items-center text-2xl">
-                        <MdCurrencyRupee />
-                        {calculateTotalAmount()}
+
+                    {/* Total Amount */}
+                    <div className="grid grid-cols-2 items-center text-gray-700 dark:text-gray-300 font-medium text-lg">
+                      <p>Total Amount:</p>
+                      <h1 className="text-2xl font-bold text-green-600 dark:text-green-400 flex items-center">
+                        {formatPrice(calculateTotalAmount())}
                       </h1>
                     </div>
+
+                    {/* Place Order Button */}
                     <button
                       onClick={() => {
                         navigate("/CheckoutForm", {
                           state: { ...quantities },
                         });
                       }}
-                      className="px-5 py-2 text-xl text-white font-normal bg-green-500 rounded-sm"
+                      className="w-full py-3 text-lg font-medium text-white bg-gradient-to-r from-green-500 to-green-400 rounded-lg hover:bg-gradient-to-r hover:from-green-600 hover:to-green-500 transition-all duration-300"
                     >
                       Place Order
                     </button>

@@ -339,41 +339,54 @@ export const getAllProduct = async (req, res, next) => {
 export const LikeAndDisLikeProduct = async (req, res, next) => {
   const { id } = req.params;
   const { userName } = req.user;
+
   if (!userName) {
-    return next(new AppError("username is required ..", 400));
+    return next(new AppError("Username is required.", 400));
   }
+
   if (!id) {
-    return next(new AppError("postId is required ..", 400));
+    return next(new AppError("Product ID is required.", 400));
   }
+
   try {
     const product = await Product.findOne({
       _id: id,
     });
 
     if (!product) {
-      return next(new AppError("product does not found. ..", 400));
+      return next(new AppError("Product not found.", 400));
     }
+
     const likeIndex = product.ProductLikes.findIndex(
       (like) => like.userName === userName
     );
 
     if (likeIndex !== -1) {
-      if (product.ProductLikes[likeIndex].ProductLike === "TRUE") {
+      if (product.ProductLikes[likeIndex].ProductLike === true) {
         product.ProductLikes.splice(likeIndex, 1);
       } else {
-        product.ProductLikes[likeIndex].ProductLike = "TRUE";
+        product.ProductLikes[likeIndex].ProductLike = true;
       }
     } else {
-      product.ProductLikes.push({ userName, ProductLike: "TRUE" });
+      product.ProductLikes.push({ ProductLike: true, userName: userName });
     }
+
     product.likeCount = product.ProductLikes.filter(
-      (like) => like.ProductLike == "TRUE"
+      (like) => like.ProductLike === true
     ).length;
+
+    product.ProductLikes = product.ProductLikes.map((like) => ({
+      ...like,
+      ProductLike:
+        typeof like.ProductLike === "boolean" ? like.ProductLike : false, // enforce boolean
+    }));
+
     await product.save();
+
     res.status(200).json({
       success: true,
       product,
-      message: "product successfully like...",
+      message: "Product successfully liked or disliked.",
     });
   } catch (error) {
     return next(new AppError(error.message, 400));

@@ -11,7 +11,7 @@ import {
 const FeedbackList = () => {
   const dispatch = useDispatch();
   const { Feedback: feedback } = useSelector((state) => state?.feedback);
-  const { userName } = useSelector((state) => state?.auth);
+  const { userName, role } = useSelector((state) => state?.auth);
 
   const [displayedFeedback, setDisplayedFeedback] = useState([]);
   const [filter, setFilter] = useState("all");
@@ -41,8 +41,8 @@ const FeedbackList = () => {
       ...filteredFeedback.filter((fb) => fb.userName !== userName),
     ];
 
-    const startIndex = (page - 1) * 10;
-    const paginatedFeedback = sortedFeedback.slice(startIndex, startIndex + 10);
+    const startIndex = (page - 1) * 5;
+    const paginatedFeedback = sortedFeedback.slice(0, startIndex + 5);
 
     setDisplayedFeedback(paginatedFeedback);
   }, [filter, page, feedback, userName]);
@@ -89,7 +89,7 @@ const FeedbackList = () => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto mt-10 px-4">
+    <div className="w-full max-w-4xl mx-auto mt-10 px-4 mb-2">
       <h2 className="text-3xl font-semibold mb-6 text-center text-gray-800 dark:text-white">
         User Feedbacks
       </h2>
@@ -137,15 +137,20 @@ const FeedbackList = () => {
               <span className="text-lg font-medium text-gray-800 dark:text-white">
                 {fb.userName || "Anonymous"}
               </span>
+              {fb.userName === userName ||
+                (["ADMIN", "AUTHOR"].includes(role) && (
+                  <span className="flex gap-2">
+                    <AiOutlineDelete
+                      size={26}
+                      className="text-red-400 cursor-pointer"
+                      onClick={() => {
+                        handelDeleteFeedback(fb._id);
+                      }}
+                    />
+                  </span>
+                ))}
               {fb.userName === userName && (
                 <span className="flex gap-2">
-                  <AiOutlineDelete
-                    size={26}
-                    className="text-red-400 cursor-pointer"
-                    onClick={() => {
-                      handelDeleteFeedback(fb._id);
-                    }}
-                  />
                   <FiEdit
                     size={26}
                     className="cursor-pointer text-blue-400 hover:text-blue-300"

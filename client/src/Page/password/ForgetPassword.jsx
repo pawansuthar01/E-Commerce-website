@@ -8,28 +8,34 @@ const ForgetPassword = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(true);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     if (!email) {
       document.getElementById("email").style.borderColor = "red";
+      setLoading(false);
       return;
     }
     if (!isEmail(email)) {
       document.getElementById("email").style.borderColor = "red";
+      setLoading(false);
       return;
     }
     const res = await dispatch(SendPasswordResatEmail(email));
-    console.log(res);
+    setLoading(false);
     if (res.payload?.success) {
       setSuccess(true);
       setMessage("A password reset link has been sent to your email.");
+      setEmail("");
       return;
     }
     setSuccess(false);
     setMessage("Something went wrong,please try text Time..");
+    setEmail("");
   };
 
   return (
@@ -55,15 +61,19 @@ const ForgetPassword = () => {
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
               placeholder="Enter your email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => (
+                setEmail(e.target.value),
+                (document.getElementById("email").style.borderColor = "")
+              )}
               required
             />
           </div>
           <button
             type="submit"
+            disabled={loading}
             className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300"
           >
-            Send Reset Link
+            {loading ? "Sending..." : "Send Reset Link"}
           </button>
         </form>
         {message && (

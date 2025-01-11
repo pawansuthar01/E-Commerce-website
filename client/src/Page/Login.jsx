@@ -183,8 +183,11 @@ function Login() {
                   color={"bg-green-500"}
                 />
               </div>
-              <p className="mt-1 text-center">
-                <Link to="/ForgetPassword" className="link text-blue-600 pl-1">
+              <p className=" text-center my-2">
+                <Link
+                  to="/ForgetPassword"
+                  className="  hover:text-blue-600 pl-1"
+                >
                   Forget Password
                 </Link>
               </p>

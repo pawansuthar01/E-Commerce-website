@@ -13,6 +13,7 @@ import { AiOutlineDelete } from "react-icons/ai";
 import toast from "react-hot-toast";
 import { LoadAccount } from "../Redux/Slice/authSlice";
 import LoginPrompt from "./loginProment";
+import { formatPrice } from "../Page/Product/format";
 
 function ProductCard({ data, onSave, onProductDelete }) {
   const navigate = useNavigate();
@@ -134,7 +135,7 @@ function ProductCard({ data, onSave, onProductDelete }) {
         />
       </section>
       <div className="absolute text-sm flex justify-between w-full ">
-        {data?.discount && (
+        {data?.discount > 0 && (
           <p className=" ml-2 rounded-xl py-1 px-3 bg-red-300 shadow-[0_1px_0_black] dark:shadow-[0_1px_0_white] ">
             {data?.discount}% off
           </p>
@@ -149,20 +150,19 @@ function ProductCard({ data, onSave, onProductDelete }) {
         {data.name}
       </p>
       <p className="dark:text-white text-black font-bold flex justify-center    items-center">
-        <MdCurrencyRupee />{" "}
+        {}
         {data?.discount
-          ? (
+          ? formatPrice(
               data?.price +
-              (data?.price * data?.gst) / 100 -
-              ((data?.price + (data?.price * data?.gst) / 100) *
-                data?.discount) /
-                100
-            ).toFixed(2)
-          : (data?.price + (data?.price * data?.gst) / 100).toFixed(2)}
+                (data?.price * data?.gst) / 100 -
+                ((data?.price + (data?.price * data?.gst) / 100) *
+                  data?.discount) /
+                  100
+            )
+          : formatPrice(data?.price + (data?.price * data?.gst) / 100)}
         {data?.discount > 0 && (
-          <span className="line-through text-gray-500 text-sm flex  items-center">
-            <MdCurrencyRupee />{" "}
-            {(data?.price + (data?.price * data?.gst) / 100).toFixed(2)}
+          <span className="line-through text-gray-500 text-sm   ">
+            {formatPrice(data?.price + (data?.price * data?.gst) / 100)}
             /-
           </span>
         )}

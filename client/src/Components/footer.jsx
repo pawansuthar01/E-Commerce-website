@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa6";
 import { useTheme } from "./ThemeContext"; // Importing the useTheme hook
 
@@ -9,6 +9,9 @@ function Footer() {
   const navigate = useNavigate();
   const { darkMode } = useTheme(); // Get darkMode state from ThemeContext
 
+  const handelNavigatePrivacyPolicy = () => {
+    navigate("/App/privacy-policy");
+  };
   return (
     <footer className="relative py-4 bottom-0 border-t-2 border-[#0005] left-0 w-full ">
       <h1 className="text-center text-3xl font-semibold">KGS DOORS</h1>
@@ -69,7 +72,15 @@ function Footer() {
           darkMode ? "text-gray-300" : "text-gray-700"
         }`}
       >
-        <h1>Copyright {year} | All rights reserved</h1>
+        <div className="flex justify-evenly w-full">
+          <h1>Copyright {year} | All rights reserved</h1>
+          <Link
+            onClick={() => handelNavigatePrivacyPolicy()}
+            className="text-blue-500 hover:underline"
+          >
+            Privacy Policy
+          </Link>
+        </div>
         <div className="flex gap-2 mt-1 max-sm:justify-center">
           <FaInstagram
             className={`w-[22px] h-[22px] hover:text-yellow-500 cursor-pointer ${

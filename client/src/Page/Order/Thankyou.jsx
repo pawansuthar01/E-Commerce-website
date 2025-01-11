@@ -4,10 +4,11 @@ import { useLocation } from "react-router-dom";
 import { MdCurrencyRupee } from "react-icons/md";
 import FeedbackForm from "../../Components/feedbackfrom";
 import FeedbackList from "../../Components/feedbackList";
+import { formatPrice } from "../Product/format";
 
 const ThankYou = () => {
   const { state } = useLocation();
-  useEffect(() => {}, []);
+  console.log(state);
   return (
     <Layout>
       <div className="bg-gray-100 dark:bg-[#1F2937] flex flex-col justify-center items-center w-full ">
@@ -27,8 +28,10 @@ const ThankYou = () => {
                 <strong>Date:</strong> {state.data.createdAt}
               </div>
               <div className="text-gray-700 dark:text-white flex items-center">
-                <strong>Total:</strong> <MdCurrencyRupee />
-                <p className="font-medium">{state.data.totalAmount}/-</p>
+                <strong>Total:</strong>
+                <p className="font-medium">
+                  {formatPrice(state.data.totalAmount)}/-
+                </p>
               </div>
               <div className="text-gray-700 dark:text-white">
                 <strong>Payment Method:</strong> {state.data.PaymentMethod}
@@ -65,7 +68,18 @@ const ThankYou = () => {
                         {product.productDetails.name} × {product.quantity}
                       </td>
                       <td className="border font-bold border-gray-300 px-4 py-2 text-right">
-                        {Number(product.productDetails.price).toFixed(2)}
+                        {formatPrice(
+                          product.productDetails.price +
+                            (product.productDetails.price *
+                              product.productDetails.gst) /
+                              100 -
+                            ((product.productDetails.price +
+                              (product.productDetails.price *
+                                product.productDetails.gst) /
+                                100) *
+                              product.productDetails?.discount || 0) /
+                              100
+                        )}
                       </td>
                     </tr>
                     <tr>
@@ -73,7 +87,19 @@ const ThankYou = () => {
                         Subtotal:
                       </td>
                       <td className="border border-gray-300 px-4 py-2 text-right font-bold">
-                        {(Number(product.price) * product.quantity).toFixed(2)}
+                        {formatPrice(
+                          product.productDetails.price +
+                            (product.productDetails.price *
+                              product.productDetails.gst) /
+                              100 -
+                            (((product.productDetails.price +
+                              (product.productDetails.price *
+                                product.productDetails.gst) /
+                                100) *
+                              product.productDetails?.discount || 0) /
+                              100) *
+                              product.quantity
+                        )}
                       </td>
                     </tr>
                     <tr>

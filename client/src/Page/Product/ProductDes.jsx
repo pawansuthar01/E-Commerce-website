@@ -108,7 +108,6 @@ function ProductDescription() {
   };
   const handelPlaceOrder = (productId, quantities, status) => {
     if (status == "Out stock") return alert("Product Out Stock");
-    console.log(status);
     navigate("/CheckoutForm", {
       state: { quantities, ProductId },
     });

@@ -35,13 +35,15 @@ export const CreateOrder = async (req, res, next) => {
           image: productFound.images[0],
           description: productFound.description,
           price: productFound.price,
+          gst: productFound.gst,
+          discount: productFound.discount,
         },
         quantity: product.quantity,
         price: productFound.price,
       };
     })
   );
-
+  console.log(productDetails);
   const newOrder = new Order({
     userId,
     products: productDetails,

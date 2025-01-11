@@ -32,9 +32,7 @@ export const AddCardProduct = async (req, res, next) => {
     const productImage = FindProduct.images
       ? FindProduct.images[0]
       : { public_id: null, secure_url: null };
-    console.log("GST:", FindProduct.gst);
-    console.log("Stock:", FindProduct.stock);
-    console.log("Discount:", FindProduct.discount);
+
     userFind.walletAddProducts.push({
       product: FindProduct._id,
       name: FindProduct.name,
@@ -48,7 +46,6 @@ export const AddCardProduct = async (req, res, next) => {
         secure_url: productImage.secure_url,
       },
     });
-    console.log(userFind.walletAddProducts);
     await userFind.save();
 
     res.status(200).json({

@@ -34,6 +34,13 @@ const OrderSchema = new Schema({
           type: Number,
           required: true,
         },
+        gst: {
+          type: Number,
+          required: true,
+        },
+        discount: {
+          type: Number,
+        },
       },
       quantity: {
         type: Number,

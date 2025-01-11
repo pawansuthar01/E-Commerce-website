@@ -29,12 +29,14 @@ import SingleProduct from "./Page/Product/ProudctDetalis";
 import ForgetPassword from "./Page/password/ForgetPassword";
 import UpdatePassword from "./Page/password/updatePassword";
 import ChangePassword from "./Page/password/changePassword";
+import PrivacyPolicy from "./Page/PrivacyPolicy";
 function App() {
   return (
     <ThemeProvider>
       <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
         <Routes>
           <Route path="/" element={<HomePage />}></Route>
+          <Route path="/App/privacy-policy" element={<PrivacyPolicy />}></Route>
           <Route path="/Login" element={<Login />}></Route>
           <Route path="/ForgetPassword" element={<ForgetPassword />}></Route>
           <Route

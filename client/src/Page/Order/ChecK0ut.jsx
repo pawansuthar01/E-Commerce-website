@@ -188,7 +188,7 @@ function CheckoutPage() {
             } else {
               setError(true),
                 setLoading(false),
-                setMessage("Payment is Fail 💔 please try again..");
+                setMessage("Payment is Fail, please try again..");
             }
           },
           prefill: {
@@ -204,7 +204,8 @@ function CheckoutPage() {
         const paymentObject = new window.Razorpay(options);
         paymentObject.open();
       } catch (error) {
-        toast.error("Error processing payment");
+        setError(true);
+        setMessage("Error processing payment");
       } finally {
         setLoading(false);
       }
@@ -241,7 +242,10 @@ function CheckoutPage() {
         }
         loadProfile();
         setShowLoading(false);
-        navigate("/ThankYou", { state: { data: res?.payload?.data } });
+        navigate("/ThankYou", {
+          state: { data: res?.payload?.data },
+          replace: true,
+        });
       }
     }
   };
@@ -290,7 +294,6 @@ function CheckoutPage() {
       phoneNumber: phone,
     });
   }, [name, email, phone]);
-  console.log(cart);
   return (
     <Layout>
       {showLoading && (
@@ -346,12 +349,13 @@ function CheckoutPage() {
                     value={shippingInfo.country}
                     name="country"
                     id="country"
-                    className="form-control mt-1 w-full dark:bg-[#111827] bg-white  border p-2 rounded"
+                    autoComplete="country"
+                    className="form-control mt-1 w-full dark:bg-[#111827] bg-white border p-2 rounded"
                   />
                 </div>
 
                 <div className="flex flex-wrap mb-4">
-                  <div className="w-full  pr-2 mb-4 md:mb-0">
+                  <div className="w-full pr-2 mb-4 md:mb-0">
                     <label
                       htmlFor="name"
                       className="block dark:text-white text-black"
@@ -364,7 +368,8 @@ function CheckoutPage() {
                       value={shippingInfo.name}
                       name="name"
                       id="name"
-                      className="form-control mt-1 w-full dark:bg-[#111827] bg-white  border p-2 rounded"
+                      autoComplete="name"
+                      className="form-control mt-1 w-full dark:bg-[#111827] bg-white border p-2 rounded"
                     />
                   </div>
                 </div>
@@ -372,7 +377,7 @@ function CheckoutPage() {
                 {/* Address */}
                 <div className="mb-4">
                   <label
-                    htmlFor="c_address"
+                    htmlFor="address"
                     className="block dark:text-white text-black"
                   >
                     Address <span className="text-red-500">*</span>
@@ -383,8 +388,9 @@ function CheckoutPage() {
                     value={shippingInfo.address}
                     id="address"
                     name="address"
+                    autoComplete="address-line1"
                     placeholder="Street address"
-                    className="form-control mt-1 w-full dark:bg-[#111827] bg-white  border p-2 rounded"
+                    className="form-control mt-1 w-full dark:bg-[#111827] bg-white border p-2 rounded"
                   />
                 </div>
 
@@ -394,6 +400,7 @@ function CheckoutPage() {
                     name="address2"
                     onChange={handelUserInput}
                     value={shippingInfo.address2}
+                    autoComplete="address-line2"
                     placeholder="Apartment, suite, unit etc. (optional)"
                     className="form-control mt-1 w-full dark:bg-[#111827] bg-white border p-2 rounded"
                   />
@@ -413,7 +420,8 @@ function CheckoutPage() {
                       name="city"
                       type="text"
                       id="city"
-                      className="form-control mt-1 w-full dark:bg-[#111827]  bg-white  border p-2 rounded"
+                      autoComplete="address-level2"
+                      className="form-control mt-1 w-full dark:bg-[#111827] bg-white border p-2 rounded"
                     />
                   </div>
                   <div className="w-full md:w-1/2 pr-2 mb-4 md:mb-0">
@@ -429,7 +437,8 @@ function CheckoutPage() {
                       name="state"
                       type="text"
                       id="state"
-                      className="form-control mt-1 w-full dark:bg-[#111827] bg-white  border p-2 rounded"
+                      autoComplete="address-level1"
+                      className="form-control mt-1 w-full dark:bg-[#111827] bg-white border p-2 rounded"
                     />
                   </div>
                   <div className="w-full md:w-1/2 pl-2">
@@ -445,7 +454,8 @@ function CheckoutPage() {
                       value={shippingInfo.postalCode}
                       name="postalCode"
                       id="postalCode"
-                      className="form-control mt-1 w-full dark:bg-[#111827] bg-white  border p-2 rounded"
+                      autoComplete="postal-code"
+                      className="form-control mt-1 w-full dark:bg-[#111827] bg-white border p-2 rounded"
                     />
                   </div>
                 </div>
@@ -464,7 +474,8 @@ function CheckoutPage() {
                       name="email"
                       type="email"
                       id="email"
-                      className="form-control mt-1 w-full dark:bg-[#111827] bg-white  border p-2 rounded"
+                      autoComplete="email"
+                      className="form-control mt-1 w-full dark:bg-[#111827] bg-white border p-2 rounded"
                     />
                   </div>
                   <div className="w-full md:w-1/2 pl-2">
@@ -478,10 +489,11 @@ function CheckoutPage() {
                       onChange={handelUserInput}
                       value={shippingInfo.phoneNumber}
                       name="phoneNumber"
-                      type="number"
+                      type="tel"
                       id="phoneNumber"
+                      autoComplete="tel"
                       placeholder="Phone Number"
-                      className="form-control mt-1 w-full dark:bg-[#111827] bg-white  border p-2 rounded"
+                      className="form-control mt-1 w-full dark:bg-[#111827] bg-white border p-2 rounded"
                     />
                   </div>
                 </div>
@@ -542,7 +554,9 @@ function CheckoutPage() {
                               {formatPrice(basePrice)}
                             </td>
                             <td className="text-center">
-                              {product?.discount ? formatPrice(discount) : "-"}
+                              {product?.discount > 0
+                                ? formatPrice(discount)
+                                : "-"}
                             </td>
                             <td className="text-center">
                               {formatPrice(finalPrice)}

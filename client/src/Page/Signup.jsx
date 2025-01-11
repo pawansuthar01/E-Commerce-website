@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import Footer from "../Components/footer";
 import { BsPersonCircle } from "react-icons/bs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Layout from "../layout/layout";
 import LoadingButton from "../constants/LoadingBtn";
 import toast from "react-hot-toast";
@@ -17,6 +17,7 @@ import { CreateAccount } from "../Redux/Slice/authSlice";
 function SignUp() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [checkPrivacyPolicy, setCheckPrivacyPolicy] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [loading, setLoading] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
@@ -67,7 +68,11 @@ function SignUp() {
   const handleCreate = async (event) => {
     event.preventDefault();
     setLoading(true);
-
+    if (!checkPrivacyPolicy) {
+      document.getElementById("PrivacyPolicyCheckbox").style.color = "red";
+      setLoading(false);
+      return;
+    }
     if (!SignUpData.avatar) {
       setLoading(false);
       document.getElementById("uploadImage").style.borderColor = "red";
@@ -388,6 +393,27 @@ function SignUp() {
                 />
               </div>
             </form>
+            <div className="my-2 flex gap-1">
+              <input
+                type="checkbox"
+                value={checkPrivacyPolicy}
+                onChange={() => (
+                  setCheckPrivacyPolicy(!checkPrivacyPolicy),
+                  (document.getElementById(
+                    "PrivacyPolicyCheckbox"
+                  ).style.color = "")
+                )}
+                className="cursor-pointer "
+              />
+              <p
+                onClick={() => navigate("/App/privacy-policy")}
+                id="PrivacyPolicyCheckbox"
+                name="PrivacyPolicyCheckbox"
+                className="hover:underline hover:text-blue-500 text-sm cursor-pointer "
+              >
+                Privacy Policy
+              </p>
+            </div>
             <div className="flex items-center justify-center mt-4">
               <p className="text-sm text-gray-500 dark:text-gray-300">
                 Already have an account?{" "}
