@@ -6,6 +6,7 @@ import OrderRedux from "./Slice/OrderSlice";
 import NotificationSliceRedux from "./Slice/notification.Slice";
 import FeedbackRedux from "./Slice/feedbackSlice";
 import CarouselRedux from "./Slice/CarouselSlice.js";
+import ShopRedux from "./Slice/shopInfoSlice.js";
 const Store = configureStore({
   reducer: {
     auth: authSliceRedux,
@@ -15,6 +16,7 @@ const Store = configureStore({
     notification: NotificationSliceRedux,
     feedback: FeedbackRedux,
     carousel: CarouselRedux,
+    ShopInfo: ShopRedux,
   },
   devTools: true,
 });

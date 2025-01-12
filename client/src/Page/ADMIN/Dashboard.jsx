@@ -16,6 +16,7 @@ import { LoadingCart } from "../../Components/DashBoard/Loader";
 import { OrderCart } from "../../Components/OrderDataCart";
 import { GetMessage } from "../../Redux/Slice/feedbackSlice";
 import Messages from "../../Components/DashBoard/MessageData";
+import ShopInformationForm from "../../Components/shopInfo";
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
@@ -169,7 +170,7 @@ const AdminDashboard = () => {
 
         <DashBoard stats={stats} show={activeButton === 1} orders={orders} />
         <UsersCart showUser={activeButton === 2} users={users} />
-        {activeButton === 3 && <OrderCart />}
+        {activeButton === 3 && <ShopInformationForm />}
         <ProductsCart
           currentPage={currentPage}
           totalPages={totalPages}

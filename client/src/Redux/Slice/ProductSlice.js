@@ -171,30 +171,7 @@ export const checkInStock = createAsyncThunk(
     }
   }
 );
-export const RemoveProductCard = createAsyncThunk(
-  "/product/RemoveProduct",
-  async (id) => {
-    try {
-      const token = localStorage.getItem("Authenticator");
 
-      const res = await axiosInstance.put(
-        "/api/v3/Card/v2/RemoveProduct",
-        {
-          productId: id,
-        },
-        {
-          headers: {
-            Authorization: ` ${token}`,
-          },
-        }
-      );
-
-      return res.data;
-    } catch (error) {
-      return error?.response?.data || error?.message || "Something went wrong";
-    }
-  }
-);
 export const AllRemoveCardProduct = createAsyncThunk(
   "/product/AllRemoveCardProduct",
   async (id) => {

@@ -30,6 +30,7 @@ import {
   AllMessageGet,
   messageMarkARead,
 } from "../Controllers/feedback.Controller.js";
+import { InformationSet } from "../Controllers/Shop.Controller.js";
 const ADMINRouter = Router();
 
 ADMINRouter.route("/User")
@@ -47,6 +48,12 @@ ADMINRouter.get(
   isLoggedIn,
   authorizeRoles("ADMIN", "AUTHOR"),
   getPaymentData
+);
+ADMINRouter.post(
+  "/info",
+  isLoggedIn,
+  authorizeRoles("ADMIN", "AUTHOR"),
+  InformationSet
 );
 
 ADMINRouter.get(

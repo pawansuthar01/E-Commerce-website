@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const ProfessionalShippingLabel = ({ Order, setShowPrint }) => {
   const [order, setOrder] = useState(Order);
   const labelRef = useRef();
+  const { phoneNumber, address } = useSelector((state) => state?.ShopInfo);
   const domain =
     window.location.hostname +
     (window.location.port ? `:${window.location.port}` : "");
@@ -133,10 +135,10 @@ const ProfessionalShippingLabel = ({ Order, setShowPrint }) => {
               <p>
                 <strong>Company:</strong> KGS DOORS
                 <br />
-                <strong>Address:</strong> 21 word hanumangarh raod ,sangriya ,
-                335065
+                <strong>Address:</strong>
+                {address}
                 <br />
-                <strong>Contact:</strong> +91-9950352887
+                <strong>Contact:</strong>+91 {phoneNumber || "9950352887"}
               </p>
             </div>
 

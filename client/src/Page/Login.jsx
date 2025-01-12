@@ -96,9 +96,9 @@ function Login() {
   return (
     <Layout>
       <div className="w-full relative top-[-64px]">
-        <div className="min-h-[70vh] justify-center flex items-center">
+        <div className="min-h-[80vh] justify-center flex items-center">
           <div
-            className={`w-[400px] rounded-lg p-8 h-[350px] max-sm:m-9 shadow-[0_0_5px_black] mt-auto ${
+            className={` rounded-lg p-9  max-sm:m-9 shadow-[0_0_5px_black] mt-auto ${
               darkMode ? "bg-gray-800 text-white" : "bg-white text-black"
             }`}
           >

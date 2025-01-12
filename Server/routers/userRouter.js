@@ -20,6 +20,7 @@ import {
   SubmitFeedback,
 } from "../Controllers/feedback.Controller.js";
 import { getAllCarousel } from "../Controllers/CarouselController.js";
+import { getShopInfo } from "../Controllers/Shop.Controller.js";
 const UserRouter = Router();
 UserRouter.post("/register", upload.single("avatar"), RegisterUser);
 UserRouter.post("/login", login);
@@ -29,6 +30,7 @@ UserRouter.get("/getFeedback", getFeedback);
 UserRouter.put("/feedback/:id", isLoggedIn, editFeedback);
 UserRouter.delete("/feedback/:id", isLoggedIn, FeedbackDelete);
 UserRouter.get("/logout", logout);
+UserRouter.get("/info", getShopInfo);
 UserRouter.get("/Carousel", getAllCarousel);
 UserRouter.get("/getProfile", isLoggedIn, getProfile);
 UserRouter.post("/resetPassword", resetPassword);

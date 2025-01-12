@@ -67,35 +67,4 @@ export const celebrities = [
     ],
     slideNumber: 5,
   },
-  {
-    name: "wellCome KGS DOORS ",
-    description:
-      "Success is a lousy teacher. It seduces smart people into thinking they can’t lose.",
-
-    images: [
-      {
-        secure_url: image6,
-      },
-    ],
-    slideNumber: 6,
-  },
-  {
-    name: "wellCome sofa ",
-    description:
-      "Success is a lousy teacher. It seduces smart people into thinking they can’t lose.",
-    images: [
-      {
-        secure_url: image7,
-      },
-    ],
-    slideNumber: 7,
-  },
-
-  {
-    name: "wellCome Chair ",
-    description:
-      "Success is a lousy teacher. It seduces smart people into thinking they can’t lose.",
-    images: [{ secure_url: image8 }],
-    slideNumber: 8,
-  },
 ];

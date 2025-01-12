@@ -2,13 +2,15 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa6";
 import { useTheme } from "./ThemeContext"; // Importing the useTheme hook
+import { useSelector } from "react-redux";
 
 function Footer() {
   const currentData = new Date();
   const year = currentData.getFullYear();
   const navigate = useNavigate();
   const { darkMode } = useTheme(); // Get darkMode state from ThemeContext
-
+  const { phoneNumber, email, address, instagram, youtube, facebook } =
+    useSelector((state) => state?.ShopInfo);
   const handelNavigatePrivacyPolicy = () => {
     navigate("/App/privacy-policy");
   };
@@ -58,12 +60,20 @@ function Footer() {
             >
               Contact
             </h1>
-            <li className="cursor-pointer hover:text-blue-800">
-              Kgs@gamil.com
-            </li>
-            <li className="cursor-pointer hover:text-blue-800">
-              +91 9950352887
-            </li>
+            <a
+              className="cursor-pointer hover:text-blue-800"
+              href={`mailto:${email || ""}`}
+            >
+              {email || ""}
+            </a>
+
+            <a
+              className="cursor-pointer hover:text-blue-800"
+              href={`tel:${phoneNumber || "+91 9950352887"}`}
+            >
+              +91 {phoneNumber || "9950352887"}
+            </a>
+            <p className=" line-clamp-2 ">{address}</p>
           </ul>
         </div>
       </div>
@@ -82,21 +92,40 @@ function Footer() {
           </Link>
         </div>
         <div className="flex gap-2 mt-1 max-sm:justify-center">
-          <FaInstagram
-            className={`w-[22px] h-[22px] hover:text-yellow-500 cursor-pointer ${
-              darkMode ? "text-white" : "text-gray-700"
-            }`}
-          />
-          <FaFacebook
-            className={`w-[22px] h-[22px] hover:text-yellow-500 cursor-pointer ${
-              darkMode ? "text-white" : "text-gray-700"
-            }`}
-          />
-          <FaYoutube
-            className={`w-[22px] h-[22px] hover:text-yellow-500 cursor-pointer ${
-              darkMode ? "text-white" : "text-gray-700"
-            }`}
-          />
+          <a
+            href={`http://${instagram || ""}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaInstagram
+              className={`w-[22px] h-[22px] hover:text-yellow-500 cursor-pointer ${
+                darkMode ? "text-white" : "text-gray-700"
+              }`}
+            />
+          </a>
+
+          <a
+            href={`http://${facebook || ""}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaFacebook
+              className={`w-[22px] h-[22px] hover:text-yellow-500 cursor-pointer ${
+                darkMode ? "text-white" : "text-gray-700"
+              }`}
+            />
+          </a>
+          <a
+            href={`http://${youtube || ""}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaYoutube
+              className={`w-[22px] h-[22px] hover:text-yellow-500 cursor-pointer ${
+                darkMode ? "text-white" : "text-gray-700"
+              }`}
+            />
+          </a>
         </div>
       </div>
     </footer>

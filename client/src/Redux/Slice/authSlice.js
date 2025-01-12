@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosInstance from "../../helper/axiosInstance";
-import toast from "react-hot-toast";
 
 const initialState = {
   isLoggedIn: localStorage.getItem("isLoggedIn") || false,
@@ -229,6 +228,66 @@ export const HandelPromotion = createAsyncThunk(
     }
   }
 );
+export const ShopInformationSEt = createAsyncThunk(
+  "Admin/shop/info",
+  async (data) => {
+    try {
+      const token = localStorage.getItem("Authenticator");
+      const res = await axiosInstance.post("/api/v3/Admin/info", data, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
+    }
+  }
+);
+export const getShopInfo = createAsyncThunk("/auth/info", async () => {
+  try {
+    const token = localStorage.getItem("Authenticator");
+    const res = await axiosInstance.get(
+      "/api/v3/User/info",
+
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+      }
+    );
+
+    return res.data;
+  } catch (error) {
+    return error?.response?.data || error?.message || "Something went wrong";
+  }
+});
+
+export const RemoveProductCard = createAsyncThunk(
+  "/product/RemoveProduct",
+  async (id) => {
+    try {
+      const token = localStorage.getItem("Authenticator");
+
+      const res = await axiosInstance.put(
+        "/api/v3/Card/v2/RemoveProduct",
+        {
+          productId: id,
+        },
+        {
+          headers: {
+            Authorization: ` ${token}`,
+          },
+        }
+      );
+
+      return res.data;
+    } catch (error) {
+      return error?.response?.data || error?.message || "Something went wrong";
+    }
+  }
+);
 
 const authSliceRedux = createSlice({
   name: "auth",
@@ -293,6 +352,22 @@ const authSliceRedux = createSlice({
           state.isLoggedIn = true;
           state.data = data;
           state.role = data.role;
+        }
+      })
+      .addCase(RemoveProductCard.fulfilled, (state, action) => {
+        if (action.payload.success) {
+          const { userFind } = action.payload;
+
+          localStorage.setItem("data", JSON.stringify(userFind));
+          localStorage.setItem("isLoggedIn", true);
+          localStorage.setItem("role", userFind.role);
+          localStorage.setItem("userName", userFind.userName);
+
+          state.userName = userFind.userName;
+          state.walletProduct = [...userFind.walletAddProducts];
+          state.isLoggedIn = true;
+          state.data = userFind;
+          state.role = userFind.role;
         }
       })
       .addCase(LogoutAccount.fulfilled, (state) => {

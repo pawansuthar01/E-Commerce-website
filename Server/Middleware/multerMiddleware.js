@@ -3,12 +3,11 @@ import Pkg from "cloudinary";
 const { v2: cloudinary } = Pkg;
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 
-// Configure Cloudinary storage
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: "uploads",
-    allowed_formats: ["jpg", "jpeg", "png", "webp", "mp4", "svg", "pdf"], // Removed "*"
+    allowed_formats: ["jpg", "jpeg", "png", "webp", "mp4", "svg", "pdf"],
   },
 });
 

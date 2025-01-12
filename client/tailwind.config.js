@@ -7,7 +7,7 @@ export default {
     extend: {
       screens: {
         "max-sm": { max: "800px" },
-        "max-w-xs": { max: "435px" },
+        "max-w-xs": { max: "450px" },
         sm: { min: "800px" },
         print: { raw: "print" },
       },

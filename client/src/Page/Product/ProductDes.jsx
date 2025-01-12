@@ -6,10 +6,9 @@ import {
   AddProductCard,
   getProduct,
   getSearchProduct,
-  RemoveProductCard,
 } from "../../Redux/Slice/ProductSlice";
 import LoadingButton from "../../constants/LoadingBtn";
-import { LoadAccount } from "../../Redux/Slice/authSlice";
+import { LoadAccount, RemoveProductCard } from "../../Redux/Slice/authSlice";
 import { MdCurrencyRupee } from "react-icons/md";
 import ProductCard from "../../Components/productCard";
 import FeedbackForm from "../../Components/feedbackfrom";
@@ -182,7 +181,7 @@ function ProductDescription() {
               className="relative overflow-hidden group w-full h-[400px] border rounded-md shadow-md"
               onMouseMove={handleMouseMove}
             >
-              {ProductData?.discount && (
+              {ProductData?.discount > 0 && (
                 <p className=" absolute text-sm mt-2 ml-2 rounded-xl py-1 px-3 bg-red-300 z-10">
                   {ProductData?.discount}% off
                 </p>
@@ -356,16 +355,6 @@ function ProductDescription() {
                 )}
               </div>
             </div>
-
-            {/* Delete Button for Admin/Author */}
-            {(data?.role === "ADMIN" || data?.role === "AUTHOR") && (
-              <button
-                onClick={() => handleDelete(ProductData?._id)}
-                className="w-full px-4 py-3 text-white bg-red-500 rounded-md hover:bg-red-700 transition"
-              >
-                Delete
-              </button>
-            )}
           </div>
         </div>
 

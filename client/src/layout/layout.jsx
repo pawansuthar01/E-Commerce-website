@@ -20,7 +20,11 @@ import { useDispatch, useSelector } from "react-redux";
 import Footer from "../Components/footer";
 import LoadingButton from "../constants/LoadingBtn";
 import { useEffect, useState } from "react";
-import { LoadAccount, LogoutAccount } from "../Redux/Slice/authSlice";
+import {
+  getShopInfo,
+  LoadAccount,
+  LogoutAccount,
+} from "../Redux/Slice/authSlice";
 import { useTheme } from "../Components/ThemeContext";
 import { NotificationGet } from "../Redux/Slice/notification.Slice";
 import NotificationCart from "../Page/notification/notification";
@@ -46,6 +50,8 @@ function Layout({ children, load }) {
   const { role, exp } = useSelector((state) => state?.auth);
 
   const { data } = useSelector((state) => state?.auth);
+  const { phoneNumber, email, address, instagram, youtube, facebook } =
+    useSelector((state) => state?.ShopInfo);
 
   function changeWight() {
     const drawerSide = document.getElementsByClassName("drawer-side");
@@ -84,7 +90,22 @@ function Layout({ children, load }) {
       }
     }
   };
+  useEffect(() => {
+    async function handelShopInfo() {
+      await dispatch(getShopInfo());
+    }
 
+    if (
+      phoneNumber == "" ||
+      email == "" ||
+      address == "" ||
+      instagram == "" ||
+      youtube == "" ||
+      facebook == ""
+    ) {
+      handelShopInfo();
+    }
+  }, []);
   const handleSearch = async (query) => {
     try {
       navigate("/Product", { state: query });
