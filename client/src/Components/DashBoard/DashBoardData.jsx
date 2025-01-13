@@ -23,7 +23,7 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-export const DashBoard = ({ show, stats, orders }) => {
+export const DashBoard = ({ stats, orders }) => {
   const orderStatusChartData = {
     labels: ["Delivered", "Canceled", "Processing", "Shipping"],
     datasets: [
@@ -81,7 +81,6 @@ export const DashBoard = ({ show, stats, orders }) => {
       },
     ],
   };
-  if (!show) return;
   return (
     <>
       <div className="grid sm:grid-cols-2 justify-center gap-5 m-auto mx-10">

@@ -157,7 +157,7 @@ function HomePage() {
         </div>
 
         {/* Popular Products Section */}
-        <div className="flex flex-col items-center my-10 w-full">
+        <div className="flex flex-col items-center my-10 mx-1 w-full">
           <h2 className="text-2xl font-bold mb-4 dark:text-white text-black">
             Popular Products
           </h2>

@@ -480,8 +480,13 @@ export const handelDelete = async (req, res, next) => {
       return next(new AppError(" All felids is required", 400));
     }
 
-    if (role == "ADMIN" || data.role == "AUTHOR") {
-      return next(new AppError("you cannot delete AUTHOR", 400));
+    if (role == "ADMIN" && ["ADMIN", "AUTHOR"].includes(data.role)) {
+      return next(
+        new AppError(
+          `Deletion not allowed: User with role "${data.role}" cannot be deleted.`,
+          400
+        )
+      );
     }
     if (data.role == "ADMIN") {
       const ADMINCount = await User.countDocuments({

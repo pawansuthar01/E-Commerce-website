@@ -5,7 +5,7 @@ import { FaBox, FaBoxOpen, FaCreditCard } from "react-icons/fa6";
 import { FiCheckCircle, FiXCircle } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
-export const PaymentCart = ({ showPayment, Razorpay, payments }) => {
+export const PaymentCart = ({ Razorpay, payments }) => {
   const navigate = useNavigate();
   const [activeButton, setActiveButton] = useState(1);
 
@@ -29,14 +29,13 @@ export const PaymentCart = ({ showPayment, Razorpay, payments }) => {
 
     navigate(`/api/v3/user/order/${id}`);
   }
-  if (!showPayment) return;
   return (
     <>
       <div
         className="
         flex flex-col"
       >
-        <div className="flex space-x-4 w-full justify-evenly bg-[#EFF3EA] py-2 mt-2 dark:bg-gray-800 shadow-2xl rounded-lg delay-500 transition-shadow">
+        <div className="flex  space-x-4 w-full justify-evenly bg-[#EFF3EA] py-2 my-2 dark:bg-gray-800 shadow-2xl rounded-lg delay-500 transition-shadow">
           {/* Dashboard Button */}
           <button
             className={`p-3 rounded-md transition-transform duration-300 ease-in-out flex justify-center gap-1 items-center ${

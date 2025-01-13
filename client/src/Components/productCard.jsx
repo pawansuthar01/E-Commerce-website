@@ -143,7 +143,8 @@ function ProductCard({ data, onProductDelete }) {
           </p>
         )}
       </div>
-      <div className="flex justify-between items-center mt-3">
+
+      <div className="flex justify-between items-center mt-3 border p-1">
         {role === "ADMIN" || role === "AUTHOR" ? (
           <>
             <button

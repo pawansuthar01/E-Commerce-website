@@ -15,7 +15,7 @@ import ProfessionalShippingLabel from "./Lable";
 import LoadingButton from "../constants/LoadingBtn";
 import { isEmail, isPhoneNumber } from "../helper/regexMatch";
 
-export const OrderCart = () => {
+export const OrderCart = ({ order }) => {
   const dispatch = useDispatch();
   const [OrderId, setOrderId] = useState();
   const [OrderData, setOrderData] = useState([]);
@@ -65,10 +65,8 @@ export const OrderCart = () => {
 
   async function loadOrders() {
     setLoadingData(true);
-    if (Role == ("AUTHOR" || "ADMIN")) {
-      const ordersRes = await dispatch(AllOrder());
-
-      if (ordersRes?.payload?.success) setOrderData(ordersRes?.payload?.data);
+    if (["ADMIN", "AUTHOR"].includes(Role)) {
+      setOrderData(order);
       setLoadingData(false);
       return;
     }

@@ -81,13 +81,13 @@ const Messages = () => {
         </div>
 
         {/* Message List */}
-        <div className=" p-6 max-sm:p-1 rounded-lg shadow-md space-y-4">
+        <div className=" p-6 max-sm:p-2 rounded-lg shadow-md space-y-4">
           {filteredMessages.length > 0 ? (
             <ul className="space-y-4">
               {filteredMessages.map((message) => (
                 <li
                   key={message._id}
-                  className={`p-6 max-sm:p-2 border-l-4 ${
+                  className={`p-6 max-sm:p-1 border-l-4 ${
                     message.read
                       ? "border-green-500 bg-green-50 dark:bg-gray-300"
                       : "border-red-500 bg-red-50 dark:bg-gray-300"
@@ -134,7 +134,7 @@ const Messages = () => {
         </div>
 
         {/* Pagination */}
-        <div className="mt-6 flex justify-between items-center">
+        <div className="mt-2 flex justify-between items-center pb-2">
           <div>
             <button
               onClick={() => handlePageChange(page - 1)}
