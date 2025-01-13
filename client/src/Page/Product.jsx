@@ -96,7 +96,7 @@ function Product() {
                   Your Search product
                 </h1>
               )}
-              <div className=" flex flex-wrap  max-sm:justify-center justify-evenly  gap-10 my-10">
+              <div className="flex flex-wrap justify-evenly gap-6 my-6 w-full">
                 {products.map((product) => (
                   <ProductCard
                     key={product._id}

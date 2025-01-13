@@ -99,7 +99,7 @@ function ProductCard({ data, onProductDelete }) {
           src={imageUrl}
           crossOrigin="anonymous"
           alt={data.name || "Product Image"}
-          className="rounded-lg   max-w-xs:p-2 object-contain transition-transform duration-500 ease-in-out hover:scale-110"
+          className="rounded-lg max-w-[150px] h-[100px]   max-w-xs:p-2 object-contain transition-transform duration-500 ease-in-out hover:scale-110"
           onClick={() =>
             navigate(`/product/${data._id}`, { state: { ...data } })
           }

@@ -123,6 +123,7 @@ function Login() {
                   type="Email"
                   name="Email"
                   id="Email"
+                  autoComplete="email"
                   onChange={handelUserInput}
                   value={LoginData.Email}
                   required
@@ -151,6 +152,7 @@ function Login() {
                   type="password"
                   name="password"
                   id="password"
+                  autoComplete="new-password"
                   onChange={handelUserInput}
                   value={LoginData.password}
                   required

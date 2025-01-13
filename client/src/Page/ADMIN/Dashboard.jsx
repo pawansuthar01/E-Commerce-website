@@ -18,7 +18,8 @@ import { GetMessage } from "../../Redux/Slice/feedbackSlice";
 import Messages from "../../Components/DashBoard/MessageData";
 import ShopInformationForm from "../../Components/shopInfo";
 import { XCircleIcon } from "@heroicons/react/24/solid";
-import { MdMenu } from "react-icons/md";
+import { MdMenu, MdSettings } from "react-icons/md";
+import { SettingsIcon } from "../Product/icon";
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
@@ -94,8 +95,6 @@ const AdminDashboard = () => {
     fetchProducts(1);
   }, []);
 
-  const [showButtons, setShowButtons] = useState(false); // State to toggle visibility of grid buttons
-  const [activeButton, setActiveButton] = useState(null); // State to track active button
   const [activeSection, setActiveSection] = useState(1);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -135,6 +134,12 @@ const AdminDashboard = () => {
       label: "Messages",
       icon: FaEnvelope,
       colors: "from-purple-500 to-indigo-500",
+    },
+    {
+      id: 7,
+      label: "Setting",
+      icon: MdSettings,
+      colors: "from-green-500 to-indigo-500",
     },
   ];
   if (loading) {
@@ -187,6 +192,7 @@ const AdminDashboard = () => {
                     }`}
                   >
                     <items.icon className="w-4 h-4 mr-2" />
+
                     {items.label}
                   </button>
                 ))}
@@ -211,6 +217,7 @@ const AdminDashboard = () => {
                   }`}
                 >
                   <items.icon className="w-4 h-4 mr-2" />
+
                   {items.label}
                 </button>
               ))}

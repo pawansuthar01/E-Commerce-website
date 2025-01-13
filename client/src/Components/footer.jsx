@@ -14,6 +14,7 @@ function Footer() {
   const handelNavigatePrivacyPolicy = () => {
     navigate("/App/privacy-policy");
   };
+  console.log(instagram);
   return (
     <footer className="relative py-4 bottom-0 border-t-2 border-[#0005] left-0 w-full ">
       <h1 className="text-center text-3xl font-semibold">KGS DOORS</h1>
@@ -92,11 +93,7 @@ function Footer() {
           </Link>
         </div>
         <div className="flex gap-2 mt-1 max-sm:justify-center">
-          <a
-            href={`http://${instagram || ""}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href={`${instagram || ""}`} target="_blank">
             <FaInstagram
               className={`w-[22px] h-[22px] hover:text-yellow-500 cursor-pointer ${
                 darkMode ? "text-white" : "text-gray-700"
@@ -104,22 +101,14 @@ function Footer() {
             />
           </a>
 
-          <a
-            href={`http://${facebook || ""}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href={`${facebook || ""}`} target="_blank">
             <FaFacebook
               className={`w-[22px] h-[22px] hover:text-yellow-500 cursor-pointer ${
                 darkMode ? "text-white" : "text-gray-700"
               }`}
             />
           </a>
-          <a
-            href={`http://${youtube || ""}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href={`${youtube || ""}`} target="_blank">
             <FaYoutube
               className={`w-[22px] h-[22px] hover:text-yellow-500 cursor-pointer ${
                 darkMode ? "text-white" : "text-gray-700"

@@ -136,7 +136,6 @@ function SignUp() {
     formData.append("avatar", SignUpData.avatar);
     formData.append("password", SignUpData.password);
     const response = await dispatch(CreateAccount(formData));
-    console.log(response);
     if (response) {
       setLoading(false);
       setShowLoading(false);
@@ -193,7 +192,7 @@ function SignUp() {
             <h1 className="text-center text-3xl font-semibold mb-6 text-[#9e6748] dark:text-[#f5d9b1]">
               Create Your Account
             </h1>
-            <form noValidate onSubmit={handleCreate}>
+            <form action="/register" noValidate onSubmit={handleCreate}>
               <label htmlFor="image_uploads" className="cursor-pointer">
                 {previewImage ? (
                   <div>
@@ -233,6 +232,7 @@ function SignUp() {
                   value={SignUpData.userName}
                   name="userName"
                   id="userName"
+                  autoComplete="userName"
                   required
                   className="peer w-full border-b-2 border-gray-300  focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent  dark:text-gray-200"
                 />
@@ -259,6 +259,7 @@ function SignUp() {
                   value={SignUpData.fullName}
                   name="fullName"
                   id="fullName"
+                  autoComplete="name"
                   required
                   className="peer w-full border-b-2 border-gray-300  focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent  dark:text-gray-200"
                 />
@@ -285,6 +286,7 @@ function SignUp() {
                   type="email"
                   name="email"
                   id="email"
+                  autoComplete="email"
                   required
                   className="peer w-full border-b-2 border-gray-300  focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent  dark:text-gray-200"
                 />
@@ -311,6 +313,7 @@ function SignUp() {
                   type="number"
                   name="phoneNumber"
                   id="phoneNumber"
+                  autoComplete="tel"
                   required
                   className="peer w-full border-b-2 border-gray-300  focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent dark:text-gray-200"
                 />
@@ -337,6 +340,7 @@ function SignUp() {
                   type="password"
                   name="password"
                   id="password"
+                  autoComplete="new-password"
                   required
                   className="peer w-full border-b-2  border-gray-300  focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent  dark:text-gray-200"
                 />
@@ -363,6 +367,7 @@ function SignUp() {
                   type="password"
                   name="ConfirmPassword"
                   id="ConfirmPassword"
+                  autoComplete="new-password"
                   required
                   className="peer w-full border-b-2 border-gray-300  focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent  dark:text-gray-200"
                 />

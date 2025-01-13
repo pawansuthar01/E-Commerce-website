@@ -53,3 +53,25 @@ export function CartIcon({ className }) {
     </svg>
   );
 }
+
+export const SettingsIcon = ({ size = 24, color = "gray" }) => {
+  return (
+    <div style={{ color }}>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.5}
+        stroke="currentColor"
+        className="w-6 h-6"
+        style={{ width: size, height: size }}
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M10.5 6.75h3m-6.75 5.25h9m-4.5 5.25h1.5m6.75-8.25a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+    </div>
+  );
+};

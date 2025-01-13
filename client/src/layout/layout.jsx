@@ -70,8 +70,9 @@ function Layout({ children, load }) {
     e.preventDefault();
     setLoading(true);
     const res = await dispatch(LogoutAccount());
-    if (res) {
-      setLoading(false);
+    setLoading(false);
+    if (res?.payload?.success) {
+      navigate("/login");
     }
   };
   const toggleNotificationSidebar = () => {

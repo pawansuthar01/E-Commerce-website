@@ -68,7 +68,7 @@ const ShopInformationForm = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white rounded shadow-md dark:bg-gray-800">
+    <div className="max-w-lg mx-auto p-6 mb-2 bg-white rounded shadow-md dark:bg-gray-800">
       <h2 className="text-2xl font-bold mb-4 text-center text-gray-700 dark:text-white">
         Shop Information
       </h2>
