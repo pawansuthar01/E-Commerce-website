@@ -72,19 +72,20 @@ function HomePage() {
   }, []);
 
   useEffect(() => {
-    if (currentSlide === 0) {
-      setTimeout(() => {
-        setIsAnimating(false);
-        setCurrentSlide(carousel?.length);
-      }, 700);
-    } else if (currentSlide === carousel?.length + 1) {
-      setTimeout(() => {
-        setIsAnimating(false);
-        setCurrentSlide(1);
-      }, 700);
+    if (!loading) {
+      if (currentSlide === 0) {
+        setTimeout(() => {
+          setIsAnimating(false);
+          setCurrentSlide(carousel?.length);
+        }, 700);
+      } else if (currentSlide === carousel?.length + 1) {
+        setTimeout(() => {
+          setIsAnimating(false);
+          setCurrentSlide(1);
+        }, 700);
+      }
     }
   }, [currentSlide]);
-
   useEffect(() => {
     ProductLoad();
   }, []);

@@ -8,12 +8,15 @@ import { useNavigate } from "react-router-dom";
 import LoadingButton from "../../constants/LoadingBtn";
 import Layout from "../../layout/layout";
 import { Category } from "../../Components/Product/categoryData";
+import PriceCart from "../../Components/Product/TotaPrice";
 function AddProduct() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [previewImages, setPreviewImages] = useState([]);
   const [showCategoryForm, setShowCategoryForm] = useState(false);
+  const [showPrice, setShowPrice] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [uploadLoading, setUploadLoading] = useState(false);
 
   const [productData, setProductData] = useState({
     name: "",
@@ -216,36 +219,56 @@ function AddProduct() {
       return;
     }
 
-    const formData = new FormData();
-    formData.append("name", productData.name);
-    formData.append("price", productData.price);
-    formData.append("description", productData.description);
-    formData.append("category", productData.category);
-    formData.append("gst", productData.gst);
-    formData.append("discount", productData.discount);
-    productData.images.forEach((image) => formData.append("images", image));
-
-    const response = await dispatch(AddNewProduct(formData));
-    if (response?.payload?.success) {
-      navigate(`/Product/${response?.payload?.data?._id}`);
-      setProductData({
-        name: "",
-        price: "",
-        description: "",
-        category: "",
-        subCategory: "",
-        gst: "",
-        discount: "",
-        images: [],
-      });
-      setPreviewImages([]);
-    }
-    setLoading(false);
+    setShowPrice(true);
   };
+  async function handelUploadProduct(e) {
+    setUploadLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append("name", productData.name);
+      formData.append("price", productData.price);
+      formData.append("description", productData.description);
+      formData.append("category", productData.category);
+      formData.append("gst", productData.gst);
+      formData.append("discount", productData.discount);
+      productData.images.forEach((image) => formData.append("images", image));
+
+      const response = await dispatch(AddNewProduct(formData));
+      if (response?.payload?.success) {
+        navigate(`/Product/${response?.payload?.data?._id}`);
+        setProductData({
+          name: "",
+          price: "",
+          description: "",
+          category: "",
+          subCategory: "",
+          gst: "",
+          discount: "",
+          images: [],
+        });
+        setPreviewImages([]);
+      }
+      setUploadLoading(false);
+      setLoading(false);
+    } catch (error) {
+      setUploadLoading(false);
+      setLoading(false);
+    }
+  }
 
   return (
     <Layout>
       <div className="min-h-screen sm:p-8">
+        {uploadLoading && (
+          <div
+            className={`flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 ${
+              uploadLoading ? "fixed inset-0 bg-black bg-opacity-30 z-10" : ""
+            }`}
+          >
+            <div className="loader border-t-4 border-blue-500 rounded-full w-12 h-12 animate-spin"></div>
+            <p>Please wait, uploading...</p>
+          </div>
+        )}
         <div className="max-w-4xl mx-auto  rounded-xl shadow-lg ">
           <div className="p-8">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8">
@@ -436,6 +459,16 @@ function AddProduct() {
             </form>
           </div>
         </div>
+        {
+          <PriceCart
+            price={productData.price}
+            gst={productData.gst}
+            discount={productData.discount}
+            setShowPrice={setShowPrice}
+            ShowPrice={showPrice}
+            handelUploadProduct={() => handelUploadProduct()}
+          />
+        }
       </div>
     </Layout>
   );

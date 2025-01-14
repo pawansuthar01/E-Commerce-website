@@ -23,11 +23,19 @@ export const UsersCart = ({ users }) => {
   async function handleDelete(data) {
     setLoadingStates((prev) => ({ ...prev, [data.id]: true }));
     if (role == "AUTHOR") {
+      const isConfirmed = window.confirm(
+        "Are you sure you want to delete this user?"
+      );
+      if (!isConfirmed) {
+        setLoadingStates((prev) => ({ ...prev, [data.id]: false }));
+        return;
+      }
       if (data.id) {
         setUserData((prevUserData) =>
           prevUserData.filter((user) => user._id !== data.id)
         );
       }
+
       await dispatch(HandelDelete({ data: data }));
       setLoadingStates((prev) => ({ ...prev, [data.id]: false }));
     } else {
@@ -37,13 +45,20 @@ export const UsersCart = ({ users }) => {
         return;
       }
       if (data.role == "USER") {
+        const isConfirmed = window.confirm(
+          "Are you sure you want to delete this user?"
+        );
+        if (!isConfirmed) {
+          setLoadingStates((prev) => ({ ...prev, [data.id]: false }));
+          return;
+        }
         if (data.id) {
           setUserData((prevUserData) =>
             prevUserData.filter((user) => user._id !== data.id)
           );
+          await dispatch(HandelDelete({ data: data }));
+          setLoadingStates((prev) => ({ ...prev, [data.id]: false }));
         }
-        await dispatch(HandelDelete({ data: data }));
-        setLoadingStates((prev) => ({ ...prev, [data.id]: false }));
       }
     }
   }

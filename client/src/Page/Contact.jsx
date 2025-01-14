@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Layout from "../layout/layout";
 import { AiOutlineArrowLeft } from "react-icons/ai";
@@ -11,7 +11,7 @@ import { SendMassage } from "../Redux/Slice/feedbackSlice";
 function Contact() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const [loading, setLoading] = useState(false);
   // State to manage form inputs
   const [formData, setFormData] = useState({
     number: "",
@@ -54,13 +54,14 @@ function Contact() {
       document.getElementById("message").style.borderColor = "red";
       return;
     }
-    const res = await dispatch(SendMassage(formData));
-    console.log(res);
+    setLoading(true);
+    await dispatch(SendMassage(formData));
     setFormData({
       number: "",
       email: "",
       message: "",
     });
+    setLoading(false);
   };
 
   return (
@@ -128,8 +129,11 @@ function Contact() {
                 ></textarea>
               </div>
 
-              <button className="text-white bg-blue-600 my-2 hover:bg-transparent hover:border-2 hover:border-blue-600 hover:text-blue-600 text-xl rounded-sm px-2 py-3 w-full">
-                Submit
+              <button
+                disabled={loading}
+                className="text-white bg-blue-600 my-2 hover:bg-transparent hover:border-2 hover:border-blue-600 hover:text-blue-600 text-xl rounded-sm px-2 py-3 w-full"
+              >
+                {loading ? "Sending..." : "Submit"}
               </button>
             </form>
           </div>

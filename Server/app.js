@@ -38,10 +38,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/ping", (req, res, next) => {
-  res.status(200).send("server is updated");
-});
-
 //
 app.use("/api/v3/user", UserRouter);
 app.use("/api/v3/User/Notification", NotificationRouter);

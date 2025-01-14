@@ -14,7 +14,6 @@ function Footer() {
   const handelNavigatePrivacyPolicy = () => {
     navigate("/App/privacy-policy");
   };
-  console.log(instagram);
   return (
     <footer className="relative py-4 bottom-0 border-t-2 border-[#0005] left-0 w-full ">
       <h1 className="text-center text-3xl font-semibold">KGS DOORS</h1>
