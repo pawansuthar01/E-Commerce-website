@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../../layout/layout";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { LoadAccount } from "../../Redux/Slice/authSlice";
 import { FaArrowLeft, FaS } from "react-icons/fa6";
 import { MdCurrencyRupee } from "react-icons/md";
@@ -34,6 +34,7 @@ function CheckoutPage() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [name, setName] = useState("");
+  const { email: Email } = useSelector((state) => state.ShopInfo);
   const ProductDetails = useLocation().state;
   const [shippingInfo, setShippingInfo] = useState({
     name: name || "",
@@ -223,6 +224,7 @@ function CheckoutPage() {
         paymentStatus: paymentStatus,
         PaymentMethod: paymentMethod,
         totalAmount: totalPrice,
+        email: Email || "kgsdoors123@gmail.com",
       };
 
       const res = await dispatch(PlaceOrder(orderData));

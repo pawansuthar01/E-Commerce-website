@@ -8,7 +8,6 @@ import { formatPrice } from "../Product/format";
 
 const ThankYou = () => {
   const { state } = useLocation();
-  console.log(state);
   return (
     <Layout>
       <div className="bg-gray-100 dark:bg-[#1F2937] flex flex-col justify-center items-center w-full ">

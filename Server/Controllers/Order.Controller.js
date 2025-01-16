@@ -16,6 +16,7 @@ export const CreateOrder = async (req, res, next) => {
     paymentStatus,
     PaymentMethod,
     totalAmount,
+    email,
   } = req.body;
   if (!userId || !products || !shippingAddress || !totalAmount) {
     return next(new AppError("All fields are required.", 400));
@@ -43,7 +44,6 @@ export const CreateOrder = async (req, res, next) => {
       };
     })
   );
-  console.log(productDetails);
   const newOrder = new Order({
     userId,
     products: productDetails,
@@ -78,13 +78,13 @@ export const CreateOrder = async (req, res, next) => {
     <ul>
       <li><strong>Order ID:</strong> ${newOrder._id}</li>
       <li><strong>Total Amount:</strong> ₹${totalAmount}</li>
-      <li><strong>Shipping Address:</strong> ${shippingAddress.address}, ${shippingAddress.city}, ${shippingAddress.state}, ${shippingAddress.pinCode}</li>
+      <li><strong>Shipping Address:</strong> ${shippingAddress.address}, ${shippingAddress.city}, ${shippingAddress.state}, ${shippingAddress.postalCode}</li>
     </ul>
     <p>You can view or track your order by clicking the link below:</p>
     <p><a href="${orderConfirmationUrl}" style="color: #ffffff; background-color: #4CAF50; padding: 10px 20px; text-decoration: none; border-radius: 5px;" target="_blank">View My Order</a></p>
     <p>If the button above doesn't work, copy and paste this link into your browser:</p>
     <p>${orderConfirmationUrl}</p>
-    <p>If you have any questions or need further assistance, feel free to contact us at <a href="mailto:support@example.com">support@example.com</a>.</p>
+    <p>If you have any questions or need further assistance, feel free to contact us at<a href="mailto:${email}">${email}</a></p>
     <p>Thank you for shopping with us!</p>
     <p>Best regards,</p>
     <p><strong>KGS DOORS</strong></p>
@@ -105,17 +105,11 @@ export const CreateOrder = async (req, res, next) => {
 export const createOrderPayment = async (req, res, next) => {
   try {
     const { totalAmount } = req.body;
-    console.log(req.body);
-    if (!totalAmount || totalAmount <= 0) {
+
+    if (!totalAmount || totalAmount <= 1) {
       return next(new AppError("Invalid or missing totalAmount", 400));
     }
     const amountInPaise = totalAmount * 100;
-    const MAX_AMOUNT = 500000;
-    if (amountInPaise <= MAX_AMOUNT) {
-      return next(
-        new AppError("Amount exceeds maximum limit allowed by Razorpay", 400)
-      );
-    }
 
     const options = {
       amount: amountInPaise,
