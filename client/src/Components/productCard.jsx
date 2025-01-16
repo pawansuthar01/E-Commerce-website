@@ -26,16 +26,18 @@ function ProductCard({ data, onProductDelete }) {
   const { userName, role, data: userData } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    setIsLike(
-      data?.ProductLikes?.some((item) => item.userName?.toString() === userName)
+    const isLiked = data?.ProductLikes?.some(
+      (item) => item.userName?.toString() === userName
     );
-    setProductExists(
-      userData?.walletAddProducts?.some(
-        (item) => item.product?.toString() === data?._id
-      )
+    const productExists = userData?.walletAddProducts?.some(
+      (item) => item.product?.toString() === data?._id
     );
-    setImageUrl(getProductImageUrl(data));
-  }, [data]);
+    const imageUrl = getProductImageUrl(data);
+
+    setIsLike(isLiked);
+    setProductExists(productExists);
+    setImageUrl(imageUrl);
+  }, [data, userData, userName]);
 
   const getProductImageUrl = (product) =>
     product?.image?.secure_url ||
