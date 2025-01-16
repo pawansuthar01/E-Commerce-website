@@ -24,12 +24,12 @@ import CarouselUpload from "./Page/ADMIN/CarouselUpload/CarouselUpload";
 import { CarouselUpdate } from "./Page/ADMIN/CarouselUpload/carouselUpdate";
 import OrderDetails from "./Page/Order/OrderDetails";
 import BlogUpload from "./Page/ADMIN/Blog/uploadBlog";
-import BlogDetails from "./Page/ADMIN/Blog/BlogDetails";
 import SingleProduct from "./Page/Product/ProudctDetalis";
 import ForgetPassword from "./Page/password/ForgetPassword";
 import UpdatePassword from "./Page/password/updatePassword";
 import ChangePassword from "./Page/password/changePassword";
 import PrivacyPolicy from "./Page/PrivacyPolicy";
+import BlogDetails from "./Components/Blog/BlogDes";
 function App() {
   return (
     <ThemeProvider>

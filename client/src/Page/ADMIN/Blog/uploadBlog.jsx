@@ -141,7 +141,7 @@ function BlogUpload() {
                       <img
                         src={previewImages}
                         alt="preview"
-                        className="w-full h-full object-contain bg-white dark:bg-[#111827] "
+                        className="w-full h-[150px] object-contain bg-white dark:bg-[#111827] "
                       />
                     </div>
                   ) : (
@@ -215,7 +215,7 @@ function BlogUpload() {
                 {/* Submit Button */}
                 <div onClick={handleCreate}>
                   <LoadingButton
-                    textSize={"py-2"}
+                    textSize={"py-2 "}
                     loading={loading}
                     color={"bg-green-600"}
                     message={"Loading..."}

@@ -1,172 +1,195 @@
-import { FaArrowLeft, FaRegComment } from "react-icons/fa6";
-import { FiHeart } from "react-icons/fi";
-import { IoPaperPlaneOutline } from "react-icons/io5";
+import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { FaArrowLeft, FaRegClock, FaRegComment } from "react-icons/fa6";
+import { FiHeart, FiShare2 } from "react-icons/fi";
+import { IoPaperPlaneOutline } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 import {
   DeleteBlog,
   getAllPost,
   getPost,
   LikeAndDisLikePost,
 } from "../../Redux/Slice/ContentSlice";
-import { useState, useEffect } from "react";
 import CommentCard from "../CommentListCard";
 import { DeleteIcon, EditIcon } from "../../Page/Product/icon";
 import EditBlog from "./editBlog";
+import { FaRegCommentAlt, FaUserCircle } from "react-icons/fa";
 
-function BlogCard({ w, data, onDelete }) {
-  const [showCommentForm, setShowCommentForm] = useState(false);
+function BlogCard({ data, onDelete }) {
+  const navigator = useNavigate();
+
   const dispatch = useDispatch();
-  const { userName } = useSelector((state) => state?.auth);
-  const { role } = useSelector((state) => state.auth);
-  const [Blog, setBlog] = useState(null);
-  const [show, setShow] = useState(false);
-  const domain =
-    window.location.hostname +
-    (window.location.port ? `:${window.location.port}` : "");
-  const productExists = Blog?.PostLikes?.some(
-    (item) => item.userName && item.userName.toString() === userName
-  );
+  const [showCommentForm, setShowCommentForm] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
+  const [blog, setBlog] = useState(data);
+  const { role, userName } = useSelector((state) => state?.auth);
   useEffect(() => {
     setBlog(data);
   }, [data]);
-  useEffect(() => {
-    if (!data) {
-      navigator(-1);
-    }
-  }, []);
+  const domain =
+    window.location.hostname +
+    (window.location.port ? `:${window.location.port}` : "");
   const url = `http://${domain}/Blog/${data?._id}`;
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: data.title,
-        text: data.description,
-        url: url,
-      });
-    }
-  };
-
-  async function LoadBlog(id) {
-    const res = await dispatch(getPost(id));
-    setBlog(res?.payload?.data);
-  }
-
-  async function handelLikeDisLike(id) {
+  const handleLikeDislike = async (id) => {
     if (!id) return;
     const res = await dispatch(LikeAndDisLikePost(id));
+
     if (res.payload.success) {
       setBlog(res.payload.FindPost);
     }
-  }
-  function handelUpdatedData(res) {
-    if (res.payload.success) {
-      setBlog(res.payload.data);
+  };
+
+  const handleShare = useCallback(() => {
+    if (navigator.share) {
+      navigator.share({
+        title: blog?.title,
+        text: blog?.description,
+        url,
+      });
     }
-    setShow(false);
-  }
-  async function handleDeleteBlog(id) {
-    onDelete(id);
+  }, [blog, url]);
+  const isLiked = blog?.PostLikes?.some((like) => like.userName === userName);
+  function UpdatedData(data) {
+    setShowEdit(false);
+    setBlog(data?.payload?.data);
   }
   return (
-    <div>
-      <div
-        className={`card card-compact bg-base-100 dark:bg-gray-800 dark:text-white ${
-          w ? w : "w-96"
-        } shadow-xl `}
-      >
+    <article className="bg-white w-96 dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transition-all hover:shadow-xl">
+      {/* Image Container */}
+      <div className="relative h-48 overflow-hidden  cursor-pointer">
+        <img
+          onClick={() =>
+            navigator(`/blog/${data?._id}`, { state: { ...data } })
+          }
+          src={blog?.Post?.secure_url}
+          alt={blog?.title}
+          className="w-full h-full object-cover transition-transform hover:scale-105"
+          loading="lazy"
+        />
         {role && ["ADMIN", "AUTHOR"].includes(role) && (
-          <div className=" relative flex justify-evenly  gap-24 ">
+          <div className="absolute top-4 right-4 flex gap-2 z-30">
             <button
-              onClick={() => handleDeleteBlog(Blog._id)}
-              className="flex items-center justify-center  text-red-500"
+              onClick={() => onDelete(blog._id)}
+              className="p-2 bg-red-500 rounded-full text-white hover:bg-red-600 transition-colors"
+              aria-label="Delete post"
             >
-              <DeleteIcon className="w-7 h-7 " />
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
+              </svg>
             </button>
             <button
-              onClick={() => {
-                setShow(true);
-              }}
-              className="flex justify-center text-green-500 text-center     "
+              onClick={() => setShowEdit(true)}
+              className="p-2 bg-green-500 rounded-full text-white hover:bg-green-600 transition-colors"
+              aria-label="Edit post"
             >
-              <EditIcon className="w-7 h-7" />
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                />
+              </svg>
             </button>
-
-            {/* Delete Button */}
           </div>
         )}
-        <figure>
-          <img
-            crossOrigin="anonymous"
-            src={Blog?.Post?.secure_url}
-            alt="Shoes"
-            className="max-h[250px]"
-          />
-        </figure>
-        <div className="card-body">
-          <h2 className="card-title text-black dark:text-white font-medium text-2xl">
-            {Blog?.title}
-          </h2>
-          <p>{Blog?.description}</p>
-          <div className="card-actions justify-evenly rounded-sm p-1 text-black dark:text-white font-normal">
-            <button
-              onClick={() => setShowCommentForm(true)}
-              className="rounded-lg font-serif"
-            >
-              <h1 className="flex gap-1">
-                <FaRegComment className="rounded-lg" size={20} />
-                <span>Comment</span>
-              </h1>
-              {Blog?.numberOfComment}
-            </button>
-            <button
-              onClick={() => handelLikeDisLike(Blog?._id)}
-              className="font-serif"
-            >
-              <h1 className="flex gap-1">
-                <FiHeart
-                  className={`${
-                    productExists
-                      ? "text-red-800 dark:text-red-800"
-                      : "bg-white dark:bg-gray-800"
-                  } rounded-lg   font-bold `}
-                  size={20}
-                />
-                <span> Like</span>
-              </h1>
-              {Blog?.likeCount}
-            </button>
-            <button
-              onClick={handleShare}
-              className="flex items-start gap-1 font-serif"
-            >
-              <IoPaperPlaneOutline className="rounded-lg" size={20} />
-              <span>Share</span>
-            </button>
-          </div>
-        </div>
       </div>
 
-      {showCommentForm && (
-        <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
-          <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg max-sm:w-full w-1/2 max-w-lg">
-            <h3 className="text-xl font-semibold mb-4 flex items-center gap-1 dark:text-white">
-              <button
-                onClick={() => setShowCommentForm(false)}
-                className="text-black dark:text-white px-2 py-1 flex text-2xl rounded-lg"
-              >
-                <FaArrowLeft size={20} />
-              </button>
-              Comment..
-            </h3>
-            <div className="max-h-[500px] overflow-x-auto hide-scrollbar">
-              <CommentCard data={Blog} onAddComment={LoadBlog} />
+      {/* Content */}
+      <div className="p-6">
+        {/* Author Info */}
+        <div className="flex items-center mb-4">
+          <FaUserCircle className="w-10 h-10 text-gray-400" />
+          <div className="ml-3">
+            <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+              {blog?.userName || "Anonymous"}
+            </p>
+            <div className="flex items-center text-sm text-gray-500">
+              <FaRegClock className="mr-1" />
+              {new Date(blog?.createdAt).toLocaleDateString("en-US", {
+                month: "short",
+                day: "2-digit",
+                year: "numeric",
+              })}
             </div>
           </div>
         </div>
+
+        {/* Title and Description */}
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+          {blog?.title}
+        </h2>
+        <p className="text-gray-600 dark:text-gray-300 mb-6 line-clamp-3">
+          {blog?.description}
+        </p>
+
+        {/* Interaction Buttons */}
+        <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+          <button
+            onClick={() => setShowCommentForm(true)}
+            className="flex items-center text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors"
+          >
+            <FaRegCommentAlt className="mr-2" />
+            <span>{blog?.numberOfComment || 0}</span>
+          </button>
+
+          <button
+            onClick={() => handleLikeDislike(blog?._id)}
+            className="flex items-center text-gray-600 dark:text-gray-300 hover:text-red-500 transition-colors"
+          >
+            <FiHeart
+              className={`mr-2 ${isLiked ? "fill-current text-red-500" : ""}`}
+            />
+            <span>{blog?.likeCount || 0}</span>
+          </button>
+
+          <button
+            onClick={handleShare}
+            className="flex items-center text-gray-600 dark:text-gray-300 hover:text-green-500 transition-colors"
+          >
+            <FiShare2 className="mr-2" />
+            <span>Share</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Comment Modal */}
+      {showCommentForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-lg">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Comments</h3>
+              <button
+                onClick={() => setShowCommentForm(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <FaArrowLeft />
+              </button>
+            </div>
+            <CommentCard data={blog} onAddComment={setBlog} />
+            {/* Comment Form Component would go here */}
+          </div>
+        </div>
       )}
-      {show && (
-        <EditBlog data={Blog} setShow={setShow} onUpdated={handelUpdatedData} />
+      {showEdit && (
+        <EditBlog data={blog} setShow={setShowEdit} onUpdated={UpdatedData} />
       )}
-    </div>
+    </article>
   );
 }
 

@@ -6,6 +6,11 @@ const PostSchema = new Schema(
       ref: "User",
       required: true,
     },
+    userName: {
+      type: String,
+      ref: "User",
+      required: true,
+    },
     title: {
       type: "string",
       required: [true, "title is required.."],

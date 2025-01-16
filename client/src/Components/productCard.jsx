@@ -35,7 +35,7 @@ function ProductCard({ data, onProductDelete }) {
       )
     );
     setImageUrl(getProductImageUrl(data));
-  }, [data, userName, userData]);
+  }, [data]);
 
   const getProductImageUrl = (product) =>
     product?.image?.secure_url ||
@@ -46,7 +46,6 @@ function ProductCard({ data, onProductDelete }) {
     if (!isLoggedIn) return setShowLoginPrompt(true);
     setIsLike((prev) => !prev);
     await dispatch(LikeAndDisLike(id));
-    await dispatch(LoadAccount());
   };
 
   const handleAddToCart = async (productId, stockStatus) => {

@@ -13,6 +13,14 @@ function EditBlog({ data, setShow, onUpdated }) {
   });
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (blog.title.length < 5) {
+      alert("title most 5 char..");
+      return;
+    }
+    if (blog.description.length < 5) {
+      alert("description most 100 char..");
+      return;
+    }
     const res = await dispatch(updateBlog({ id: id, data: blog }));
     onUpdated(res);
   };

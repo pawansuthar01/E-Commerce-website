@@ -27,26 +27,38 @@ function Blog() {
 
   return (
     <Layout>
-      <div className="min-h-[100vh]">
-        <div className="flex flex-wrap  max-sm:justify-center justify-evenly  gap-10 my-10 w-full">
-          {showPost?.map((blog) => {
-            return (
-              <BlogCard
-                key={blog._id}
-                data={blog}
-                onDelete={handleDeleteBlog}
-              />
-            );
-          })}
-        </div>
-        {/* feedback section */}
-        <div className="w-full  ">
-          <hr className="h-1 bg-slate-200" />
-          <h1 className="text-2xl font-bold mb-4 ml-10 text-start dark:text-white text-black">
-            feedback Section
-          </h1>
-          <FeedbackForm />
-          <FeedbackList />
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="container mx-auto px-4 py-8">
+          {/* Blog Posts Grid */}
+          <div className="flex   justify-evenly ">
+            {showPost.length === 0 ? (
+              <div className="col-span-full flex items-center justify-center h-64">
+                <p className="text-xl text-gray-500 dark:text-gray-400">
+                  No blogs found...
+                </p>
+              </div>
+            ) : (
+              showPost.map((blog) => (
+                <BlogCard
+                  key={blog._id}
+                  data={blog}
+                  onDelete={handleDeleteBlog}
+                />
+              ))
+            )}
+          </div>
+
+          {/* Feedback Section */}
+          <div className="mt-16">
+            <hr className="border-gray-200 dark:border-gray-700 mb-8" />
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
+              Feedback
+            </h2>
+            <div className="space-y-8">
+              <FeedbackForm />
+              <FeedbackList />
+            </div>
+          </div>
         </div>
       </div>
     </Layout>

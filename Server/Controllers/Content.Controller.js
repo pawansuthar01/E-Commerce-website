@@ -8,7 +8,7 @@ import fs from "fs/promises";
 // post //
 
 export const PostUpload = async (req, res, next) => {
-  const { id } = req.user;
+  const { id, userName } = req.user;
 
   const { title, description } = req.body;
 
@@ -18,6 +18,7 @@ export const PostUpload = async (req, res, next) => {
 
   const post = await Post.create({
     userId: id,
+    userName,
     title,
     description,
 
@@ -63,7 +64,7 @@ export const PostUpload = async (req, res, next) => {
   });
 };
 export const postUpdate = async (req, res, next) => {
-  const { id } = req.params;
+  const { id, userName } = req.params;
   try {
     if (!id) {
       return next(new AppError("id is required", 400));
@@ -71,7 +72,7 @@ export const postUpdate = async (req, res, next) => {
     const post = await Post.findByIdAndUpdate(
       id,
       {
-        $set: req.body,
+        $set: { ...req.body, userName },
       },
       {
         new: true,
