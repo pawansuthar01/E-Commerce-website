@@ -1,6 +1,10 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
 const PrivacyPolicy = () => {
+  const { address, email, phoneNumber } = useSelector(
+    (state) => state?.ShopInfo
+  );
   return (
     <div className="privacy-policy px-6 py-10 max-w-5xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Privacy Policy</h1>
@@ -108,14 +112,14 @@ const PrivacyPolicy = () => {
         contact us at:
       </p>
       <p className="mb-2">
-        <strong>Email:</strong> support@kgsdoors.com
+        <strong>Email:</strong> {email || "support@kgsdoors.com"}
       </p>
       <p className="mb-2">
-        <strong>Phone:</strong> +91-9876543210
+        <strong>Phone:</strong>+91- {phoneNumber || 990352887}
       </p>
       <p className="mb-4">
-        <strong>Address:</strong> 123 Premium Doors Street, Your City, Your
-        Country
+        <strong>Address:</strong>{" "}
+        {address || " word NO. 21 Hanumangarh road, Sangria,Hanumangarh,In"}
       </p>
 
       <p className="text-sm text-gray-600">Last updated: January 11, 2025</p>

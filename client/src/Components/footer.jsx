@@ -11,15 +11,13 @@ function Footer() {
   const { darkMode } = useTheme(); // Get darkMode state from ThemeContext
   const { phoneNumber, email, address, instagram, youtube, facebook } =
     useSelector((state) => state?.ShopInfo);
-  const handelNavigatePrivacyPolicy = () => {
-    navigate("/App/privacy-policy");
-  };
+
   return (
     <footer className="relative py-4 bottom-0 border-t-2 border-[#0005] left-0 w-full ">
       <h1 className="text-center text-3xl font-semibold">KGS DOORS</h1>
 
       <div
-        className={`flex justify-evenly max-sm:gap-6 gap-36 max-sm:items-center p-5 max-sm:flex-col max-sm:text-center `}
+        className={`grid grid-cols-2 justify-evenly max-sm:gap-6 gap-36 max-sm:items-center p-5 sm:flex-col text-center`}
       >
         <div>
           <ul className="flex flex-col gap-1">
@@ -30,10 +28,31 @@ function Footer() {
             >
               About
             </h1>
-            <li className="cursor-pointer hover:text-blue-800">About us</li>
-            <li className="cursor-pointer hover:text-blue-800">Shop</li>
-            <li className="cursor-pointer hover:text-blue-800">Chat</li>
-            <li className="cursor-pointer hover:text-blue-800">Contact</li>
+            <li
+              onClick={() => navigate("/About")}
+              className="cursor-pointer hover:text-blue-800"
+            >
+              About us
+            </li>
+            <li
+              onClick={() => navigate("/product")}
+              className="cursor-pointer hover:text-blue-800"
+            >
+              Shop
+            </li>
+            <a
+              href={`https://wa.me/${phoneNumber || `9950352887`}`}
+              target="_blank"
+              className="cursor-pointer hover:text-blue-800"
+            >
+              Chat
+            </a>
+            <li
+              onClick={() => navigate("/Contact")}
+              className="cursor-pointer hover:text-blue-800"
+            >
+              Contact
+            </li>
           </ul>
         </div>
         <div>
@@ -45,37 +64,71 @@ function Footer() {
             >
               Categories
             </h1>
-            <li className="cursor-pointer hover:text-blue-800">Chairs</li>
-            <li className="cursor-pointer hover:text-blue-800">Sofa</li>
-            <li className="cursor-pointer hover:text-blue-800">Table</li>
-            <li className="cursor-pointer hover:text-blue-800">Lamp</li>
+            <li
+              onClick={() =>
+                navigate("/Product", {
+                  state: "Chairs",
+                  replace: true,
+                })
+              }
+              className="cursor-pointer hover:text-blue-800"
+            >
+              Chairs
+            </li>
+            <li
+              onClick={() =>
+                navigate("/Product", { state: "Sofa", replace: true })
+              }
+              className="cursor-pointer hover:text-blue-800"
+            >
+              Sofa
+            </li>
+            <li
+              onClick={() =>
+                navigate("/Product", { state: "Table", replace: true })
+              }
+              className="cursor-pointer hover:text-blue-800"
+            >
+              Table
+            </li>
+            <li
+              onClick={() =>
+                navigate("/Product", { state: "Lamp", replace: true })
+              }
+              className="cursor-pointer hover:text-blue-800"
+            >
+              Lamp
+            </li>
           </ul>
         </div>
-        <div>
-          <ul className="flex flex-col gap-1">
-            <h1
-              className={`text-2xl font-semibold ${
-                darkMode ? "text-gray-300" : "text-gray-950"
-              }`}
-            >
-              Contact
-            </h1>
-            <a
-              className="cursor-pointer hover:text-blue-800"
-              href={`mailto:${email || ""}`}
-            >
-              {email || ""}
-            </a>
+      </div>
+      <div
+        className="flex flex-col justify-center w-full
+       items-center text-center mb-5"
+      >
+        <ul className="flex flex-col gap-1">
+          <h1
+            className={`text-2xl font-semibold ${
+              darkMode ? "text-gray-300" : "text-gray-950"
+            }`}
+          >
+            Contact
+          </h1>
+          <a
+            className="cursor-pointer hover:text-blue-800"
+            href={`mailto:${email || ""}`}
+          >
+            {email || ""}
+          </a>
 
-            <a
-              className="cursor-pointer hover:text-blue-800"
-              href={`tel:${phoneNumber || "+91 9950352887"}`}
-            >
-              +91 {phoneNumber || "9950352887"}
-            </a>
-            <p className=" line-clamp-2 ">{address}</p>
-          </ul>
-        </div>
+          <a
+            className="cursor-pointer hover:text-blue-800"
+            href={`tel:${phoneNumber || "+91 9950352887"}`}
+          >
+            +91 {phoneNumber || "9950352887"}
+          </a>
+          <p className=" line-clamp-2 ">{address}</p>
+        </ul>
       </div>
       <div
         className={`flex justify-between mx-5 my-1 ${
@@ -85,8 +138,8 @@ function Footer() {
         <div className="flex justify-evenly w-full">
           <h1>Copyright {year} | All rights reserved</h1>
           <Link
-            onClick={() => handelNavigatePrivacyPolicy()}
-            className="text-blue-500 hover:underline"
+            onClick={() => window.open("/App/privacy-policy", "_blank")}
+            className="hover:text-blue-500 hover:underline"
           >
             Privacy Policy
           </Link>

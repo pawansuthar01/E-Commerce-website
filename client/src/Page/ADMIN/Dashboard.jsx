@@ -157,16 +157,16 @@ const AdminDashboard = () => {
         {/* Dashboard Header */}
 
         {/* Button Section */}
-        <header className="bg-white shadow-sm relative">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
+        <header className="bg-white dark:bg-gray-800 shadow-sm  top-[50px] sm:top-[66px] z-40  w-full fixed">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
+            <div className="flex items-center justify-between h-16 ">
               <h1 className="text-xl font-bold text-indigo-600">
                 Admin Dashboard
               </h1>
 
               {/* Mobile menu button */}
               <button
-                className="md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                className="md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               >
                 {isMobileMenuOpen ? (
@@ -187,8 +187,8 @@ const AdminDashboard = () => {
                     )}
                     className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150 ease-in-out flex items-center ${
                       activeSection === items.id
-                        ? "bg-indigo-50 text-indigo-600"
-                        : "text-gray-600 hover:bg-gray-50"
+                        ? "bg-indigo-500 dark:bg-gray-600 text-indigo-600"
+                        : "text-gray-300 hover:bg-gray-50 hover:dark:bg-gray-600"
                     }`}
                   >
                     <items.icon className="w-4 h-4 mr-2" />
@@ -202,7 +202,7 @@ const AdminDashboard = () => {
 
           {/* Mobile Navigation */}
           <div className={`md:hidden ${isMobileMenuOpen ? "block" : "hidden"}`}>
-            <div className="px-2 pt-2 pb-3 space-y-1 bg-white shadow-lg absolute w-full z-50">
+            <div className="px-2 pt-2 pb-3 space-y-1 bg-white dark:bg-gray-800 shadow-lg absolute w-full z-50">
               {navigation.map((items) => (
                 <button
                   key={items.id}
@@ -212,8 +212,8 @@ const AdminDashboard = () => {
                   )}
                   className={`w-full px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150 ease-in-out flex items-center ${
                     activeSection === items.id
-                      ? "bg-indigo-50 text-indigo-600"
-                      : "text-gray-600 hover:bg-gray-50"
+                      ? "bg-indigo-500 dark:bg-gray-600 text-indigo-600"
+                      : "text-gray-300 hover:bg-gray-50 hover:dark:bg-gray-600"
                   }`}
                 >
                   <items.icon className="w-4 h-4 mr-2" />
@@ -226,7 +226,7 @@ const AdminDashboard = () => {
         </header>
 
         {/* Dynamic Content Section */}
-        <div className="mt-10">
+        <div className="mt-12">
           {activeSection === 1 && <DashBoard stats={stats} orders={orders} />}
           {activeSection === 2 && <UsersCart users={users} />}
           {activeSection === 3 && <OrderCart order={orders} />}

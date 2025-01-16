@@ -114,7 +114,7 @@ UserSchema.methods = {
       .update(resetToken)
       .digest("hex");
 
-    this.forgotPasswordExpiry = Date.now() + 15 * 60 * 1000;
+    this.forgotPasswordExpiry = Date.now() + 10 * 60 * 1000;
 
     return resetToken;
   },

@@ -78,7 +78,10 @@ function App() {
             <Route path="/AddProduct" element={<AddProduct />}></Route>
             <Route path="/CarouselUpdate" element={<CarouselUpdate />}></Route>
             <Route path="/BlogUpload" element={<BlogUpload />}></Route>
-            <Route path="/SingleProduct" element={<SingleProduct />}></Route>
+            <Route
+              path="//Admin/Edit-Product"
+              element={<SingleProduct />}
+            ></Route>
             <Route path="/CarouselUpload" element={<CarouselUpload />}></Route>
             <Route path="/DashBoard" element={<AdminDashboard />}></Route>
           </Route>

@@ -26,6 +26,7 @@ export const OrderCart = ({ order }) => {
   const [loadingData, setLoadingData] = useState(false);
   const [OrderPrintData, setOrderPrintData] = useState();
   const [show, setShow] = useState(false);
+  const [updating, setUpdating] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const [shippingInfo, setShippingInfo] = useState({
@@ -65,11 +66,7 @@ export const OrderCart = ({ order }) => {
 
   async function loadOrders() {
     setLoadingData(true);
-    if (["ADMIN", "AUTHOR"].includes(Role)) {
-      setOrderData(order);
-      setLoadingData(false);
-      return;
-    }
+
     const res = await dispatch(getOrder(data._id));
     if (res?.payload?.success) setOrderData(res?.payload?.data);
     setLoadingData(false);
@@ -159,7 +156,6 @@ export const OrderCart = ({ order }) => {
       shippingAddress: shippingInfo,
     };
     const res = await dispatch(UpdateOrder({ id: OrderId, data: orderData }));
-    console.log(res.payload);
     setLoading(false);
     setShow(false);
     setShippingInfo({
@@ -179,13 +175,9 @@ export const OrderCart = ({ order }) => {
   };
 
   const handleOrderUpdate = async (id) => {
-    if (orderStatus[id] == "Delivered") {
-      toast.error("You cannot update or cancel a delivered order.");
-      return;
-    }
-
     if (orderStatus == "Delivered" && PaymentStatus[id] !== "Completed") {
       toast.error("Payment must be completed before updating the order.");
+      setORDERStatus(null);
       return;
     }
 
@@ -194,14 +186,21 @@ export const OrderCart = ({ order }) => {
       return;
     }
     if (newDate !== null) {
+      setUpdating(true);
       const res = await dispatch(
         UpdateOrder({ id, data: { deliveryDate: newDate } })
       );
+      setUpdating(false);
       setNewDate(null);
       if (res?.payload?.success) {
         toast.success("deliveryDate updated successfully!");
-        loadOrders();
+        setOrderData((prevOrders) =>
+          prevOrders.map((order) =>
+            order._id === id ? { ...order, ...res?.payload?.data } : order
+          )
+        );
         trackingDeliveryDate();
+        return;
       }
     }
     if (PaymentData.paymentStatus !== null) {
@@ -215,14 +214,18 @@ export const OrderCart = ({ order }) => {
           return;
         }
         if (!PaymentData.PaymentDate) {
-          return;
+          setPaymentData({
+            ...PaymentData,
+            PaymentDate: Date.now(),
+          });
         }
         if (PaymentData.amount == 0) {
           document.getElementById("amount").style.borderColor = "red";
           return;
         }
-
+        setUpdating(true);
         const res = await dispatch(UpdateOrder({ id, data: PaymentData }));
+        setUpdating(false);
         setPaymentData({
           name: "",
           amount: 0,
@@ -231,7 +234,11 @@ export const OrderCart = ({ order }) => {
         });
         if (res?.payload?.success) {
           toast.success("Payment Status updated successfully!");
-          loadOrders();
+          setOrderData((prevOrders) =>
+            prevOrders.map((order) =>
+              order._id === id ? { ...order, ...res?.payload?.data } : order
+            )
+          );
           trackingPayments();
         } else {
           toast.error(
@@ -239,7 +246,9 @@ export const OrderCart = ({ order }) => {
           );
         }
       } else {
+        setUpdating(true);
         const res = await dispatch(UpdateOrder({ id, data: PaymentData }));
+        setUpdating(false);
         setPaymentData({
           name: "",
           amount: 0,
@@ -248,7 +257,11 @@ export const OrderCart = ({ order }) => {
         });
         if (res?.payload?.success) {
           toast.success("Payment Status updated successfully!");
-          loadOrders();
+          setOrderData((prevOrders) =>
+            prevOrders.map((order) =>
+              order._id === id ? { ...order, ...res?.payload?.data } : order
+            )
+          );
           trackingPayments();
         } else {
           toast.error(
@@ -259,12 +272,41 @@ export const OrderCart = ({ order }) => {
     }
 
     if (orderStatus !== null) {
+      if (orderStatus == "Delivered") {
+        setUpdating(true);
+        const res = await dispatch(
+          UpdateOrder({
+            id,
+            data: { orderStatus: orderStatus, deliveryDate: Date.now() },
+          })
+        );
+        setUpdating(false);
+        if (res?.payload?.success) {
+          toast.success("Order Status updated successfully!");
+          setOrderData((prevOrders) =>
+            prevOrders.map((order) =>
+              order._id === id ? { ...order, ...res?.payload?.data } : order
+            )
+          );
+          trackingOrder();
+        } else {
+          toast.error(
+            res?.payload?.message || "Failed to update order status."
+          );
+        }
+      }
+      setUpdating(true);
       const res = await dispatch(
         UpdateOrder({ id, data: { orderStatus: orderStatus } })
       );
+      setUpdating(false);
       if (res?.payload?.success) {
         toast.success("Order Status updated successfully!");
-        loadOrders();
+        setOrderData((prevOrders) =>
+          prevOrders.map((order) =>
+            order._id === id ? { ...order, ...res?.payload?.data } : order
+          )
+        );
         trackingOrder();
       } else {
         toast.error(res?.payload?.message || "Failed to update order status.");
@@ -280,7 +322,15 @@ export const OrderCart = ({ order }) => {
     };
     return progressWidth[status] || "10%";
   };
+
   useEffect(() => {
+    if (order) {
+      if (["ADMIN", "AUTHOR"].includes(Role)) {
+        setOrderData(order);
+        setLoadingData(false);
+        return;
+      }
+    }
     loadOrders();
   }, [data._id]);
   useEffect(() => {
@@ -379,9 +429,13 @@ export const OrderCart = ({ order }) => {
               {order.products.map((product, productIndex) => (
                 <div key={productIndex} className="flex space-x-4 mb-4">
                   <img
+                    title="product"
+                    onClick={() =>
+                      window.open(`/product/${product.product}`, "_blank")
+                    }
                     src={product?.productDetails?.image?.secure_url}
                     alt={product.productDetails.name}
-                    className="w-24 h-24 object-contain rounded"
+                    className="w-24 h-24 object-contain rounded cursor-pointer"
                   />
                   <div>
                     <h2 className="text-lg font-semibold dark:text-white">
@@ -667,10 +721,11 @@ export const OrderCart = ({ order }) => {
               </div>
               <div className="mt-6">
                 <button
+                  disabled={updating}
                   onClick={() => handleOrderUpdate(OrderId)}
                   className="w-full bg-green-500 text-white text-sm font-semibold py-2 px-4 rounded-lg hover:bg-green-600 focus:ring-2 focus:ring-green-300"
                 >
-                  Save Changes
+                  {updating ? "Updating.." : "Save Changes"}
                 </button>
               </div>
             </div>

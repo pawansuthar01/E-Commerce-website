@@ -156,7 +156,9 @@ function ProductCard({ data, onProductDelete }) {
             </button>
             <button
               className="flex-1 flex justify-center text-blue-400"
-              onClick={() => navigate("/SingleProduct", { state: { ...data } })}
+              onClick={() =>
+                navigate("/Admin/Edit-Product", { state: { ...data } })
+              }
             >
               <FiEdit size={24} />
             </button>

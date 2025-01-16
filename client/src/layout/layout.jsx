@@ -2,9 +2,8 @@ import {
   AiFillCloseCircle,
   AiFillHome,
   AiOutlineInfoCircle,
-  AiOutlinePlusCircle,
 } from "react-icons/ai";
-import { FiMenu } from "react-icons/fi";
+import { FiLock, FiMenu } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import { GiShoppingCart } from "react-icons/gi";
 import {
@@ -28,16 +27,14 @@ import {
 import { useTheme } from "../Components/ThemeContext";
 import { NotificationGet } from "../Redux/Slice/notification.Slice";
 import NotificationCart from "../Page/notification/notification";
-import { getFeedback } from "../Redux/Slice/feedbackSlice";
 import SearchBar from "../Components/SearchBar";
 import {
-  MdAddCircleOutline,
   MdOutlineAdminPanelSettings,
   MdOutlineContactPage,
   MdSpaceDashboard,
 } from "react-icons/md";
 import { BsArrowsCollapse, BsCloudUpload } from "react-icons/bs";
-import { FaUsersCog } from "react-icons/fa";
+import { FaRegFileAlt } from "react-icons/fa";
 
 function Layout({ children, load }) {
   const [loading, setLoading] = useState("");
@@ -255,14 +252,14 @@ function Layout({ children, load }) {
                 darkMode
                   ? "bg-gray-800 text-gray-300"
                   : "bg-base-200 text-base-content"
-              } space-y-5 relative`}
+              } space-y-4 relative`}
             >
               <li className="w-fit absolute right-2 z-50">
                 <button onClick={hideSide}>
                   <AiFillCloseCircle size={"20px"} />
                 </button>
               </li>
-              <li onClick={hideSide} className="pt-5">
+              <li onClick={hideSide} className="pt-2">
                 <Link to="/">
                   {" "}
                   <AiFillHome />
@@ -297,6 +294,13 @@ function Layout({ children, load }) {
                   {" "}
                   <AiOutlineInfoCircle />
                   About Us
+                </Link>
+              </li>
+              <li onClick={() => window.open("App/privacy-policy", "_blank")}>
+                <Link>
+                  {" "}
+                  <FaRegFileAlt />
+                  privacy-policy
                 </Link>
               </li>
               {["ADMIN", "AUTHOR"].includes(role) && (

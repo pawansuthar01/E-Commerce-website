@@ -411,7 +411,7 @@ function SignUp() {
                 className="cursor-pointer "
               />
               <p
-                onClick={() => navigate("/App/privacy-policy")}
+                onClick={() => window.open("/App/privacy-policy", "_blank")}
                 id="PrivacyPolicyCheckbox"
                 name="PrivacyPolicyCheckbox"
                 className="hover:underline hover:text-blue-500 text-sm cursor-pointer "

@@ -170,19 +170,20 @@ function BlogCard({ data, onDelete }) {
 
       {/* Comment Modal */}
       {showCommentForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-lg">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">Comments</h3>
+        <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
+          <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg max-sm:w-full w-1/2 max-w-lg">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-1 dark:text-white">
               <button
                 onClick={() => setShowCommentForm(false)}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-black dark:text-white px-2 py-1 flex text-2xl rounded-lg hover:text-red-500"
               >
-                <FaArrowLeft />
+                <FaArrowLeft size={20} />
               </button>
+              Comment
+            </h3>
+            <div className="max-h-[500px] overflow-x-auto hide-scrollbar">
+              <CommentCard data={blog} onAddComment={setBlog} />
             </div>
-            <CommentCard data={blog} onAddComment={setBlog} />
-            {/* Comment Form Component would go here */}
           </div>
         </div>
       )}

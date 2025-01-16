@@ -1,6 +1,6 @@
 import Notification from "../module/Notification.module.js";
 import Product from "../module/Product.module.js";
-import User from "../module/use.module.js";
+import User from "../module/user.module.js";
 import AppError from "../utils/AppError.js";
 import cloudinary from "cloudinary";
 import fs from "fs/promises";

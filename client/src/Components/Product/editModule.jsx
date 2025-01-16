@@ -5,7 +5,6 @@ import { Category } from "./categoryData";
 import { FaPlus } from "react-icons/fa6";
 
 export const EditModal = ({ slide, onClose, onSave }) => {
-  console.log(slide);
   const [name, setName] = useState(slide.name);
   const [description, setDescription] = useState(slide.description);
   const [discount, setDiscount] = useState(slide?.discount || 0);
@@ -136,7 +135,7 @@ export const EditModal = ({ slide, onClose, onSave }) => {
 
   const handleImageSelect = (file, index) => {
     const updatedImages = [...images];
-    updatedImages[index] = file; // Replace image at the specified index
+    updatedImages[index] = file;
     setImages(updatedImages);
 
     const updatedNewImages = [...newImages];

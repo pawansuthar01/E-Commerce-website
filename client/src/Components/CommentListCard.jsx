@@ -52,7 +52,9 @@ function CommentCard({ data, onAddComment }) {
     ).then(() => {
       setNewComment("");
 
-      onAddComment(BlogId);
+      if (res?.payload?.success) {
+        onAddComment(res?.payload?.data);
+      }
     });
   }
 
@@ -60,8 +62,8 @@ function CommentCard({ data, onAddComment }) {
     const res = await dispatch(
       AddCommentToPost({ id: data._id, comment: newComment })
     );
-    if (res) {
-      onAddComment(BlogId);
+    if (res?.payload?.success) {
+      onAddComment(res?.payload?.data);
     }
   }
 
@@ -69,8 +71,8 @@ function CommentCard({ data, onAddComment }) {
     const res = await dispatch(
       deleteCommentById({ postId: data._id, commentId: id, userName: userName })
     );
-    if (res) {
-      onAddComment(BlogId);
+    if (res?.payload?.success) {
+      onAddComment(res?.payload?.data);
     }
   }
 
@@ -83,7 +85,7 @@ function CommentCard({ data, onAddComment }) {
       })
     );
     if (response?.payload?.success) {
-      onAddComment(BlogId);
+      onAddComment(response?.payload?.data);
     }
   }
 
@@ -99,7 +101,9 @@ function CommentCard({ data, onAddComment }) {
       if (res) {
         setEditingCommentId(null);
         setEditedComment("");
-        onAddComment(BlogId);
+        if (res?.payload?.success) {
+          onAddComment(res?.payload?.data);
+        }
       }
     }
   }
@@ -257,8 +261,19 @@ function CommentCard({ data, onAddComment }) {
       {/* // Comment input/// */}
       <form
         onSubmit={handleCommentSubmit}
-        className="mt-4 flex sticky bottom-4"
+        className="mt-4 flex sticky bottom-4 "
       >
+        {replyingTo !== null && (
+          <div className="flex  absolute top-[-32px] justify-between  w-full rounded-t-lg p-1  shadow-sm bg-slate-100">
+            <p>replay To message </p>
+            <span
+              className="hover:text-red-500 cursor-pointer"
+              onClick={() => setReplyingTo(null)}
+            >
+              cancel
+            </span>
+          </div>
+        )}
         <input
           type="text"
           placeholder={

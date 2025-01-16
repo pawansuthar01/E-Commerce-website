@@ -1,5 +1,5 @@
 import Product from "../module/Product.module.js";
-import User from "../module/use.module.js";
+import User from "../module/user.module.js";
 import AppError from "../utils/AppError.js";
 
 export const AddCardProduct = async (req, res, next) => {

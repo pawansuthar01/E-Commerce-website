@@ -76,7 +76,6 @@ function SingleProduct() {
         toast.success("Product updated successfully");
       }
     } catch (error) {
-      console.error("Error updating product:", error);
       toast.error("Failed to update product.");
     }
   };
