@@ -1,6 +1,5 @@
 import Notification from "../module/Notification.module.js";
 import Post from "../module/Post.module.js";
-import Reel from "../module/Reel.module.js";
 import User from "../module/user.module.js";
 import AppError from "../utils/AppError.js";
 import cloudinary from "cloudinary";
@@ -228,7 +227,7 @@ export const AddReplayToComment = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: "Reply added successfully.",
-      replies: comment.replies,
+      data: post,
     });
   } catch (error) {
     next(new AppError(error.message, 500));
@@ -262,6 +261,7 @@ export const removeReplayToComment = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: "Reply deleted successfully",
+      data: post,
     });
   } catch (error) {
     return next(new AppError(error.message, 404));
@@ -297,7 +297,7 @@ export const exitCommentInPostById = async (req, res, next) => {
     }
     res.status(200).json({
       success: true,
-      updateComment,
+      data: updateComment,
       message: "comment successfully edit...",
     });
   } catch (error) {
@@ -307,7 +307,6 @@ export const exitCommentInPostById = async (req, res, next) => {
 export const deleteCommentInPostById = async (req, res, next) => {
   const { userName } = req.body;
   const { postId, commentId } = req.query;
-  console.log(req.query);
 
   if (!postId || !commentId || !userName) {
     return next(
@@ -334,6 +333,9 @@ export const deleteCommentInPostById = async (req, res, next) => {
           comments: { _id: commentId, userName: userName },
         },
         $inc: { numberOfComments: -1 },
+      },
+      {
+        new: true,
       }
     );
     if (!findCommentDelete) {
@@ -345,7 +347,7 @@ export const deleteCommentInPostById = async (req, res, next) => {
     await findComment.save();
     res.status(200).json({
       success: true,
-
+      data: findCommentDelete,
       message: "comment successfully delete...",
     });
   } catch (error) {

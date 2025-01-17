@@ -144,7 +144,7 @@ function Layout({ children, load }) {
       if (connection) {
         const slowConnectionTypes = ["slow-2g", "2g"];
         if (slowConnectionTypes.includes(connection.effectiveType)) {
-          // navigate("/SlowInternetPage");
+          navigate("/App/Slow-Network");
         }
       }
     };
@@ -175,7 +175,7 @@ function Layout({ children, load }) {
               onClick={changeWight}
               size={"36px"}
               className={`font-bold m-4 ${
-                darkMode ? "text-white" : "text-gray-800"
+                darkMode ? "text-white" : "text-gray-800 "
               }`}
             />
           </label>

@@ -47,7 +47,7 @@ function BlogDetails() {
             Post not found
           </h2>
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/blog")}
             className="text-blue-500 hover:text-blue-600 flex items-center justify-center gap-2"
           >
             <FaArrowLeftLong /> Back to Blog List

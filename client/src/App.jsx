@@ -45,7 +45,7 @@ function App() {
           ></Route>
           <Route path="/Signup" element={<SignUp />}></Route>
           <Route
-            path="/SlowInternetPage"
+            path="/App/Slow-Network"
             element={<SlowInternetPage />}
           ></Route>
           <Route path="/Search" element={<Product />}></Route>
@@ -63,7 +63,10 @@ function App() {
               element={<ChangePassword />}
             ></Route>
             <Route path="/Profile" element={<Profile />}></Route>
-            <Route path="/CheckoutForm" element={<CheckoutForm />}></Route>
+            <Route
+              path="/Product/New/Order-place"
+              element={<CheckoutForm />}
+            ></Route>
             <Route path="/ThankYou" element={<ThankYou />}></Route>
             <Route path="/UpdateProfile" element={<UpdateProfile />}></Route>
             <Route path="/Cart" element={<Cart />}></Route>
@@ -79,7 +82,7 @@ function App() {
             <Route path="/CarouselUpdate" element={<CarouselUpdate />}></Route>
             <Route path="/BlogUpload" element={<BlogUpload />}></Route>
             <Route
-              path="//Admin/Edit-Product"
+              path="/Admin/Edit-Product"
               element={<SingleProduct />}
             ></Route>
             <Route path="/CarouselUpload" element={<CarouselUpload />}></Route>

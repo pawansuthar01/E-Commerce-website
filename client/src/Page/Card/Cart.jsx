@@ -234,7 +234,7 @@ const Cart = () => {
                     {/* Place Order Button */}
                     <button
                       onClick={() => {
-                        navigate("/CheckoutForm", {
+                        navigate("/Product/New/Order-place", {
                           state: { ...quantities },
                         });
                       }}

@@ -21,6 +21,8 @@ function Blog() {
     setShowPost(PostData);
   }, []);
   async function handleDeleteBlog(blogId) {
+    const iConfirm = window.confirm("Delete this Blog...");
+    if (!iConfirm) return;
     setShowPost((prevBlog) => prevBlog.filter((blog) => blog._id !== blogId));
     await dispatch(DeleteBlog(blogId));
   }

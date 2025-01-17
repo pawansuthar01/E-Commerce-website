@@ -49,13 +49,12 @@ function CommentCard({ data, onAddComment }) {
         commentId: replyingTo,
         reply: newComment,
       })
-    ).then(() => {
-      setNewComment("");
+    );
 
-      if (res?.payload?.success) {
-        onAddComment(res?.payload?.data);
-      }
-    });
+    if (res?.payload?.success) {
+      onAddComment(res?.payload?.data);
+    }
+    setNewComment("");
   }
 
   async function addComment() {
@@ -152,6 +151,7 @@ function CommentCard({ data, onAddComment }) {
                     <div className="mt-2">
                       <input
                         type="text"
+                        id="text_"
                         value={editedComment}
                         onChange={(e) => setEditedComment(e.target.value)}
                         className="p-2 border border-gray-300 rounded-md w-full"
@@ -264,7 +264,7 @@ function CommentCard({ data, onAddComment }) {
         className="mt-4 flex sticky bottom-4 "
       >
         {replyingTo !== null && (
-          <div className="flex  absolute top-[-32px] justify-between  w-full rounded-t-lg p-1  shadow-sm bg-slate-100">
+          <div className="flex  absolute top-[-32px] justify-between  w-full rounded-t-lg p-1  shadow-sm dark:bg-gray-800 bg-slate-100">
             <p>replay To message </p>
             <span
               className="hover:text-red-500 cursor-pointer"
@@ -276,6 +276,7 @@ function CommentCard({ data, onAddComment }) {
         )}
         <input
           type="text"
+          id="text"
           placeholder={
             replyingTo !== null ? "Reply to comment..." : "New comment..."
           }

@@ -107,7 +107,7 @@ function ProductDescription() {
   };
   const handelPlaceOrder = (productId, quantities, status) => {
     if (status == "Out stock") return alert("Product Out Stock");
-    navigate("/CheckoutForm", {
+    navigate("/Product/New/Order-place", {
       state: { quantities, ProductId },
     });
   };
@@ -339,7 +339,7 @@ function ProductDescription() {
                     name="Add To Cart"
                     color="bg-green-500"
                     message="Loading..."
-                    loading={false}
+                    loading={loading}
                     width="w-full"
                   />
                 ) : (
@@ -349,7 +349,7 @@ function ProductDescription() {
                     color="bg-red-500"
                     textSize={"py-3"}
                     message="Loading..."
-                    loading={false}
+                    loading={loading}
                     width="w-full"
                   />
                 )}

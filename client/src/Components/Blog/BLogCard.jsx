@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { FaArrowLeft, FaRegClock, FaRegComment } from "react-icons/fa6";
 import { FiHeart, FiShare2 } from "react-icons/fi";
 import { IoPaperPlaneOutline } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import {
   DeleteBlog,
   getAllPost,
@@ -16,13 +16,14 @@ import EditBlog from "./editBlog";
 import { FaRegCommentAlt, FaUserCircle } from "react-icons/fa";
 
 function BlogCard({ data, onDelete }) {
-  const navigator = useNavigate();
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
   const [showCommentForm, setShowCommentForm] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [blog, setBlog] = useState(data);
   const { role, userName } = useSelector((state) => state?.auth);
+  const [isLiked, setIsLike] = useState(false);
   useEffect(() => {
     setBlog(data);
   }, [data]);
@@ -30,11 +31,17 @@ function BlogCard({ data, onDelete }) {
     window.location.hostname +
     (window.location.port ? `:${window.location.port}` : "");
   const url = `http://${domain}/Blog/${data?._id}`;
+  useEffect(() => {
+    const isLiked = blog?.PostLikes?.some((like) => like.userName === userName);
+    setIsLike(isLiked);
+  }, [data]);
   const handleLikeDislike = async (id) => {
+    setIsLike((prev) => !prev);
+
     if (!id) return;
     const res = await dispatch(LikeAndDisLikePost(id));
 
-    if (res.payload.success) {
+    if (res?.payload?.success) {
       setBlog(res.payload.FindPost);
     }
   };
@@ -42,13 +49,12 @@ function BlogCard({ data, onDelete }) {
   const handleShare = useCallback(() => {
     if (navigator.share) {
       navigator.share({
-        title: blog?.title,
-        text: blog?.description,
-        url,
+        title: data?.title,
+        text: data?.description,
+        url: url,
       });
     }
-  }, [blog, url]);
-  const isLiked = blog?.PostLikes?.some((like) => like.userName === userName);
+  }, [data]);
   function UpdatedData(data) {
     setShowEdit(false);
     setBlog(data?.payload?.data);
@@ -58,9 +64,7 @@ function BlogCard({ data, onDelete }) {
       {/* Image Container */}
       <div className="relative h-48 overflow-hidden  cursor-pointer">
         <img
-          onClick={() =>
-            navigator(`/blog/${data?._id}`, { state: { ...data } })
-          }
+          onClick={() => navigate(`/blog/${data?._id}`, { state: { ...data } })}
           src={blog?.Post?.secure_url}
           alt={blog?.title}
           className="w-full h-full object-cover transition-transform hover:scale-105"
@@ -149,7 +153,9 @@ function BlogCard({ data, onDelete }) {
           </button>
 
           <button
-            onClick={() => handleLikeDislike(blog?._id)}
+            onClick={() => {
+              handleLikeDislike(blog?._id);
+            }}
             className="flex items-center text-gray-600 dark:text-gray-300 hover:text-red-500 transition-colors"
           >
             <FiHeart
