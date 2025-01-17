@@ -296,7 +296,7 @@ function Layout({ children, load }) {
                   About Us
                 </Link>
               </li>
-              <li onClick={() => window.open("App/privacy-policy", "_blank")}>
+              <li onClick={() => window.open("/App/privacy-policy", "_blank")}>
                 <Link>
                   {" "}
                   <FaRegFileAlt />
