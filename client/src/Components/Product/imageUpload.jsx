@@ -22,12 +22,14 @@ export function ImageUpload({ onImageSelect, initialImages = [] }) {
     <div className="mt-4">
       <label className="block text-sm font-medium text-gray-700 mb-2">
         Upload Images
+     
       </label>
       <div className="space-y-4">
         {images.map((image, index) => (
           <div key={index} className="flex flex-col items-center">
             <div className=" w-full flex flex-col justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
               {image ? (
+                
                 <img
                   crossOrigin="anonymous"
                   src={image.secure_url || image}
