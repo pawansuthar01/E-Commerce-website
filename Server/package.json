@@ -1,13 +1,16 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon ./server.js",
     "start": "node ./server.js",
     "build": "echo 'No build step required'"
+  },
+  "engines": {
+    "node": ">=18.0.0 <20.0.0"
   },
   "keywords": [],
   "author": "",
@@ -28,7 +31,6 @@
     "node-fetch": "^3.3.2",
     "nodemailer": "^6.9.16",
     "nodemon": "^3.1.7",
-    "pdf2image": "^1.2.3",
     "razorpay": "^2.9.5",
     "socket.io": "^4.8.1",
     "uuid": "^11.0.3"
