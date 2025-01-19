@@ -11,9 +11,9 @@ import FeedbackList from "../Components/feedbackList";
 import { getAllCarousel } from "../Redux/Slice/CarouselSlice";
 
 function HomePage() {
-  const [currentSlide, setCurrentSlide] = useState(1); // Start from 1 (middle of the duplicated slides)
-  const [isAnimating, setIsAnimating] = useState(true); // Control animation
-  const [loading, setLoading] = useState(true); // Loader state
+  const [currentSlide, setCurrentSlide] = useState();
+  const [isAnimating, setIsAnimating] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [show, setShow] = useState(false);
   const [oneTime, setOneTime] = useState(true);
   const dispatch = useDispatch();
@@ -55,35 +55,38 @@ function HomePage() {
 
   useEffect(() => {
     setTimeout(() => {
-      if (oneTime && !isLoggedIn) {
-        setShow(true);
-        setOneTime(false);
+      if (!loading) {
+        if (oneTime && !isLoggedIn) {
+          setShow(true);
+          setOneTime(false);
+        }
       }
     }, 10000);
-  }, [show]);
+  }, [show, loading]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setIsAnimating(true);
-      setCurrentSlide((prev) => prev + 1);
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
+    setCurrentSlide(1);
     if (!loading) {
-      if (currentSlide === 0) {
-        setTimeout(() => {
-          setIsAnimating(false);
-          setCurrentSlide(carousel?.length);
-        }, 700);
-      } else if (currentSlide === carousel?.length + 1) {
-        setTimeout(() => {
-          setIsAnimating(false);
-          setCurrentSlide(1);
-        }, 700);
-      }
+      const interval = setInterval(() => {
+        setIsAnimating(true);
+        setCurrentSlide((prev) => prev + 1);
+      }, 3000);
+
+      return () => clearInterval(interval);
+    }
+  }, [loading]);
+
+  useEffect(() => {
+    if (currentSlide === 0) {
+      setTimeout(() => {
+        setIsAnimating(false);
+        setCurrentSlide(carousel?.length);
+      }, 700);
+    } else if (currentSlide === carousel?.length + 1) {
+      setTimeout(() => {
+        setIsAnimating(false);
+        setCurrentSlide(1);
+      }, 700);
     }
   }, [currentSlide]);
   useEffect(() => {

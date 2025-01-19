@@ -1,5 +1,3 @@
-import Layout from "../../layout/layout";
-
 export const LoadingCart = ({ dataType }) => {
   const getLoadingContent = (dataType) => {
     switch (dataType) {

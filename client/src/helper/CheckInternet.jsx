@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const SlowInternetPage = () => {
+  const [type, setType] = useState("");
   const navigate = useNavigate();
   useEffect(() => {
     const checkNetworkSpeed = () => {
@@ -9,6 +10,7 @@ const SlowInternetPage = () => {
         navigator.connection ||
         navigator.mozConnection ||
         navigator.webkitConnection;
+      setType(connection.effectiveType);
 
       if (connection) {
         const slowConnectionTypes = ["slow-2g", "2g"];
@@ -35,8 +37,8 @@ const SlowInternetPage = () => {
           Slow Internet Connection
         </h1>
         <p className="text-lg mb-6">
-          Your internet connection is very slow. Some features may not work
-          properly.
+          Your internet connection "{type}" is very slow. Some features may not
+          work properly.
         </p>
         <button
           onClick={() => window.location.reload()}

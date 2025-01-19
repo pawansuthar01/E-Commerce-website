@@ -69,8 +69,8 @@ function ProductDescription() {
   };
 
   const ProductAddCard = async (productId, status) => {
-    setLoading(true);
     if (status == "Out stock") return alert("Product Out Stock");
+    setLoading(true);
     const res = await dispatch(AddProductCard(productId));
 
     if (res) {
