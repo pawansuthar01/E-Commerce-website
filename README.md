@@ -62,10 +62,9 @@ Welcome to the E-Commerce Website project! This project is built using modern we
     - Add the following variables:
 
 ```env
-   MONGO_URI=your-mongodb-uri
+    MONGO_URI=your-mongodb-uri
     JWT_SECRET=your-jwt-secret
     JWT_EXPIRY=your-jwt-Exp
-    STRIPE_SECRET_KEY=your-stripe-secret-key
     PORT = 50XX
     NODE_ENV=XXxxxx
     KEY_ID=razorpay_Kd
