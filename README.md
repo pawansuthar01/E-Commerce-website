@@ -29,43 +29,58 @@ Welcome to the E-Commerce Website project! This project is built using modern we
 - **Frontend:** React, Tailwind CSS
 - **Backend:** Node.js, Express.js
 - **Database:** MongoDB
-- **Hosting:** Netlify (Frontend), [Other hosting platform] (Backend)
+- **Hosting:** Netlify (Frontend), Render (Backend)
 
 ---
 
 ## Installation
 
-1. Clone the repository:
+1.  Clone the repository:
 
-   ```bash
-   git clone https://github.com/pawansuthar01/E-Commerce-website.git
-   ```
+    ```bash
+    git clone https://github.com/pawansuthar01/E-Commerce-website.git
+    ```
 
-2. Navigate to the project directory:
+2.  Navigate to the project directory:
 
-   ```bash
-   cd ecommerce-website
-   ```
+    ```bash
+    cd ecommerce-website
+    ```
 
-3. Install dependencies for both frontend and backend:
+3.  Install dependencies for both frontend and backend:
 
-   ```bash
-   cd Client
-   npm install
-   cd ../server
-   npm install
-   ```
+    ```bash
+    cd Client
+    npm install
+    cd ../server
+    npm install
+    ```
 
-4. Configure environment variables:
+4.  Configure environment variables:
 
-   - Create a `.env` file in the `backend` folder.
-   - Add the following variables:
-     ```env
-     MONGO_URI=your-mongodb-uri
-     JWT_SECRET=your-jwt-secret
-     JWT_EXP=your-jwt-Exp
-     STRIPE_SECRET_KEY=your-stripe-secret-key
-     ```
+    - Create a `.env` file in the `server` folder.
+    - Add the following variables:
+
+```env
+   MONGO_URI=your-mongodb-uri
+    JWT_SECRET=your-jwt-secret
+    JWT_EXPIRY=your-jwt-Exp
+    STRIPE_SECRET_KEY=your-stripe-secret-key
+    PORT = 50XX
+    NODE_ENV=XXxxxx
+    KEY_ID=razorpay_Kd
+    SECRET_ID=razorpay_secret
+    CLOUDINARY_CLOUD_NAME=cloudinary_name
+    CLOUDINARY_API_KEY=cloudinary_api
+    CLOUDINARY_API_SECRET=cloudinary_secret
+    SMTP_HOST=email_xxx
+    SMTP_PORT=58Xxx
+    MAIL=your_email_@gmail.com
+    SMTP_USERNAME=your_email_@gmail.com
+    SMTP_PASS=your_smtp_pass_xxx
+    FRONTEND_URL=frontend_url
+
+```
 
 5. Start the development servers:
    - Frontend:
@@ -133,3 +148,7 @@ For any queries or suggestions, please contact:
 - **Name:** Pawan Kumar
 - **Email:** paw.kum.2111@gmail.com
 - **GitHub:** [pawansuthar01](https://github.com/pawansuthar01)
+
+```
+
+```
