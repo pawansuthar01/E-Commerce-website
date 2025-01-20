@@ -72,7 +72,7 @@ const SearchBar = ({ setQueryBarTitle, onSearch, width, TopMargin }) => {
         Search
       </label>
       <div className={`relative ${width || "w-1/2"}`}>
-        <form action="Search" onSubmit={handleSearchClick}>
+        <form onSubmit={handleSearchClick}>
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
             <svg
               className="w-4 h-4 text-gray-400 dark:text-gray-400"
