@@ -157,7 +157,7 @@ const AdminDashboard = () => {
         {/* Dashboard Header */}
 
         {/* Button Section */}
-        <header className="bg-white dark:bg-gray-800 shadow-sm  top-[50px] sm:top-[66px] z-40  w-full fixed">
+        <header className="bg-white dark:bg-gray-800 shadow-sm  top-[50px] sm:top-[66px] z-40  w-full fixed ">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
             <div className="flex items-center justify-between h-16 ">
               <h1 className="text-xl font-bold text-indigo-600">
@@ -187,8 +187,8 @@ const AdminDashboard = () => {
                     )}
                     className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150 ease-in-out flex items-center ${
                       activeSection === items.id
-                        ? "bg-indigo-500 dark:bg-gray-600 text-indigo-600"
-                        : "text-gray-300 hover:bg-gray-50 hover:dark:bg-gray-600"
+                        ? "bg-indigo-500  text-white dark:text-black"
+                        : "text-gray-800 hover:bg-gray-300 dark:bg-gray-600 hover:dark:bg-gray-500 dark:text-white"
                     }`}
                   >
                     <items.icon className="w-4 h-4 mr-2" />
@@ -212,8 +212,8 @@ const AdminDashboard = () => {
                   )}
                   className={`w-full px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150 ease-in-out flex items-center ${
                     activeSection === items.id
-                      ? "bg-indigo-500 dark:bg-gray-600 text-indigo-600"
-                      : "text-gray-300 hover:bg-gray-50 hover:dark:bg-gray-600"
+                      ? "bg-indigo-500  text-white dark:text-black"
+                      : "text-gray-800 hover:bg-gray-300 dark:bg-gray-600 hover:dark:bg-gray-500 dark:text-white"
                   }`}
                 >
                   <items.icon className="w-4 h-4 mr-2" />
@@ -226,7 +226,7 @@ const AdminDashboard = () => {
         </header>
 
         {/* Dynamic Content Section */}
-        <div className="mt-12">
+        <div className="pt-[100px]">
           {activeSection === 1 && <DashBoard stats={stats} orders={orders} />}
           {activeSection === 2 && <UsersCart users={users} />}
           {activeSection === 3 && <OrderCart order={orders} />}

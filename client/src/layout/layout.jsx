@@ -44,9 +44,8 @@ function Layout({ children, load }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state?.auth?.isLoggedIn);
-  const { role, exp } = useSelector((state) => state?.auth);
+  const { role, exp, data } = useSelector((state) => state?.auth);
 
-  const { data } = useSelector((state) => state?.auth);
   const { phoneNumber, email, address, instagram, youtube, facebook } =
     useSelector((state) => state?.ShopInfo);
 
@@ -150,7 +149,6 @@ function Layout({ children, load }) {
 
     checkNetworkSpeed();
 
-    // Listen for network changes
     navigator.connection?.addEventListener("change", checkNetworkSpeed);
 
     return () => {
@@ -308,7 +306,11 @@ function Layout({ children, load }) {
                     <MdOutlineAdminPanelSettings size={20} /> Admin Routes
                   </p>
                   <li onClick={hideSide}>
-                    <Link to="/DashBoard">
+                    <Link
+                      to={`/DashBoard/${
+                        data?._id || "67816211921701ac1e5a5c1d"
+                      }`}
+                    >
                       <MdSpaceDashboard />
                       ADMIN Dashboard
                     </Link>

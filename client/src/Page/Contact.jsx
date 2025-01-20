@@ -12,14 +12,12 @@ function Contact() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  // State to manage form inputs
   const [formData, setFormData] = useState({
     number: "",
     email: "",
     message: "",
   });
 
-  // Handle form input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -29,24 +27,13 @@ function Contact() {
     document.getElementById(name).style.borderColor = "";
   };
 
-  // Handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.email) {
+    if (!formData.email || !isEmail(formData.email)) {
       document.getElementById("email").style.borderColor = "red";
       return;
     }
-    if (!isEmail(formData.email)) {
-      document.getElementById("email").style.borderColor = "red";
-      return;
-    }
-
-    if (!formData.number) {
-      document.getElementById("number").style.borderColor = "red";
-      return;
-    }
-
-    if (!isPhoneNumber(formData.number)) {
+    if (!formData.number || !isPhoneNumber(formData.number)) {
       document.getElementById("number").style.borderColor = "red";
       return;
     }
@@ -56,40 +43,39 @@ function Contact() {
     }
     setLoading(true);
     await dispatch(SendMassage(formData));
-    setFormData({
-      number: "",
-      email: "",
-      message: "",
-    });
+    setFormData({ number: "", email: "", message: "" });
     setLoading(false);
   };
 
   return (
     <Layout>
-      <div className="w-full min-h-[80vh] sm:mt-[100px] mb-10 dark:bg-[#111827] ">
-        <div className="flex flex-col  items-center  w-full">
-          <h3 className="text-2xl text-center font-black dark:text-white  text-black">
-            We'd love to Help
+      <div className="w-full min-h-[80vh] mt-16 sm:mt-24 dark:bg-gray-900 pb-10">
+        <div className="flex flex-col items-center w-full px-4">
+          <h3 className="text-3xl font-extrabold text-center dark:text-white text-gray-800">
+            How Can We Help You?
           </h3>
-          <p className="text-[#88878D] text-xl w-11/12 dark:text-white text-center">
-            😇 Reach out and we'll get in touch within 24 hours. 😇
+          <p className="text-gray-600 dark:text-gray-300 text-lg text-center mt-2 max-w-xl">
+            Feel free to reach out to us! We'll get back to you within 24 hours.
           </p>
-          <div className=" p-3 shadow-[0_0_5px_black] dark:bg-[#111827]  bg-[#F7F7F7] sm:w-[50%] max-sm:w-[80%] rounded-sm   m-5">
-            <header className="flex items-center justify-center relative">
+          <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 mt-8 w-full sm:w-2/3 lg:w-1/2">
+            <header className="flex items-center justify-between mb-6">
               <button
                 onClick={() => navigate(-1)}
-                className="absolute left-2 text-xl text-black"
+                className="text-gray-600 dark:text-gray-300 hover:text-blue-500 transition"
               >
-                <AiOutlineArrowLeft />
+                <AiOutlineArrowLeft className="text-2xl" />
               </button>
-              <h1 className="text-xl dark:text-white text-black font-semibold">
-                Contact
+              <h1 className="text-xl font-semibold text-gray-800 dark:text-white">
+                Contact Us
               </h1>
             </header>
             <form onSubmit={handleSubmit}>
-              <div className="w-full my-5 flex flex-col">
-                <label htmlFor="number" className="text-xl py-2">
-                  Number
+              <div className="mb-4">
+                <label
+                  htmlFor="number"
+                  className="block text-lg font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Phone Number
                 </label>
                 <input
                   type="number"
@@ -97,13 +83,16 @@ function Contact() {
                   id="number"
                   value={formData.number}
                   onChange={handleInputChange}
-                  placeholder="Enter Phone Number..."
-                  className="px-2 border-2 py-3 border-gray-500 dark:bg-[#111827]  font-normal rounded-xl pl-2"
+                  placeholder="Enter your phone number"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                 />
               </div>
-              <div className="w-full my-5 flex  flex-col">
-                <label htmlFor="email" className=" text-xl py-2">
-                  Email
+              <div className="mb-4">
+                <label
+                  htmlFor="email"
+                  className="block text-lg font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Email Address
                 </label>
                 <input
                   type="email"
@@ -111,37 +100,39 @@ function Contact() {
                   id="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  placeholder="Enter Email..."
-                  className="px-2 border-2 py-3 border-gray-500 dark:bg-[#111827]   font-normal rounded-xl pl-2"
+                  placeholder="Enter your email"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                 />
               </div>
-              <div className="w-full my-5 flex flex-col">
-                <label htmlFor="message" className="text-xl  py-2">
-                  Message..
+              <div className="mb-4">
+                <label
+                  htmlFor="message"
+                  className="block text-lg font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Your Message
                 </label>
                 <textarea
                   name="message"
                   id="message"
                   value={formData.message}
                   onChange={handleInputChange}
-                  className=" resize-none h-48 border-2 border-gray-500 font-normal dark:bg-[#111827]  rounded-xl p-2"
-                  placeholder="Message ...."
+                  placeholder="Write your message here..."
+                  className="w-full h-36 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white resize-none"
                 ></textarea>
               </div>
-
               <button
+                type="submit"
                 disabled={loading}
-                className="text-white bg-blue-600 my-2 hover:bg-transparent hover:border-2 hover:border-blue-600 hover:text-blue-600 text-xl rounded-sm px-2 py-3 w-full"
+                className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-lg hover:bg-blue-700 transition"
               >
                 {loading ? "Sending..." : "Submit"}
               </button>
             </form>
           </div>
         </div>
-        {/* feedback section */}
-        <div className="w-full">
-          <hr className="h-1 bg-slate-200" />
-          <h1 className="text-2xl font-bold mb-4 ml-10 text-start dark:text-white text-black">
+        <div className="mt-10 px-4">
+          <hr className="mb-8 border-gray-200 dark:border-gray-600" />
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
             Feedback Section
           </h1>
           <FeedbackForm />

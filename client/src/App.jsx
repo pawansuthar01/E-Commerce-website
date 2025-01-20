@@ -86,7 +86,7 @@ function App() {
               element={<SingleProduct />}
             ></Route>
             <Route path="/CarouselUpload" element={<CarouselUpload />}></Route>
-            <Route path="/DashBoard" element={<AdminDashboard />}></Route>
+            <Route path="/DashBoard/:id" element={<AdminDashboard />}></Route>
           </Route>
           <Route path="/Denied" element={<Denied />}></Route>
           <Route path="*" element={<NotFoundPage />}></Route>
