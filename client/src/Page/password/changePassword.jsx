@@ -28,6 +28,7 @@ const ChangePassword = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(false);
 
     // Validate the passwords
     if (!passwordData.oldPassword) {
@@ -74,7 +75,7 @@ const ChangePassword = () => {
   return (
     <Layout>
       <div className=" flex h-screen">
-        <div className=" my-auto m-auto w-[60%] max-w-md p-6  border rounded-md shadow-md">
+        <div className=" my-auto m-auto sm:w-[60%] w-[90%]  max-w-md p-6  border rounded-md shadow-md">
           <h2 className="text-xl font-semibold text-center mb-6">
             Reset Your Password
           </h2>

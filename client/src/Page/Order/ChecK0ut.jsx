@@ -278,7 +278,7 @@ function CheckoutPage() {
     }, 0);
   useEffect(() => {
     if (calculateTotalAmount) {
-      setTotalPrice(calculateCartTotal(cart));
+      setTotalPrice(calculateCartTotal(cart).toFixed(2));
     }
   }, [cart]);
 
@@ -551,7 +551,9 @@ function CheckoutPage() {
                             key={product.product}
                             className="border-t border-gray-300"
                           >
-                            <td className="text-center">{product.name}</td>
+                            <td className="text-center line-clamp-1 ">
+                              {product.name}
+                            </td>
                             <td className="text-center">
                               {formatPrice(basePrice)}
                             </td>
@@ -618,7 +620,7 @@ function CheckoutPage() {
                       Total Price (After Discount):
                     </span>
                     <span className="flex items-center text-green-600 dark:text-green-400">
-                      {formatPrice(calculateCartTotal(cart))}
+                      {formatPrice(calculateCartTotal(cart).toFixed(2))}
                     </span>
                   </div>
 

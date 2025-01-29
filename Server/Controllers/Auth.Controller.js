@@ -16,7 +16,7 @@ const cookieOption = {
 };
 
 export const RegisterUser = async (req, res, next) => {
-  const { userName, fullName, email, password, phoneNumber } = req.body;
+  const { userName, fullName, email, password, phoneNumber, Email } = req.body;
   if (!fullName || !email || !password || !userName || !phoneNumber) {
     return next(new AppError("All fields are required", 400));
   }
@@ -115,7 +115,9 @@ export const RegisterUser = async (req, res, next) => {
   <p><a href="${orderConfirmationUrl}" style="color: #ffffff; background-color: #4CAF50; padding: 10px 20px; text-decoration: none; border-radius: 5px;" target="_blank">Go to Home</a></p>
   <p>If the button above doesn't work, copy and paste this link into your browser:</p>
   <p>${orderConfirmationUrl}</p>
-  <p>If you have any questions or need assistance, feel free to contact us at <a href="mailto:support@example.com">support@example.com</a>.</p>
+  <p>If you have any questions or need assistance, feel free to contact us at 
+  <a href="mailto:${Email}">${Email}</a>.
+  </p>
   <p>Thank you for joining KGS DOORS!</p>
   <p>Best regards,</p>
   <p><strong>KGS DOORS Team</strong></p>
@@ -149,7 +151,6 @@ export const RegisterUser = async (req, res, next) => {
 
 export const login = async (req, res, next) => {
   const { Email: email, password } = req.body;
-  console.log(req.body);
   if (!email || !password) {
     return next(new AppError(" All felids is required", 400));
   }

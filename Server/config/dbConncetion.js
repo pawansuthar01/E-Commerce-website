@@ -6,10 +6,7 @@ mongoose.set("strictQuery", false);
 
 const dataBaseConnection = async () => {
   try {
-    const { connection } = await mongoose.connect(process.env.MONGO_URI);
-    if (connection) {
-      console.log(`successfully connect DB `);
-    }
+    await mongoose.connect(process.env.MONGO_URI);
   } catch (error) {
     process.exit(1);
   }

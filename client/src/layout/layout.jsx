@@ -77,7 +77,11 @@ function Layout({ children, load }) {
   const handelNotificationLoad = async () => {
     if (isLoggedIn) {
       const res = await dispatch(NotificationGet());
-      await dispatch(LoadAccount());
+      const AccountData = await dispatch(LoadAccount());
+      if (AccountData?.payload?.message === " please login..") {
+        await dispatch(LogoutAccount());
+        navigate("/login");
+      }
       if (res?.payload?.data) {
         const notificationsArray = Array.isArray(res.payload.data)
           ? res.payload.data

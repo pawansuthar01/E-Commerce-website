@@ -31,7 +31,7 @@ function HomePage() {
     }
   }, [Carousel]);
   useEffect(() => {
-    if (products.length == 0 || topProduct.length == 0) {
+    if (product.length == 0 || topProduct.length == 0) {
       setProducts(product);
       setTopProduct(topProducts);
     }

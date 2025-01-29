@@ -365,12 +365,16 @@ function ProductDescription() {
         </div>
 
         {/* Related Products */}
-        <div className="p-6">
+        <div className="">
           <h2 className="text-2xl font-semibold mb-4">Related Products</h2>
-          <div className="flex flex-wrap  justify-evenly gap-10">
+          <div className="flex flex-wrap  justify-evenly gap-6 my-6 w-full">
             {Array.isArray(Search) &&
               Search.map((product, ind) => (
-                <ProductCard data={product} key={ind} />
+                <ProductCard
+                  data={product}
+                  key={ind}
+                  className="relative group"
+                />
               ))}
           </div>
         </div>

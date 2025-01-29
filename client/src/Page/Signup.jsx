@@ -11,13 +11,14 @@ import {
   isUserName,
   isValidPassword,
 } from "../helper/regexMatch";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { CreateAccount } from "../Redux/Slice/authSlice";
 
 function SignUp() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [checkPrivacyPolicy, setCheckPrivacyPolicy] = useState(false);
+  const { email } = useSelector((state) => state?.ShopInfo);
   const [previewImage, setPreviewImage] = useState("");
   const [loading, setLoading] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
@@ -30,9 +31,14 @@ function SignUp() {
     avatar: "",
     password: "",
     ConfirmPassword: "",
+    Email: "",
   });
-
-  const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
+  useEffect(() => {
+    setSignUpData({
+      ...SignUpData,
+      Email: email || "ksgdoors123@gmail.com",
+    });
+  }, []);
 
   const handelImageInput = (e) => {
     e.preventDefault();
@@ -61,7 +67,7 @@ function SignUp() {
       [name]: value,
     });
     document.getElementById(name).style.borderColor = "";
-    document.getElementById(name).nextElementSibling.innerHTML = name;
+    document.getElementById(name).nextElementSibling.style.color = "";
     document.getElementById(name).nextElementSibling.style.color = "";
   };
 
@@ -131,6 +137,7 @@ function SignUp() {
     const formData = new FormData();
     formData.append("fullName", SignUpData.fullName);
     formData.append("email", SignUpData.email);
+    formData.append("Email", SignUpData.Email);
     formData.append("userName", SignUpData.userName);
     formData.append("phoneNumber", SignUpData.phoneNumber);
     formData.append("avatar", SignUpData.avatar);
