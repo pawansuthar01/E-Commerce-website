@@ -228,6 +228,7 @@ function CheckoutPage() {
       };
 
       const res = await dispatch(PlaceOrder(orderData));
+
       setLoading(false);
       setError(false);
       if (res?.payload?.success) {

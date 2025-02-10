@@ -1,29 +1,29 @@
 import { useState } from "react";
 import { FaCircleXmark } from "react-icons/fa6";
+import { useDispatch, useSelector } from "react-redux";
+import { addCategory, deleteList } from "../../Redux/Slice/CategorySlice";
 
-export const Category = ({ categories, setCategories }) => {
+export const Category = () => {
+  const dispatch = useDispatch();
   const [newCategory, setNewCategory] = useState("");
-  const handleAddCategory = (e) => {
+  const { CategoryList } = useSelector((state) => state.Category);
+  const handleAddCategory = async (e) => {
     e.preventDefault();
     if (!newCategory.trim()) return;
 
-    if (categories.some((cat) => cat.name === newCategory)) {
+    if (CategoryList?.some((cat) => cat.Category === newCategory)) {
       alert("Category already exists");
       return;
     }
+    await dispatch(addCategory({ category: newCategory }));
 
-    setCategories((prev) => [
-      ...prev,
-      { name: newCategory, subCategories: [] },
-    ]);
     setNewCategory("");
   };
-  function handelClickToRemove(category) {
+  async function handelClickToRemove(category) {
     const userConfirmed = confirm(`Remove this category: ${category}?`);
     if (!userConfirmed) return;
 
-    const updatedCategories = categories.filter((cat) => cat !== category);
-    setCategories(updatedCategories);
+    await dispatch(deleteList({ id: category.id }));
   }
   return (
     <div className="mb-8 p-6 rounded-lg bg-white dark:bg-gray-800 shadow-lg">
@@ -42,7 +42,7 @@ export const Category = ({ categories, setCategories }) => {
               value={newCategory}
               onChange={(e) => setNewCategory(e.target.value)}
               placeholder="Category name"
-              className="px-4  py-2 dark:bg-gray-700 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-900 dark:text-white"
+              className="px-4  py-2 dark:bg-gray-700 border bg-white border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-900 dark:text-white"
             />
             <button
               type="submit"
@@ -62,13 +62,13 @@ export const Category = ({ categories, setCategories }) => {
           Current Categories
         </h3>
         <div className="  grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {categories.map((category, i) => (
+          {CategoryList?.map((category, i) => (
             <div
               key={i}
               className=" relative p-4 border border-gray-300 dark:bg-gray-700 rounded-lg shadow-sm"
             >
               <h4 className="font-medium text-gray-900 dark:text-white">
-                {category}
+                {category.category}
               </h4>
               <p className="cursor-pointer  absolute top-0 text-red-500  right-0 pr-2 pt-2">
                 <FaCircleXmark

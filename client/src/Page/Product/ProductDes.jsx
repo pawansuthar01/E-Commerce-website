@@ -19,6 +19,7 @@ function ProductDescription() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
   const [transformOrigin, setTransformOrigin] = useState("center center");
   const [Search, setSearch] = useState([]);
   const [quantities, setQuantities] = useState(1);
@@ -133,12 +134,14 @@ function ProductDescription() {
   useEffect(() => {
     const fetchSearch = async () => {
       if (ProductData?.name) {
+        setSearchLoading(true);
         const res = await dispatch(
           getSearchProduct({
             name: ProductData.name,
           })
         );
         setSearch(res.payload?.data || []);
+        setSearchLoading(false);
       }
     };
     fetchSearch();
@@ -308,7 +311,7 @@ function ProductDescription() {
                   type="text"
                   value={quantities || 1}
                   readOnly
-                  className="w-12 text-center   dark:bg-gray-900 text-gray-700"
+                  className="w-12 text-center bg-white  dark:bg-gray-900 text-gray-700"
                 />
                 <button
                   onClick={setQuantity}
@@ -368,6 +371,9 @@ function ProductDescription() {
         <div className="">
           <h2 className="text-2xl font-semibold mb-4">Related Products</h2>
           <div className="flex flex-wrap  justify-evenly gap-6 my-6 w-full">
+            {!Search && searchLoading && (
+              <div className="loader border-t-4 border-blue-500 rounded-full w-12 h-12 animate-spin"></div>
+            )}
             {Array.isArray(Search) &&
               Search.map((product, ind) => (
                 <ProductCard

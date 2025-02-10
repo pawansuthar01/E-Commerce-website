@@ -282,7 +282,7 @@ function CommentCard({ data, onAddComment }) {
           }
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
-          className="flex-1 p-2 border border-gray-300 dark:bg-[#18212F] rounded-md focus:outline-none"
+          className="flex-1 p-2 border border-gray-300 bg-white dark:bg-[#18212F] rounded-md focus:outline-none"
         />
         <button
           type="submit"

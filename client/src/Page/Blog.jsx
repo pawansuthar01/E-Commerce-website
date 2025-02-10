@@ -10,11 +10,13 @@ import FeedbackList from "../Components/feedbackList";
 function Blog() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
   const { PostData } = useSelector((state) => state.content);
   const [showPost, setShowPost] = useState([]);
   async function handelBlogLoad() {
     const res = await dispatch(getAllPost());
     setShowPost(res?.payload?.AllPostGet);
+    setLoading(false);
   }
   useEffect(() => {
     handelBlogLoad();
@@ -27,12 +29,19 @@ function Blog() {
     await dispatch(DeleteBlog(blogId));
   }
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
+        <div className="loader border-t-4 border-blue-500 rounded-full w-12 h-12 animate-spin"></div>
+      </div>
+    );
+  }
   return (
     <Layout>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto px-4 py-8">
           {/* Blog Posts Grid */}
-          <div className="flex   justify-evenly ">
+          <div className="flex   justify-evenly flex-wrap gap-10 ">
             {showPost.length === 0 ? (
               <div className="col-span-full flex items-center justify-center h-64">
                 <p className="text-xl text-gray-500 dark:text-gray-400">

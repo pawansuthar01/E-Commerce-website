@@ -10,6 +10,7 @@ import { FiShare2 } from "react-icons/fi";
 function BlogDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { state: data } = useLocation();
   const [post, setPost] = useState();
@@ -21,6 +22,7 @@ function BlogDetails() {
     }
     const res = await dispatch(getPost(id));
     setPost(res?.payload?.data);
+    setLoading(false);
   }
   const handleShare = useCallback(() => {
     if (navigator.share) {
@@ -32,13 +34,22 @@ function BlogDetails() {
     }
   }, [post]);
   useEffect(() => {
+    setLoading(true);
     if (data) {
       setPost(data);
+      setLoading(false);
       return;
     } else {
       handelLoadBlog();
     }
   }, []);
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
+        <div className="loader border-t-4 border-blue-500 rounded-full w-12 h-12 animate-spin"></div>
+      </div>
+    );
+  }
   if (!post) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-8 flex items-center justify-center">

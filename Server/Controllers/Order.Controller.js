@@ -6,7 +6,7 @@ import { razorpay } from "../server.js";
 import AppError from "../utils/AppError.js";
 
 import crypto from "crypto";
-import SendEmail from "../utils/SendEmial.js";
+import SendEmail from "../utils/SendEmail.js";
 
 export const CreateOrder = async (req, res, next) => {
   const {

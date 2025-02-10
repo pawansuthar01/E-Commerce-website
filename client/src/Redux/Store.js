@@ -6,10 +6,12 @@ import OrderRedux from "./Slice/OrderSlice";
 import NotificationSliceRedux from "./Slice/notification.Slice";
 import FeedbackRedux from "./Slice/feedbackSlice";
 import CarouselRedux from "./Slice/CarouselSlice.js";
+import StoreCategoryListRedux from "./Slice/CategorySlice.js";
 import ShopRedux from "./Slice/shopInfoSlice.js";
 const Store = configureStore({
   reducer: {
     auth: authSliceRedux,
+    Category: StoreCategoryListRedux,
     content: PostSliceRedux,
     product: ProductRedux,
     order: OrderRedux,

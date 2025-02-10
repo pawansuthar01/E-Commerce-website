@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { FaPlus } from "react-icons/fa6";
 import { FiSave } from "react-icons/fi";
 import { AddNewProduct } from "../../Redux/Slice/ProductSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import LoadingButton from "../../constants/LoadingBtn";
 import Layout from "../../layout/layout";
@@ -17,7 +17,7 @@ function AddProduct() {
   const [showPrice, setShowPrice] = useState(false);
   const [loading, setLoading] = useState(false);
   const [uploadLoading, setUploadLoading] = useState(false);
-
+  const { CategoryList } = useSelector((state) => state.Category);
   const [productData, setProductData] = useState({
     name: "",
     price: "",
@@ -261,7 +261,7 @@ function AddProduct() {
       <div className="min-h-screen sm:p-8">
         {uploadLoading && (
           <div
-            className={`flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 ${
+            className={`flex  flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 ${
               uploadLoading ? "fixed inset-0 bg-black bg-opacity-30 z-10" : ""
             }`}
           >
@@ -289,7 +289,7 @@ function AddProduct() {
             <form onSubmit={handleCreate} className="space-y-6">
               <div
                 id="images"
-                className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center"
+                className="border-2  border-dashed border-gray-300 rounded-lg p-8 text-center"
               >
                 {previewImages.length > 0 ? (
                   <div className="flex gap-1 flex-wrap justify-evenly">
@@ -318,7 +318,7 @@ function AddProduct() {
                   multiple
                   accept="image/*"
                   onChange={handelImageInput}
-                  className="hidden"
+                  className="hidden "
                   id="images_upload"
                 />
                 <label
@@ -343,7 +343,7 @@ function AddProduct() {
                     id="name"
                     value={productData.name}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 border dark:bg-gray-800 dark:text-white text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    className="w-full px-4 py-2 border bg-white dark:bg-gray-800 dark:text-white text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     placeholder="Enter product name"
                   />
                 </div>
@@ -361,7 +361,7 @@ function AddProduct() {
                     id="price"
                     value={productData.price}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 border dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    className="w-full px-4 py-2 border bg-white  dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     placeholder="Enter price"
                   />
                 </div>
@@ -380,7 +380,7 @@ function AddProduct() {
                   value={productData.description}
                   onChange={handleInputChange}
                   rows={4}
-                  className="w-full px-4 py-2 border dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  className="w-full px-4 py-2 border bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   placeholder="Enter product description"
                 />
               </div>
@@ -398,12 +398,12 @@ function AddProduct() {
                     name="category"
                     value={productData.category}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 border dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    className="w-full px-4 py-2 bg-white border dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   >
                     <option value="">Select Category</option>
-                    {categories.map((cat, i) => (
-                      <option key={i} value={cat}>
-                        {cat}
+                    {CategoryList?.map((Name, i) => (
+                      <option key={i} value={Name.category}>
+                        {Name.category}
                       </option>
                     ))}
                   </select>
@@ -421,7 +421,7 @@ function AddProduct() {
                     name="discount"
                     value={productData.discount}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 border dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    className="w-full px-4 py-2 border bg-white dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     placeholder="Enter discount percentage"
                     min="0"
                     max="100"
@@ -442,7 +442,7 @@ function AddProduct() {
                   id="gst"
                   value={productData.gst}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 dark:bg-gray-800 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  className="w-full px-4 py-2 bg-white dark:bg-gray-800 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   placeholder="Enter discount percentage"
                   min="0"
                   max="100"

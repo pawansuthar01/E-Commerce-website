@@ -5,7 +5,7 @@ const SendEmail = async function (email, subject, message) {
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: process.env.SMTP_PORT,
-      secure: false,
+      secure: process.env.SMTP_PORT == 465,
       service: "gmail",
       auth: {
         user: process.env.SMTP_USERNAME,
@@ -14,16 +14,14 @@ const SendEmail = async function (email, subject, message) {
     });
 
     const info = await transporter.sendMail({
-      from: process.env.MAIL,
+      from: `"KGSDOORS" <${process.env.SMTP_USERNAME}>`,
       to: email,
       subject: subject,
       html: message,
     });
 
-    console.log("Email sent: " + info.response);
     return info;
   } catch (error) {
-    console.error("Error sending email:", error);
     throw error;
   }
 };
