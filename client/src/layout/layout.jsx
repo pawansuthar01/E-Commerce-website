@@ -163,13 +163,13 @@ function Layout({ children, load }) {
   }, []);
   return (
     <div
-      className={`min-h-[90vh] select-none z-20  ${
+      className={`min-h-[90vh] select-none z-20    overflow-hidden ${
         darkMode ? "bg-gray-900 text-white" : "bg-white text-black"
       }`}
     >
       <div className="sticky top-0 z-50">
         <nav
-          className={`flex z-50 justify-between w-[100%] items-center ${
+          className={`flex fixed z-50 justify-between w-[100%] items-center ${
             darkMode ? "bg-gray-800" : "bg-white"
           }`}
         >
@@ -439,7 +439,7 @@ function Layout({ children, load }) {
           </div>
         </div>
       </div>
-      <div>{children}</div>
+      <div className=" mt-16">{children}</div>
       <Footer />
     </div>
   );

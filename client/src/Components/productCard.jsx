@@ -90,56 +90,64 @@ function ProductCard({ data, onProductDelete }) {
   };
 
   return (
-    <div className="w-[250px] max-w-xs:w-[200px] max-w-xs:h-[250px] flex-shrink-0  cursor-pointer flex flex-col bg-white border border-gray-200 rounded-lg shadow p-2 dark:bg-gray-800 dark:border-gray-700">
+    <div className="w-[250px] max-w-xs:w-[150px] max-w-xs:mt-2  max-w-xs:h-[220px] flex-shrink-0  cursor-pointer flex flex-col bg-white border border-gray-200 rounded-lg shadow p-2 dark:bg-gray-800 dark:border-gray-700">
       <section
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        className="relative flex justify-center items-center h-full rounded-lg p-5 overflow-hidden"
+        className="relative flex justify-center items-center h-full rounded-lg max-w-xs:p-1 p-5 overflow-hidden"
       >
         <img
           src={imageUrl}
           crossOrigin="anonymous"
           alt={data.name || "Product Image"}
-          className="rounded-lg max-w-[150px] h-[100px]   max-w-xs:p-2 object-contain transition-transform duration-500 ease-in-out hover:scale-110"
+          className="rounded-lg max-w-[150px]  max-w-xs:h-[90px]  h-[100px] max-w-xs:w-[100px]   max-w-xs:p-0 object-contain transition-transform duration-500 ease-in-out hover:scale-110"
           onClick={() =>
             navigate(`/product/${data._id}`, { state: { ...data } })
           }
         />
         {data?.discount > 0 && (
-          <span className="absolute top-2 left-2 bg-red-300 text-xs font-semibold px-2 py-1 rounded">
+          <span className="absolute max-w-xs:px-1 max-w-xs:text-[10px] max-w-xs:top-0 top-2 left-2 bg-red-300 text-xs font-semibold px-2 py-1 rounded">
             {data.discount}% OFF
           </span>
         )}
-        {isNewProduct(data?.createdAt) && (
-          <span className="absolute top-2 right-2 bg-red-300 text-xs font-semibold px-2 py-1 rounded">
+        {!isNewProduct(data?.createdAt) && (
+          <span className="absolute max-w-xs:px-1 max-w-xs:text-[10px] max-w-xs:top-0  top-2 right-2 bg-red-300 text-xs font-semibold px-2 py-1 rounded">
             New
           </span>
         )}
       </section>
-      <div className="text-center mt-3">
-        <h3 className="font-semibold text-black dark:text-white line-clamp-1">
+      <div className="text-center mt-3 max-w-xs:mt-0">
+        <h3 className="font-semibold max-w-xs:text-sm text-black dark:text-white line-clamp-1">
           {data.name}
         </h3>
-        <div className="font-bold text-black dark:text-white flex items-center justify-center">
+        <div className="font-bold max-w-xs:text-sm text-black dark:text-white flex items-center justify-center">
           <span>
             {data.discount
               ? formatPrice(
-                  data.price +
-                    (data.price * data.gst) / 100 -
-                    ((data.price + (data.price * data.gst) / 100) *
-                      data.discount) /
-                      100
+                  Number(
+                    (
+                      data.price +
+                      (data.price * data.gst) / 100 -
+                      ((data.price + (data.price * data.gst) / 100) *
+                        data.discount) /
+                        100
+                    ).toFixed(2)
+                  )
                 )
-              : formatPrice(data.price + (data.price * data.gst) / 100)}
+              : formatPrice(
+                  Number(data.price + (data.price * data.gst) / 100).toFixed(2)
+                )}
           </span>
           {data.discount > 0 && (
-            <span className="line-through text-gray-500 text-sm ml-2">
-              {formatPrice(data.price + (data.price * data.gst) / 100)}
+            <span className="line-through max-w-xs:text-[12px] text-gray-500 text-sm ml-2">
+              {formatPrice(
+                (data.price + (data.price * data.gst) / 100).toFixed(2)
+              )}
             </span>
           )}
         </div>
         {data?.category && (
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm max-w-xs:text-[12px] text-gray-500 dark:text-gray-400">
             Category: {data.category}
           </p>
         )}

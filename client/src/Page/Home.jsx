@@ -165,7 +165,7 @@ function HomePage() {
           <h2 className="text-2xl font-bold mb-4 dark:text-white text-black">
             Popular Products
           </h2>
-          <div className="flex justify-evenly overflow-y-scroll hide-scrollbar  scrollbar-width-thin flex-shrink gap-6 w-full">
+          <div className="flex justify-evenly overflow-y-scroll hide-scrollbar  scrollbar-width-thin flex-shrink max-w-xs:gap-2 gap-6 w-full">
             {Array.isArray(topProduct) &&
               topProduct?.length > 0 &&
               topProduct?.map((product, ind) => (
@@ -184,7 +184,7 @@ function HomePage() {
           <h2 className="text-2xl font-bold mb-4 dark:text-white text-black">
             More Products
           </h2>
-          <div className="flex flex-wrap justify-evenly gap-6 my-6 w-full">
+          <div className="flex flex-wrap justify-evenly  max-w-xs:gap-1  gap-6 my-6 w-full">
             {Array.isArray(products) &&
               products?.length > 0 &&
               products?.map((product, ind) => (
@@ -199,8 +199,8 @@ function HomePage() {
         </div>
         <div className="w-full mb-10 ">
           <hr className="h-1 bg-slate-200" />
-          <h1 className="text-2xl mt-10 font-bold mb-4 ml-10 text-start dark:text-white text-black">
-            feedback Section
+          <h1 className="text-2xl mt-10 font-bold mb-4 ml-10 max-w-xs:ml-0 max-w-xs:text-center  text-start dark:text-white text-black">
+            Feedback Section
           </h1>
           <FeedbackForm />
           <FeedbackList />

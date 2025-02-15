@@ -117,7 +117,7 @@ const UpdatePassword = () => {
               type="password"
               name="newPassword"
               id="newPassword"
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+              className="mt-1 p-2 w-full  bg-white border border-gray-300 rounded-md"
               value={passwordData.newPassword}
               onChange={handelUserInput}
               required
@@ -135,7 +135,7 @@ const UpdatePassword = () => {
               type="password"
               name="confirmPassword"
               id="confirmPassword"
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+              className="mt-1 p-2 w-full  bg-white border border-gray-300 rounded-md"
               value={passwordData.confirmPassword}
               onChange={handelUserInput}
               required

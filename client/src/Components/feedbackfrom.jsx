@@ -37,8 +37,8 @@ const FeedbackForm = () => {
   };
 
   return (
-    <div className="w-full max-w-md dark:text-white text-black p-6 mx-auto rounded-lg shadow-[0_0_1px_black] dark:shadow-[0_0_1px_white] my-10">
-      <h2 className="text-2xl font-semibold text-center mb-4">
+    <div className="w-full max-w-md max-w-xs:w-[90%] dark:text-white text-black p-6 mx-auto rounded-lg shadow-[0_0_1px_black] dark:shadow-[0_0_1px_white] my-10">
+      <h2 className="text-2xl max-w-xs:text-xl font-semibold text-center mb-4">
         Submit Your Feedback
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">

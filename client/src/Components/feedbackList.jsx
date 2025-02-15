@@ -89,14 +89,14 @@ const FeedbackList = () => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto mt-10 px-4 mb-2">
-      <h2 className="text-3xl font-semibold mb-6 text-center text-gray-800 dark:text-white">
+    <div className="w-full  mx-auto mt-10 max-w-xs:mt-0  px-4 mb-2">
+      <h2 className="text-3xl  max-w-xs:text-2xl font-semibold mb-6  max-w-xs:mb-2 text-center text-gray-800 dark:text-white">
         User Feedbacks
       </h2>
 
-      <div className="flex justify-center gap-4 mb-6">
+      <div className="flex justify-center gap-4 mb-6  font-semibold">
         <button
-          className={`px-4 py-2 rounded ${
+          className={`px-4  max-w-xs:text-sm py-2 rounded ${
             filter === "all"
               ? "bg-blue-500 text-white"
               : "bg-gray-200 text-gray-800"
@@ -106,7 +106,7 @@ const FeedbackList = () => {
           All Feedback
         </button>
         <button
-          className={`px-4 py-2 rounded ${
+          className={`px-4 py-2  max-w-xs:text-sm rounded ${
             filter === "1-3"
               ? "bg-blue-500 text-white"
               : "bg-gray-200 text-gray-800"
@@ -116,7 +116,7 @@ const FeedbackList = () => {
           1-3 Stars
         </button>
         <button
-          className={`px-4 py-2 rounded ${
+          className={`px-4 py-2  max-w-xs:text-sm rounded ${
             filter === "4-5"
               ? "bg-blue-500 text-white"
               : "bg-gray-200 text-gray-800"
@@ -206,7 +206,7 @@ const FeedbackList = () => {
       {displayedFeedback.length < feedback.length && (
         <div className="flex justify-center mt-6">
           <button
-            className="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="px-6 py-2 max-w-xs:text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
             onClick={loadMore}
           >
             Load More

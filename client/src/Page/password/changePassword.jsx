@@ -97,7 +97,7 @@ const ChangePassword = () => {
                 type="password"
                 name="oldPassword"
                 id="oldPassword"
-                className="mt-1 p-2 w-full border dark:bg-gray-900 dark:text-white border-gray-300 rounded-md"
+                className="mt-1 p-2 w-full border bg-white dark:bg-gray-900 dark:text-white border-gray-300 rounded-md"
                 value={passwordData.oldPassword}
                 onChange={handelUserInput}
                 required
@@ -114,7 +114,7 @@ const ChangePassword = () => {
                 type="password"
                 name="newPassword"
                 id="newPassword"
-                className="mt-1 p-2 w-full border dark:bg-gray-900 dark:text-white border-gray-300 rounded-md"
+                className="mt-1 p-2 w-full border  bg-white dark:bg-gray-900 dark:text-white border-gray-300 rounded-md"
                 value={passwordData.newPassword}
                 onChange={handelUserInput}
                 required
@@ -132,7 +132,7 @@ const ChangePassword = () => {
                 type="password"
                 name="confirmPassword"
                 id="confirmPassword"
-                className="mt-1 p-2 w-full border dark:bg-gray-900 dark:text-white border-gray-300 rounded-md"
+                className="mt-1 p-2 w-full border  bg-white dark:bg-gray-900 dark:text-white border-gray-300 rounded-md"
                 value={passwordData.confirmPassword}
                 onChange={handelUserInput}
                 required

@@ -17,7 +17,7 @@ function LoadingButton({
       disabled={ADMIN || loading}
       className={`${
         width ? width : `w-full`
-      }   rounded-lg transition-colors ${color} text-white ${textSize} `}
+      }   rounded-lg transition-colors max-w-xs:text-sm  ${color} text-white ${textSize} `}
     >
       {loading ? (
         <>

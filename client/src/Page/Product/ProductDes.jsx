@@ -14,6 +14,7 @@ import ProductCard from "../../Components/productCard";
 import FeedbackForm from "../../Components/feedbackfrom";
 import FeedbackList from "../../Components/feedbackList";
 import { IoPaperPlaneOutline } from "react-icons/io5";
+import { ProductCarouselImages } from "../../Components/CarouselProudctImage";
 
 function ProductDescription() {
   const navigate = useNavigate();
@@ -181,7 +182,7 @@ function ProductDescription() {
           {/* Image Section */}
           <div className="space-y-4">
             <div
-              className="relative overflow-hidden group w-full h-[400px] border rounded-md shadow-md"
+              className="relative overflow-hidden group w-full max-w-xs:h-auto h-[400px] max:border rounded-md max:shadow-md"
               onMouseMove={handleMouseMove}
             >
               {ProductData?.discount > 0 && (
@@ -189,6 +190,7 @@ function ProductDescription() {
                   {ProductData?.discount}% off
                 </p>
               )}
+
               <img
                 src={
                   Image ||
@@ -196,14 +198,19 @@ function ProductDescription() {
                   ProductData?.image
                 }
                 alt="product_image"
-                className="w-full h-full absolute object-contain transform group-hover:scale-125 transition-transform duration-500"
+                className="w-full max-w-xs:hidden  h-full absolute object-contain transform group-hover:scale-125 transition-transform duration-500"
                 style={{ transformOrigin }}
               />
+              <div className="max-w-xs:flex hidden">
+                {ProductData?.images && (
+                  <ProductCarouselImages data={ProductData?.images} />
+                )}
+              </div>
             </div>
 
             {/* Thumbnail Carousel */}
             {ProductData?.images?.length > 1 && (
-              <div className="  flex gap-2 justify-center p-2">
+              <div className=" max-w-xs:hidden flex gap-2 justify-center p-2">
                 {ProductData?.images?.map((productImage, index) => (
                   <img
                     key={index}
@@ -303,7 +310,7 @@ function ProductDescription() {
               <div className="flex items-center space-x-3  border rounded w-[100%] dark:border-white border-gray-700 justify-evenly">
                 <button
                   onClick={minQuantity}
-                  className="px-3 py-1 text-gray-700 hover:bg-gray-200 dark:hover:bg-gray-800"
+                  className="px-3 py-1  text-gray-700  "
                 >
                   &minus;
                 </button>
@@ -315,7 +322,7 @@ function ProductDescription() {
                 />
                 <button
                   onClick={setQuantity}
-                  className="px-3 py-1  text-gray-700 hover:bg-gray-200 bg-gary-700 dark:hover:bg-gray-800"
+                  className="px-3 py-1   text-gray-700  bg-gary-700 "
                 >
                   +
                 </button>
@@ -324,7 +331,7 @@ function ProductDescription() {
                 onClick={() =>
                   handelPlaceOrder(ProductId, quantities, ProductData?.stock)
                 }
-                className="w-full  px-5 py-3 text-lg font-semibold shadow-xl text-white bg-black rounded-sm hover:bg-gray-800 transition dark:bg-[#002] dark:hover:bg-[#0109]"
+                className="w-full max-w-xs:text-sm  px-5 py-3 text-lg font-semibold shadow-xl text-white bg-black rounded-sm hover:bg-gray-800 transition dark:bg-[#002] dark:hover:bg-[#0109]"
               >
                 Place Order
               </button>
@@ -363,14 +370,18 @@ function ProductDescription() {
 
         {/* Product Description */}
         <div className="p-6 border-t mt-6">
-          <h2 className="text-2xl font-semibold mb-2">Product Description</h2>
+          <h2 className="text-2xl font-semibold mb-2 max-w-xs:text-center">
+            Product Description
+          </h2>
           <p>{ProductData?.description}</p>
         </div>
 
         {/* Related Products */}
         <div className="">
-          <h2 className="text-2xl font-semibold mb-4">Related Products</h2>
-          <div className="flex flex-wrap  justify-evenly gap-6 my-6 w-full">
+          <h2 className="text-2xl font-semibold mb-4 max-w-xs:text-center">
+            Related Products
+          </h2>
+          <div className="flex flex-wrap  justify-evenly max-w-xs:gap-2 gap-6 my-6 w-full">
             {!Search && searchLoading && (
               <div className="loader border-t-4 border-blue-500 rounded-full w-12 h-12 animate-spin"></div>
             )}
