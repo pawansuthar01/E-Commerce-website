@@ -4,7 +4,7 @@ import Layout from "../layout/layout";
 import LoadingButton from "../constants/LoadingBtn";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import toast from "react-hot-toast";
+
 import { LoginAccount } from "../Redux/Slice/authSlice";
 import { useTheme } from "../Components/ThemeContext"; // Import dark mode context
 import { isEmail } from "../helper/regexMatch";
@@ -14,6 +14,7 @@ function Login() {
   const dispatch = useDispatch();
   const { darkMode } = useTheme(); // Access the dark mode state
   const [loading, setLoading] = useState(false);
+  const [Error, setError] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
 
   const [LoginData, setLoginData] = useState({
@@ -23,60 +24,46 @@ function Login() {
 
   function handelUserInput(e) {
     e.preventDefault();
+    setError(false);
     const { name, value } = e.target;
     setLoginData({
       ...LoginData,
       [name]: value,
     });
     document.getElementById(name).style.borderColor = "";
-    document.getElementById(name).nextElementSibling.innerHTML = name;
-    document.getElementById(name).nextElementSibling.style.color = "";
   }
 
   const handleLogin = async (event) => {
     event.preventDefault();
+
     setLoading(true);
+
     if (!LoginData.Email) {
       setLoading(false);
       document.getElementById("Email").style.borderColor = "red";
-      document.getElementById("Email").nextElementSibling.innerHTML =
-        "Please Enter Email..";
-      document.getElementById("Email").nextElementSibling.style.color = "red";
+
       return;
     }
     if (!isEmail(LoginData.Email)) {
       setLoading(false);
-
       document.getElementById("Email").style.borderColor = "red";
-      document.getElementById("Email").nextElementSibling.style.color = "red";
-
       return;
     }
     if (!LoginData.password) {
       setLoading(false);
       document.getElementById("password").style.borderColor = "red";
-      document.getElementById("password").nextElementSibling.innerHTML =
-        "Please Enter password..";
 
-      document.getElementById("password").nextElementSibling.style.color =
-        "red";
       return;
     }
     setShowLoading(true);
     const res = await dispatch(LoginAccount(LoginData));
     if (!res.payload?.success) {
-      if (res.payload?.message == "user not found...") {
+      setError(res.payload?.message);
+      if (res.payload?.message == "Email not found...") {
         document.getElementById("Email").style.borderColor = "red";
-        document.getElementById("Email").nextElementSibling.innerHTML =
-          res?.payload?.message;
-        document.getElementById("Email").nextElementSibling.style.color = "red";
       }
       if (res.payload?.message == "password Does not match..") {
         document.getElementById("password").style.borderColor = "red";
-        document.getElementById("password").nextElementSibling.innerHTML =
-          res?.payload?.message;
-        document.getElementById("password").nextElementSibling.style.color =
-          "red";
       }
     }
 
@@ -98,14 +85,14 @@ function Login() {
       <div className="w-full relative sm:top-[-64px]">
         <div className="min-h-[80vh] justify-center flex items-center">
           <div
-            className={` rounded-lg p-9  max-sm:m-9 shadow-[0_0_5px_black] mt-auto ${
+            className={` rounded-lg p-9  max-sm:m-9 shadow-[0_0_1px_black] mt-auto ${
               darkMode ? "bg-gray-800 text-white" : "bg-white text-black"
             }`}
           >
             {showLoading && (
               <div
-                className={`flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 ${
-                  loading ? "fixed inset-0 bg-black bg-opacity-30 z-10" : ""
+                className={`flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-800 ${
+                  loading ? "fixed inset-0 bg-opacity-30 z-10" : ""
                 }`}
               >
                 <div className="loader border-t-4 border-blue-500 rounded-full w-12 h-12 animate-spin"></div>
@@ -118,64 +105,34 @@ function Login() {
             )}
             <h1 className="text-center text-3xl font-semibold mb-6">LOGIN</h1>
             <form>
-              <div className="relative mb-6">
+              {Error && (
+                <p id="Error" className="text-sm text-red-500 pb-5">
+                  {Error}
+                </p>
+              )}
+              <div className="mb-4">
                 <input
-                  type="Email"
-                  name="Email"
                   id="Email"
-                  autoComplete="email"
+                  type="email"
+                  name="Email"
+                  value={setLoginData.Email}
                   onChange={handelUserInput}
-                  value={LoginData.Email}
-                  required
-                  className={`peer w-full border-b-2 ${
-                    darkMode ? "border-gray-500" : "border-gray-300"
-                  } focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent`}
+                  placeholder="Enter your Register Email"
+                  className="w-full p-3 border bg-white rounded-md dark:bg-gray-700 dark:text-gray-200"
                 />
-                {LoginData.Email ? (
-                  <label
-                    htmlFor="Email"
-                    className="absolute left-0 top-[-20px] text-sm text-gray-500"
-                  >
-                    Email
-                  </label>
-                ) : (
-                  <label
-                    htmlFor="Email"
-                    className="absolute left-0 top-2 text-lg text-gray-500 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm"
-                  >
-                    Email
-                  </label>
-                )}
               </div>
-              <div className="relative mb-6">
+              <div className="mb-4">
                 <input
+                  id="password"
                   type="password"
                   name="password"
-                  id="password"
-                  autoComplete="new-password"
+                  value={setLoginData.password}
                   onChange={handelUserInput}
-                  value={LoginData.password}
-                  required
-                  className={`peer w-full border-b-2 ${
-                    darkMode ? "border-gray-500" : "border-gray-300"
-                  } focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent`}
+                  placeholder="Enter your password"
+                  className="w-full p-3 border bg-white rounded-md dark:bg-gray-700 dark:text-gray-200"
                 />
-                {LoginData.password ? (
-                  <label
-                    htmlFor="password"
-                    className="absolute left-0 top-[-20px] text-sm text-gray-500"
-                  >
-                    Password
-                  </label>
-                ) : (
-                  <label
-                    htmlFor="password"
-                    className="absolute left-0 top-2 text-lg text-gray-500 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm"
-                  >
-                    Password
-                  </label>
-                )}
               </div>
+
               <div onClick={handleLogin}>
                 <LoadingButton
                   textSize={"py-2"}

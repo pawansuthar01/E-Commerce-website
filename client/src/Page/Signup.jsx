@@ -13,6 +13,7 @@ import {
 } from "../helper/regexMatch";
 import { useDispatch, useSelector } from "react-redux";
 import { CreateAccount } from "../Redux/Slice/authSlice";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 function SignUp() {
   const dispatch = useDispatch();
@@ -20,9 +21,11 @@ function SignUp() {
   const [checkPrivacyPolicy, setCheckPrivacyPolicy] = useState(false);
   const { email } = useSelector((state) => state?.ShopInfo);
   const [previewImage, setPreviewImage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false); // Dark mode state
+  const [Error, setError] = useState(false);
   const [SignUpData, setSignUpData] = useState({
     fullName: "",
     userName: "",
@@ -61,16 +64,27 @@ function SignUp() {
 
   const handelUserInput = (e) => {
     e.preventDefault();
+    setError(false);
     const { name, value } = e.target;
     setSignUpData({
       ...SignUpData,
       [name]: value,
     });
+
     document.getElementById(name).style.borderColor = "";
-    document.getElementById(name).nextElementSibling.style.color = "";
-    document.getElementById(name).nextElementSibling.style.color = "";
+    if (name === "password") {
+      document.getElementById("password").style.borderColor = "";
+
+      document.getElementById("ConfirmPassword").style.borderColor = "";
+    }
+    if (name === "ConfirmPassword") {
+      document.getElementById("password").style.borderColor = "";
+
+      document.getElementById("ConfirmPassword").style.borderColor = "";
+    }
   };
 
+  const togglePasswordVisibility = () => {};
   const handleCreate = async (event) => {
     event.preventDefault();
     setLoading(true);
@@ -81,56 +95,49 @@ function SignUp() {
     }
     if (!SignUpData.avatar) {
       setLoading(false);
-      document.getElementById("uploadImage").style.borderColor = "red";
-      document.getElementById("uploadImage").nextElementSibling.style.color =
+      document.getElementById("Image_icon").nextElementSibling.style.color =
         "red";
+      document.getElementById("Image_icon").style.borderColor = "red";
+
       return;
     }
     if (SignUpData.fullName.length < 5) {
       setLoading(false);
       document.getElementById("fullName").style.borderColor = "red";
-      document.getElementById("fullName").nextElementSibling.style.color =
-        "red";
 
       return;
     }
     if (!isEmail(SignUpData.email)) {
       setLoading(false);
       document.getElementById("email").style.borderColor = "red";
-      document.getElementById("email").nextElementSibling.style.color = "red";
+
       return;
     }
     if (!isValidPassword(SignUpData.password)) {
       setLoading(false);
       document.getElementById("password").style.borderColor = "red";
-      document.getElementById("password").nextElementSibling.style.color =
-        "red";
 
       return;
     }
     if (!isPhoneNumber(SignUpData.phoneNumber)) {
       setLoading(false);
       document.getElementById("phoneNumber").style.borderColor = "red";
-      document.getElementById("phoneNumber").nextElementSibling.style.color =
-        "red";
+
       return;
     }
     if (!isUserName(SignUpData.userName)) {
       setLoading(false);
       document.getElementById("userName").style.borderColor = "red";
-      document.getElementById("userName").nextElementSibling.style.color =
-        "red";
+
       return;
     }
+
     if (SignUpData.password !== SignUpData.ConfirmPassword) {
       setLoading(false);
       document.getElementById("password").style.borderColor = "red";
-      document.getElementById("password").nextElementSibling.style.color =
-        "red";
+
       document.getElementById("ConfirmPassword").style.borderColor = "red";
-      document.getElementById(
-        "ConfirmPassword"
-      ).nextElementSibling.style.color = "red";
+
       return;
     }
     setShowLoading(true);
@@ -148,18 +155,12 @@ function SignUp() {
       setShowLoading(false);
     }
     if (!response?.payload?.success) {
+      setError(response?.payload?.message);
       if (response?.payload?.message == "Username already exists") {
         document.getElementById("userName").style.borderColor = "red";
-        document.getElementById("userName").nextElementSibling.innerHTML =
-          response?.payload?.message;
-        document.getElementById("userName").nextElementSibling.style.color =
-          "red";
       }
       if (response?.payload?.message == "Email already exists") {
         document.getElementById("email").style.borderColor = "red";
-        document.getElementById("email").nextElementSibling.innerHTML =
-          response?.payload?.message;
-        document.getElementById("email").nextElementSibling.style.color = "red";
       }
     }
     if (response?.payload?.success) {
@@ -179,232 +180,120 @@ function SignUp() {
 
   return (
     <Layout>
-      <div className="w-full">
-        <div className="relative top-[-64px] justify-center flex items-center">
-          {showLoading && (
-            <div
-              className={`flex flex-col items-center justify-center min-h-screen bg-gray-100  ${
-                loading ? "fixed inset-0 bg-opacity-30 z-10" : ""
-              }`}
-            >
-              <div className="loader border-t-4 border-blue-500 rounded-full w-12 h-12 animate-spin"></div>
-              <p>
-                {loading
-                  ? "Please wait,  Creating Your Account..."
-                  : "Loading..."}
+      <div className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900 p-6">
+        {showLoading && (
+          <div
+            className="flex flex-col items-center justify-center min-h-screen bg-gray-100  dark:bg-gray-900 
+          fixed inset-0  bg-opacity-30 z-10
+          "
+          >
+            <div className="loader border-t-4 border-blue-500 rounded-full w-12 h-12 animate-spin"></div>
+            <p>Please wait, Creating your account ...</p>
+          </div>
+        )}
+        <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
+          <h1 className="text-2xl font-bold text-center text-gray-700 dark:text-gray-200 mb-6">
+            Sign Up
+          </h1>
+          <form onSubmit={handleCreate}>
+            {Error && (
+              <p id="Error" className="text-sm text-red-500 pb-5">
+                {Error}
               </p>
-            </div>
-          )}
-          <div className="bg-white dark:bg-gray-800 dark:text-gray-200 max-sm:mt-20 mt-44 mb-10 w-[400px] rounded-lg shadow-[0_0_5px_black] p-8 max-sm:m-9">
-            <h1 className="text-center text-3xl font-semibold mb-6 text-[#9e6748] dark:text-[#f5d9b1]">
-              Create Your Account
-            </h1>
-            <form action="/register" noValidate onSubmit={handleCreate}>
-              <label htmlFor="image_uploads" className="cursor-pointer">
-                {previewImage ? (
-                  <div>
-                    <img
-                      src={previewImage}
-                      className="w-24 h-24 rounded-full m-auto"
-                    />
-                  </div>
-                ) : (
-                  <div>
-                    <BsPersonCircle
-                      id="uploadImage"
-                      name="uploadImage"
-                      className="w-24 h-24 rounded-full  m-auto border-2 border-dashed p-1"
-                    />
-                    <label
-                      htmlFor="uploadImage"
-                      className=" text-xl mb-5 flex justify-center"
-                    >
-                      upload Image
-                    </label>
-                  </div>
-                )}
-              </label>
+            )}
+            <label
+              htmlFor="image_uploads"
+              className="block  text-center mb-4 cursor-pointer"
+            >
+              {previewImage ? (
+                <img
+                  src={previewImage}
+                  className="w-24 h-24 rounded-full mx-auto"
+                  alt="Profile"
+                />
+              ) : (
+                <BsPersonCircle
+                  id="Image_icon"
+                  className="w-24  border  rounded-full h-24  mx-auto text-gray-500 dark:text-gray-300"
+                />
+              )}
+              <span className="block  text-gray-500 dark:text-gray-300 mt-2">
+                Upload Image
+              </span>
+            </label>
+            <input
+              type="file"
+              onChange={handelImageInput}
+              className="hidden"
+              id="image_uploads"
+              accept=".png, .jpeg, .jpg"
+            />
+
+            {["userName", "fullName", "email", "phoneNumber"].map((field) => (
+              <div className="mb-4" key={field}>
+                <input
+                  id={field}
+                  type={field === "email" ? "email" : "text"}
+                  name={field}
+                  value={setSignUpData[field]}
+                  onChange={handelUserInput}
+                  placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+                  className="w-full p-3 border bg-white rounded-md dark:bg-gray-700 dark:text-gray-200"
+                />
+              </div>
+            ))}
+
+            <div className="mb-4 relative">
               <input
-                type="file"
-                onChange={handelImageInput}
-                className="hidden"
-                name="image_uploads"
-                id="image_uploads"
-                accept=".png ,.jpeg ,.jpg"
+                type={showPassword ? "text" : "password"}
+                name="password"
+                id="password"
+                value={setSignUpData.password}
+                onChange={handelUserInput}
+                placeholder="Password"
+                className="w-full p-3 border bg-white rounded-md dark:bg-gray-700 dark:text-gray-200"
               />
-              <div className="relative mb-6 mt-1">
-                <input
-                  type="text"
-                  onChange={handelUserInput}
-                  value={SignUpData.userName}
-                  name="userName"
-                  id="userName"
-                  autoComplete="userName"
-                  required
-                  className="peer w-full border-b-2 border-gray-300  focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent  dark:text-gray-200"
-                />
-                {SignUpData.userName ? (
-                  <label
-                    htmlFor="userName"
-                    className=" absolute left-0 top-[-20px] text-sm text-gray-500 dark:text-gray-300"
-                  >
-                    UserName
-                  </label>
+              <div
+                className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {showPassword ? (
+                  <EyeOffIcon className="h-5 w-5 text-gray-500" />
                 ) : (
-                  <label
-                    htmlFor="userName"
-                    className="absolute left-0 top-2 text-lg text-gray-500 dark:text-gray-300 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm"
-                  >
-                    UserName
-                  </label>
+                  <EyeIcon className="h-5 w-5 text-gray-500" />
                 )}
               </div>
-              <div className="relative mb-6">
-                <input
-                  type="text"
-                  onChange={handelUserInput}
-                  value={SignUpData.fullName}
-                  name="fullName"
-                  id="fullName"
-                  autoComplete="name"
-                  required
-                  className="peer w-full border-b-2 border-gray-300  focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent  dark:text-gray-200"
-                />
-                {SignUpData.fullName ? (
-                  <label
-                    htmlFor="fullName"
-                    className=" absolute left-0 top-[-20px] text-sm text-gray-500 dark:text-gray-300"
-                  >
-                    FullName
-                  </label>
+            </div>
+            <div className="mb-6 relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                name="ConfirmPassword"
+                id="ConfirmPassword"
+                value={setSignUpData.ConfirmPassword}
+                onChange={handelUserInput}
+                placeholder="Confirm Password"
+                className="w-full p-3 border bg-white rounded-md dark:bg-gray-700 dark:text-gray-200 pr-10"
+              />
+              <div
+                className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+                onClick={() => setShowConfirmPassword((prev) => !prev)}
+              >
+                {showConfirmPassword ? (
+                  <EyeOffIcon className="h-5 w-5 text-gray-500" />
                 ) : (
-                  <label
-                    htmlFor="fullName"
-                    className="absolute left-0 top-2 text-lg text-gray-500 dark:text-gray-300 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm"
-                  >
-                    FullName
-                  </label>
+                  <EyeIcon className="h-5 w-5 text-gray-500" />
                 )}
               </div>
-              <div className="relative mb-6">
-                <input
-                  onChange={handelUserInput}
-                  value={SignUpData.email}
-                  type="email"
-                  name="email"
-                  id="email"
-                  autoComplete="email"
-                  required
-                  className="peer w-full border-b-2 border-gray-300  focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent  dark:text-gray-200"
-                />
-                {SignUpData.email ? (
-                  <label
-                    htmlFor="email"
-                    className=" absolute left-0 top-[-20px] text-sm text-gray-500 dark:text-gray-300"
-                  >
-                    Email
-                  </label>
-                ) : (
-                  <label
-                    htmlFor="email"
-                    className="absolute left-0 top-2 text-lg text-gray-500 dark:text-gray-300 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm"
-                  >
-                    Email
-                  </label>
-                )}
-              </div>
-              <div className="relative mb-6">
-                <input
-                  onChange={handelUserInput}
-                  value={SignUpData.phoneNumber}
-                  type="number"
-                  name="phoneNumber"
-                  id="phoneNumber"
-                  autoComplete="tel"
-                  required
-                  className="peer w-full border-b-2 border-gray-300  focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent dark:text-gray-200"
-                />
-                {SignUpData.phoneNumber ? (
-                  <label
-                    htmlFor="phoneNumber"
-                    className=" absolute left-0 top-[-20px] text-sm text-gray-500 dark:text-gray-300"
-                  >
-                    Phone Number
-                  </label>
-                ) : (
-                  <label
-                    htmlFor="phoneNumber"
-                    className="absolute left-0 top-2 text-lg text-gray-500 dark:text-gray-300 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm"
-                  >
-                    Phone Number
-                  </label>
-                )}
-              </div>
-              <div className="relative mb-6">
-                <input
-                  onChange={handelUserInput}
-                  value={SignUpData.password}
-                  type="password"
-                  name="password"
-                  id="password"
-                  autoComplete="new-password"
-                  required
-                  className="peer w-full border-b-2  border-gray-300  focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent  dark:text-gray-200"
-                />
-                {SignUpData.password ? (
-                  <label
-                    htmlFor="password"
-                    className=" absolute left-0 top-[-20px] text-sm text-gray-500 dark:text-gray-300 "
-                  >
-                    Password
-                  </label>
-                ) : (
-                  <label
-                    htmlFor="password"
-                    className="absolute left-0 top-2 text-lg text-gray-500 dark:text-gray-300  transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm"
-                  >
-                    Password
-                  </label>
-                )}
-              </div>
-              <div className="relative mb-6">
-                <input
-                  onChange={handelUserInput}
-                  value={SignUpData.ConfirmPassword}
-                  type="password"
-                  name="ConfirmPassword"
-                  id="ConfirmPassword"
-                  autoComplete="new-password"
-                  required
-                  className="peer w-full border-b-2 border-gray-300  focus:outline-none focus:border-blue-500 py-2 text-lg bg-transparent  dark:text-gray-200"
-                />
-                {SignUpData.ConfirmPassword ? (
-                  <label
-                    htmlFor="ConfirmPassword"
-                    className=" absolute left-0 top-[-20px] text-sm text-gray-500 dark:text-gray-300"
-                  >
-                    Confirm Password
-                  </label>
-                ) : (
-                  <label
-                    htmlFor="ConfirmPassword"
-                    className="absolute left-0 top-2 text-lg text-gray-500 dark:text-gray-300 transition-all duration-300 transform peer-placeholder-shown:top-2 peer-placeholder-shown:text-lg peer-focus:top-[-20px] peer-focus:text-sm"
-                  >
-                    Confirm Password
-                  </label>
-                )}
-              </div>
-              <div className="flex justify-center mt-5">
-                <LoadingButton
-                  textSize={"py-3"}
-                  handleClick={handleCreate}
-                  loading={loading}
-                  message={"Loading"}
-                  name={"SinUp"}
-                  color={"bg-green-500 hover:bg-green-600"}
-                />
-              </div>
-            </form>
+            </div>
+
+            <LoadingButton
+              textSize={"py-2"}
+              loading={loading}
+              message={"Loading"}
+              name={"Sign Up"}
+              color={"bg-green-500 hover:bg-green-600 "}
+            />
+
             <div className="my-2 flex gap-1">
               <input
                 type="checkbox"
@@ -415,7 +304,7 @@ function SignUp() {
                     "PrivacyPolicyCheckbox"
                   ).style.color = "")
                 )}
-                className="cursor-pointer "
+                className="cursor-pointer bg-white"
               />
               <p
                 onClick={() => window.open("/App/privacy-policy", "_blank")}
@@ -426,15 +315,13 @@ function SignUp() {
                 Privacy Policy
               </p>
             </div>
-            <div className="flex items-center justify-center mt-4">
-              <p className="text-sm text-gray-500 dark:text-gray-300">
-                Already have an account?{" "}
-                <Link to="/login" className="text-blue-500 hover:underline">
-                  Log In
-                </Link>
-              </p>
-            </div>
-          </div>
+            <p className="text-center text-gray-600 dark:text-gray-300 mt-4">
+              Already have an account?{" "}
+              <Link to="/login" className="text-blue-500 hover:underline">
+                Login
+              </Link>
+            </p>
+          </form>
         </div>
       </div>
     </Layout>

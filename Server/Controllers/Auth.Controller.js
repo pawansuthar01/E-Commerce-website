@@ -95,7 +95,6 @@ export const RegisterUser = async (req, res, next) => {
       message: "Successfully registered.",
     });
 
-    // Background tasks
     (async () => {
       try {
         const notification = new Notification({
@@ -151,12 +150,12 @@ export const RegisterUser = async (req, res, next) => {
 export const login = async (req, res, next) => {
   const { Email: email, password } = req.body;
   if (!email || !password) {
-    return next(new AppError(" All felids is required", 400));
+    return next(new AppError("All felids is required", 400));
   }
   try {
     const userExist = await User.findOne({ email }).select("+password");
     if (!userExist) {
-      return next(new AppError("user not found...", 400));
+      return next(new AppError("Email not found...", 400));
     }
     if (!(await userExist.comparePassword(password))) {
       return next(new AppError("password Does not match..", 400));

@@ -8,6 +8,8 @@ export default {
       screens: {
         "max-sm": { max: "800px" },
         "max-w-xs": { max: "550px" },
+        max: { max: "440px" },
+
         md: { min: "900px" },
         sm: { min: "800px" },
         print: { raw: "print" },

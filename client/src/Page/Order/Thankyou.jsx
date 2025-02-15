@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import Layout from "../../layout/layout";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { MdCurrencyRupee } from "react-icons/md";
 import FeedbackForm from "../../Components/feedbackfrom";
 import FeedbackList from "../../Components/feedbackList";
@@ -8,6 +8,14 @@ import { formatPrice } from "../Product/format";
 
 const ThankYou = () => {
   const { state } = useLocation();
+  const data = state?.data;
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!data || data == undefined) {
+      navigate(-1);
+    }
+  }, []);
+
   return (
     <Layout>
       <div className="bg-gray-100 dark:bg-[#1F2937] flex flex-col justify-center items-center w-full ">
@@ -21,19 +29,17 @@ const ThankYou = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
               <div className="text-gray-700 dark:text-white">
-                <strong>Order Id:</strong> {state.data._id}
+                <strong>Order Id:</strong> {data._id}
               </div>
               <div className="text-gray-700 dark:text-white">
-                <strong>Date:</strong> {state.data.createdAt}
+                <strong>Date:</strong> {data.createdAt}
               </div>
               <div className="text-gray-700 dark:text-white flex items-center">
                 <strong>Total:</strong>
-                <p className="font-medium">
-                  {formatPrice(state.data.totalAmount)}/-
-                </p>
+                <p className="font-medium">{formatPrice(data.totalAmount)}/-</p>
               </div>
               <div className="text-gray-700 dark:text-white">
-                <strong>Payment Method:</strong> {state.data.PaymentMethod}
+                <strong>Payment Method:</strong> {PaymentMethod}
               </div>
             </div>
           </div>
@@ -42,7 +48,7 @@ const ThankYou = () => {
           <h2 className="text-lg font-bold text-gray-800 dark:text-white mb-4">
             Order Details
           </h2>
-          {state.data.products.map((product, ind) => {
+          {data.products.map((product, ind) => {
             return (
               <div key={ind} className="mb-6">
                 <h1 className="pl-4 py-2 font-bold">Order #{ind + 1}</h1>
@@ -106,7 +112,7 @@ const ThankYou = () => {
                         paymentStatus:
                       </td>
                       <td className="border border-gray-300 px-4 py-2 font-bold text-right">
-                        {state.data.paymentStatus}
+                        {data.paymentStatus}
                       </td>
                     </tr>
                     <tr>
@@ -114,7 +120,7 @@ const ThankYou = () => {
                         Payment Method:
                       </td>
                       <td className="border border-gray-300 px-4 py-2 font-bold text-right">
-                        {state.data.PaymentMethod}
+                        {data.PaymentMethod}
                       </td>
                     </tr>
                   </tbody>
@@ -130,19 +136,17 @@ const ThankYou = () => {
 
           <div className="text-gray-700 dark:text-white">
             <div>
-              <strong>{state.data.shippingAddress.name}</strong>
+              <strong>{data.shippingAddress.name}</strong>
             </div>
-            <p>{state.data.shippingAddress.address}</p>
+            <p>{data.shippingAddress.address}</p>
             <p>
-              {state.data.shippingAddress.state},{" "}
-              {state.data.shippingAddress.postalCode}
+              {data.shippingAddress.state}, {data.shippingAddress.postalCode}
             </p>
             <p>
-              {state.data.shippingAddress.state},{" "}
-              {state.data.shippingAddress.country}
+              {data.shippingAddress.state}, {data.shippingAddress.country}
             </p>
-            <p>📞 {state.data.shippingAddress.phoneNumber}</p>
-            <p>📧 {state.data.shippingAddress.email}</p>
+            <p>📞 {data.shippingAddress.phoneNumber}</p>
+            <p>📧 {data.shippingAddress.email}</p>
           </div>
         </div>
         {/* feedback section */}
