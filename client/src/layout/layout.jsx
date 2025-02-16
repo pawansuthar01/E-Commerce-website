@@ -3,7 +3,7 @@ import {
   AiFillHome,
   AiOutlineInfoCircle,
 } from "react-icons/ai";
-import { FiLock, FiMenu } from "react-icons/fi";
+import { FiMenu } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import { GiShoppingCart } from "react-icons/gi";
 import {
@@ -34,7 +34,7 @@ import {
   MdSpaceDashboard,
 } from "react-icons/md";
 import { BsArrowsCollapse, BsCloudUpload } from "react-icons/bs";
-import { FaRegFileAlt } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 function Layout({ children, load }) {
   const [loading, setLoading] = useState("");
@@ -128,6 +128,7 @@ function Layout({ children, load }) {
     async function handelCheckJWT() {
       if (exp != 0 && currentTimestamp > exp) {
         await dispatch(LogoutAccount());
+        toast.error("please Login...");
         navigate("/login");
       }
     }
@@ -141,56 +142,62 @@ function Layout({ children, load }) {
 
   useEffect(() => {
     const checkNetworkSpeed = () => {
+      if (!navigator.onLine) {
+        navigate("/App/Slow-Network");
+        return;
+      }
+
       const connection =
         navigator.connection ||
         navigator.mozConnection ||
         navigator.webkitConnection;
-      if (connection) {
-        const slowConnectionTypes = ["slow-2g", "2g"];
-        if (slowConnectionTypes.includes(connection.effectiveType)) {
-          navigate("/App/Slow-Network");
-        }
+
+      const slowConnectionTypes = ["slow-2g", "2g"];
+      if (
+        connection &&
+        slowConnectionTypes.includes(connection.effectiveType)
+      ) {
+        navigate("/App/Slow-Network");
       }
     };
 
     checkNetworkSpeed();
 
+    window.addEventListener("offline", checkNetworkSpeed);
+    window.addEventListener("online", checkNetworkSpeed);
     navigator.connection?.addEventListener("change", checkNetworkSpeed);
 
     return () => {
+      window.removeEventListener("offline", checkNetworkSpeed);
+      window.removeEventListener("online", checkNetworkSpeed);
       navigator.connection?.removeEventListener("change", checkNetworkSpeed);
     };
-  }, []);
+  }, [navigate]);
+
   return (
     <div
-      className={`min-h-[90vh] select-none z-20    overflow-hidden ${
-        darkMode ? "bg-gray-900 text-white" : "bg-white text-black"
-      }`}
+      className={`min-h-[90vh] select-none z-20 bg-white dark:text-white  dark:bg-gray-900 text-black  overflow-hidden `}
     >
       <div className="sticky top-0 z-50">
         <nav
-          className={`flex fixed z-50 justify-between w-[100%] items-center ${
-            darkMode ? "bg-gray-800" : "bg-white"
-          }`}
+          className={`flex fixed z-50 justify-between w-[100%] items-center bg-white   dark:bg-gray-900 `}
         >
           <label htmlFor="my-drawer" className="relative cursor-pointer">
             <FiMenu
               onClick={changeWight}
               size={"36px"}
-              className={`font-bold m-4 ${
-                darkMode ? "text-white" : "text-gray-800 "
-              }`}
+              className={`font-bold dark:text-white text-gray-800 m-4 `}
             />
           </label>
           {!load && <SearchBar onSearch={handleSearch} />}
-          <div className={`flex gap-5 font-bold text-black items-center `}>
+          <div
+            className={`flex gap-5 font-bold text-black dark:text-white items-center `}
+          >
             <div className="max-sm:hidden flex">
               {!isLoggedIn && (
                 <Link to="/Login">
                   <button
-                    className={`${
-                      darkMode ? "bg-blue-600" : "bg-blue-700"
-                    } text-sm px-8 py-3 font-medium text-white rounded-md w-full hover:bg-transparent hover:text-blue-700 hover:border-2`}
+                    className={` text-sm px-8 bg-blue-700 dark:bg-blue-600 py-3 font-medium text-white rounded-md w-full hover:bg-transparent hover:text-blue-700 hover:border-2`}
                   >
                     Login
                   </button>
@@ -222,14 +229,14 @@ function Layout({ children, load }) {
 
             <button
               onClick={toggleDarkMode}
-              className={`p-2 rounded dark:text-white`}
+              className={`p-2 rounded text-black dark:text-white`}
             >
               {darkMode ? <FaSun size={20} /> : <FaMoon size={20} />}
             </button>
 
             <div
               onClick={() => navigate("/Cart")}
-              className="relative cursor-pointer mr-4 dark:text-white"
+              className="relative cursor-pointer text-white mr-4 dark:text-black"
             >
               <p className="absolute text-green-600 font-serif text-sm top-[-12px] right-[-5px]">
                 {data?.walletAddProducts?.length >= 1 &&
@@ -251,11 +258,7 @@ function Layout({ children, load }) {
           <div className={`drawer-side w-0 `}>
             <label htmlFor="my-drawer" className="drawer-overlay"></label>
             <ul
-              className={`menu p-4 w-56 min-h-[100%] sm:w-80 ${
-                darkMode
-                  ? "bg-gray-800 text-gray-300"
-                  : "bg-base-200 text-base-content"
-              } space-y-4 relative overflow-y-auto `}
+              className={`menu p-4 w-56 bg-base-200 text-base-content dark:bg-gray-800 dark:text-gray-300 min-h-[100%] sm:w-80 space-y-4  max-w-xs:space-y-2 relative overflow-y-auto `}
             >
               <li className="w-fit absolute right-2 z-50">
                 <button onClick={hideSide}>
@@ -299,13 +302,7 @@ function Layout({ children, load }) {
                   About Us
                 </Link>
               </li>
-              <li onClick={() => window.open("/App/privacy-policy", "_blank")}>
-                <Link>
-                  {" "}
-                  <FaRegFileAlt />
-                  privacy-policy
-                </Link>
-              </li>
+
               {["ADMIN", "AUTHOR"].includes(role) && (
                 <>
                   <p className="flex items-center gap-1 text-xm">
@@ -343,7 +340,7 @@ function Layout({ children, load }) {
                     </Link>
                   </li>
                   <li onClick={hideSide}>
-                    <Link to="/BlogUpload">
+                    <Link to="/BlogUpload ">
                       {" "}
                       <BsCloudUpload />
                       BlogUpload
@@ -352,8 +349,8 @@ function Layout({ children, load }) {
                 </>
               )}
               {!isLoggedIn && (
-                <li className="w-[90%] absolute bottom-4">
-                  <div className="flex items-center justify-center w-full flex-wrap">
+                <li className="w-[90%]  absolute bottom-4">
+                  <div className="flex mt-2 items-center justify-center w-full flex-wrap">
                     <Link to="/Login">
                       <button className="btn btn-primary px-8 py-1 rounded-md font-semibold w-full">
                         Login
@@ -369,7 +366,7 @@ function Layout({ children, load }) {
               )}
 
               {isLoggedIn && (
-                <div className="w-[90%] absolute bottom-4">
+                <div className="w-[90%]  absolute bottom-4">
                   <div className="flex items-center justify-center w-full flex-wrap">
                     <LoadingButton
                       textSize={"py-2"}

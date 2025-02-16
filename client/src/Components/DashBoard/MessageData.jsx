@@ -70,7 +70,7 @@ const Messages = () => {
             Filter by Read Status:
           </label>
           <select
-            className="border border-gray-300 dark:bg-gray-900 rounded-lg p-3 max-sm:p-2 mt-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="border bg-white border-gray-300 dark:bg-gray-900 rounded-lg p-3 max-sm:p-2 mt-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             value={filterRead || "all"}
             onChange={handleFilterChange}
           >

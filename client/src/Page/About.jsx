@@ -23,25 +23,25 @@ function About() {
     <Layout>
       <div className="sm:mt-[50px ]  select-none relative max-sm:mt-2">
         <div className="flex  w-full  max-sm:flex-wrap ">
-          <div className="w-full p-1   sm:pl-[100px] flex justify-center ">
+          <div className="w-full p-1 max-w-xs:p-0    sm:pl-[100px] flex justify-center ">
             <img
               src={AboutImage}
-              className=" sm:rounded-tr-[200px] max-sm:w-full  rounded-lg   h-[350px] "
+              className=" sm:rounded-tr-[200px] max-w-xs:rounded max-sm:w-full  rounded-lg   h-[350px] "
               alt="About_image"
             />
           </div>
           <div className="  w-full sm:pr-10 ">
             <div className="font-bold text-black dark:text-white  w-full my-5 flex flex-col gap-3 mr-28   text-center">
-              <h1 className="sm:text-4xl max-sm:text-2xl  ">
+              <h1 className="sm:text-4xl max-w-xs:text-xl max-sm:text-2xl  ">
                 {" "}
                 Exquisite Design Combined
               </h1>
-              <span className="sm:text-3xl max-sm:text-xl">
+              <span className="sm:text-3xl  max-sm:text-xl">
                 {" "}
                 With Functionalities
               </span>
             </div>
-            <p className=" line-clamp-3 max-sm:px-5   relative  sm:m-5 text-xl text-[#909090] max-sm:my-10 text-center">
+            <p className=" line-clamp-3 max-sm:px-5 max-w-xs:text-xl   relative  sm:m-5 text-xl text-[#909090] max-sm:my-10 text-center">
               Nune in Arcu Et Scelerisque Dignissim. Aliquam Enim Nunc, Volutpat
               Eget Ipsum Id, Varius Sodales Mi. vestibulum Ante lpsum Primis In
               Facucibus Orci Luctus Et Ultrices
@@ -60,7 +60,7 @@ function About() {
             </div>
           </div>
         </div>
-        <div className="flex  capitalize text-black  dark:text-white  sm:text-3xl max-sm:text-2xl  justify-center text-center w-full my-10  max-sm:px-[10%] sm:px-[20%] ">
+        <div className="flex max-w-xs:text-xl  capitalize text-black  dark:text-white  sm:text-3xl max-sm:text-2xl  justify-center text-center w-full my-10  max-sm:px-[10%] sm:px-[20%] ">
           <h1 className="font-medium">
             {" "}
             🤩 i am passionately dedicated to 😊
@@ -71,28 +71,28 @@ function About() {
             <span>👌 stories our brand is not just about adornment 💯</span>
           </h1>
         </div>
-        <div className=" select-none  flex gap-5 capitalize  justify-center flex-wrap my-5 p-5">
+        <div className="  select-none  flex gap-5 max-w-xs:gap-2 capitalize  justify-center flex-wrap max-w-xs:my-2 max-w-xs:p-2 my-5 p-5">
           <div className="flex flex-col justify-center cursor-pointer  p-5 rounded hover:bg-[#f1d6cb] dark:bg-[#111825] dark:border-2 border-[#182237] bg-[#fce7de] text-center line-clamp-2 sm:min-w-[200px]">
-            <h1 className="text-2xl font-bold">15+</h1>
-            <p className="text-xl ">All Over India </p>
+            <h1 className="text-2xl max-w-xs:text-xl font-bold">15+</h1>
+            <p className="text-xl max-w-xs:text-sm ">All Over India </p>
           </div>
           <div className="flex flex-col justify-center cursor-pointer  p-5 rounded hover:bg-[#f1d6cb] bg-[#fce7de] dark:bg-[#111825] dark:border-2 border-[#182237] text-center line-clamp-2 sm:min-w-[200px]">
             <h1 className="text-2xl font-bold">{formatCount(totalProducts)}</h1>
-            <p className="text-xl ">prodect avaliable </p>
+            <p className="text-xl max-w-xs:text-sm">prodect avaliable </p>
           </div>
           <div className="flex flex-col justify-center cursor-pointer  p-5 rounded hover:bg-[#f1d6cb] bg-[#fce7de] dark:bg-[#111825] dark:border-2 border-[#182237] text-center line-clamp-2 sm:min-w-[200px]">
-            <h1 className="text-2xl font-bold">
+            <h1 className="text-2xl max-w-xs:text-xl font-bold">
               {" "}
               {formatCount(TotalFeedbackCount)}
             </h1>
-            <p className="text-xl">prodect reviews </p>
+            <p className="text-xl max-w-xs:text-sm">prodect reviews </p>
           </div>
           <div className="flex flex-col justify-center cursor-pointer  p-5 rounded hover:bg-[#f1d6cb] bg-[#fce7de] dark:bg-[#111825] dark:border-2 border-[#182237] text-center line-clamp-2 sm:min-w-[200px] ">
-            <h1 className="text-2xl font-bold capitalize">
+            <h1 className="text-2xl max-w-xs:text-xl font-bold capitalize">
               {" "}
               {formatCount(happyCustomers)}
             </h1>
-            <p className="text-xl  ">happy customers</p>
+            <p className="text-xl max-w-xs:text-sm ">happy customers</p>
           </div>
         </div>
         {/* feedback section */}

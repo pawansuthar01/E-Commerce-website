@@ -7,6 +7,7 @@ export const Category = () => {
   const dispatch = useDispatch();
   const [newCategory, setNewCategory] = useState("");
   const { CategoryList } = useSelector((state) => state.Category);
+
   const handleAddCategory = async (e) => {
     e.preventDefault();
     if (!newCategory.trim()) return;
@@ -20,7 +21,9 @@ export const Category = () => {
     setNewCategory("");
   };
   async function handelClickToRemove(category) {
-    const userConfirmed = confirm(`Remove this category: ${category}?`);
+    const userConfirmed = confirm(
+      `Remove this category: ${category.category}?`
+    );
     if (!userConfirmed) return;
 
     await dispatch(deleteList({ id: category.id }));

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { X } from "lucide-react";
 
 const ProfessionalShippingLabel = ({ Order, setShowPrint }) => {
   const [order, setOrder] = useState(Order);
@@ -102,18 +103,18 @@ const ProfessionalShippingLabel = ({ Order, setShowPrint }) => {
   return (
     <div>
       <div
-        className="fixed inset-0 bg-gray-700 bg-opacity-0 flex justify-center items-center z-50 "
+        className="fixed  max-w-xs:overflow-auto max-w-xs:pt-48 inset-0 bg-gray-700 bg-opacity-0 flex justify-center items-center z-40 "
         onClick={() => setShowPrint(false)}
       >
         <div
-          className="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl relative dark:text-white dark:bg-[#111827]"
+          className="bg-white p-8 rounded-lg shadow-lg w-full  max-w-xs:w-[95%]  relative dark:text-white dark:bg-[#111827]"
           onClick={(e) => e.stopPropagation()}
         >
           <button
             onClick={() => setShowPrint(false)}
-            className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full"
+            className="absolute top-2 right-2 text-red-500  p-1 rounded-full"
           >
-            X
+            <X />
           </button>
           <div className="label-container" ref={labelRef}>
             {/* Header: Order ID and Barcode */}

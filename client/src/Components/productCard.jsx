@@ -106,12 +106,12 @@ function ProductCard({ data, onProductDelete }) {
           }
         />
         {data?.discount > 0 && (
-          <span className="absolute max-w-xs:px-1 max-w-xs:text-[10px] max-w-xs:top-0 top-2 left-2 bg-red-300 text-xs font-semibold px-2 py-1 rounded">
+          <span className="absolute max-w-xs:px-1 max-w-xs:text-[10px] max-w-xs:top-0 top-2 left-2 max-w-xs:left-0 max-w-xs:rounded-md bg-red-300 text-xs font-semibold px-2 py-1 rounded">
             {data.discount}% OFF
           </span>
         )}
-        {!isNewProduct(data?.createdAt) && (
-          <span className="absolute max-w-xs:px-1 max-w-xs:text-[10px] max-w-xs:top-0  top-2 right-2 bg-red-300 text-xs font-semibold px-2 py-1 rounded">
+        {isNewProduct(data?.createdAt) && (
+          <span className="absolute max-w-xs:px-1 max-w-xs:text-[10px] max-w-xs:top-0  max-w-xs:right-0  max-w-xs:rounded-md top-2 right-2 bg-red-300 text-xs font-semibold px-2 py-1 rounded">
             New
           </span>
         )}
@@ -139,7 +139,7 @@ function ProductCard({ data, onProductDelete }) {
                 )}
           </span>
           {data.discount > 0 && (
-            <span className="line-through max-w-xs:text-[12px] text-gray-500 text-sm ml-2">
+            <span className="line-through max-w-xs:text-[12px] text-gray-500 text-sm ml-2 ">
               {formatPrice(
                 (data.price + (data.price * data.gst) / 100).toFixed(2)
               )}
@@ -160,7 +160,7 @@ function ProductCard({ data, onProductDelete }) {
               className="flex-1 flex justify-center text-red-400"
               onClick={() => handleDeleteProduct(data._id)}
             >
-              <AiOutlineDelete size={24} />
+              <AiOutlineDelete className="w-7 h-7 max-w-xs:w-5" />
             </button>
             <button
               className="flex-1 flex justify-center text-blue-400"
@@ -168,7 +168,7 @@ function ProductCard({ data, onProductDelete }) {
                 navigate("/Admin/Edit-Product", { state: { ...data } })
               }
             >
-              <FiEdit size={24} />
+              <FiEdit className="w-7 h-7 max-w-xs:w-5" />
             </button>
           </>
         ) : (
@@ -181,7 +181,7 @@ function ProductCard({ data, onProductDelete }) {
               }`}
               onClick={() => handleAddToCart(data._id, data.stock)}
             >
-              <FiShoppingCart size={24} />
+              <FiShoppingCart className="w-7 h-7 max-w-xs:w-5" />
             </button>
             <button
               className={`flex-1 flex justify-center ${
@@ -189,7 +189,7 @@ function ProductCard({ data, onProductDelete }) {
               }`}
               onClick={() => handleLikeDislike(data._id)}
             >
-              <FiHeart size={24} />
+              <FiHeart className="w-7 h-7 max-w-xs:w-5" />
             </button>
           </>
         )}
@@ -199,7 +199,7 @@ function ProductCard({ data, onProductDelete }) {
             navigate(`/product/${data._id}`, { state: { ...data } })
           }
         >
-          <FiEye size={24} />
+          <FiEye className="w-7 h-7 max-w-xs:w-5" />
         </button>
       </div>
       {showLoginPrompt && (

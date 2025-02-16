@@ -86,7 +86,7 @@ export const UsersCart = ({ users }) => {
   return (
     <>
       <>
-        <h2 className="text-3xl font-semibold text-center mb-6 text-gray-800 dark:text-white">
+        <h2 className="text-3xl max-w-xs:text-2xl font-semibold text-center max-w-xs:mb-2 mb-6 text-gray-800 dark:text-white">
           Manage Users
         </h2>
         <section className="overflow-x-auto">

@@ -363,7 +363,7 @@ export const OrderCart = ({ order }) => {
       <select
         onChange={handleFilterChange}
         value={selectedStatus}
-        className="text-center my-10 w-44 mx-auto dark:bg-gray-900  border"
+        className="text-center my-10 max-w-xs:my-2 w-44 mx-auto bg-white dark:bg-gray-900  border"
       >
         <option value="All">All</option>
         <option value="Processing">Processing</option>

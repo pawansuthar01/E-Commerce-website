@@ -1,7 +1,5 @@
 import { MdCurrencyRupee } from "react-icons/md";
 import { FiEdit } from "react-icons/fi";
-import { useDispatch } from "react-redux";
-import { FaPrint } from "react-icons/fa6";
 import { AiOutlinePrinter } from "react-icons/ai";
 import { useState } from "react";
 import ProfessionalShippingLabel from "./Lable";
@@ -16,7 +14,6 @@ export const OrderShow = ({
   setPaymentStatus,
   handelOrderCancel,
 }) => {
-  const dispatch = useDispatch();
   const [showPrint, setShowPrint] = useState(false);
   const [OrderPrintData, setOrderPrintData] = useState();
 

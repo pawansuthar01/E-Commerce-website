@@ -3,6 +3,7 @@ import { XMarkIcon } from "@heroicons/react/24/solid";
 import { ImageUpload } from "./imageUpload";
 import { Category } from "./categoryData";
 import { FaPlus } from "react-icons/fa6";
+import { useSelector } from "react-redux";
 
 export const EditModal = ({ slide, onClose, onSave }) => {
   const [name, setName] = useState(slide.name);
@@ -15,6 +16,7 @@ export const EditModal = ({ slide, onClose, onSave }) => {
   const [showCategoryForm, setShowCategoryForm] = useState(false);
   const [images, setImages] = useState(slide.images || []);
   const [newImages, setNewImages] = useState([]);
+  const { CategoryList } = useSelector((state) => state?.Category);
   const [categories, setCategories] = useState([
     "Sofas",
     "Coffee Tables",
@@ -167,9 +169,7 @@ export const EditModal = ({ slide, onClose, onSave }) => {
             Manage Categories
           </button>
         </div>
-        {showCategoryForm && (
-          <Category categories={categories} setCategories={setCategories} />
-        )}
+        {showCategoryForm && <Category />}
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">Edit Slide</h2>
           <button
@@ -189,7 +189,7 @@ export const EditModal = ({ slide, onClose, onSave }) => {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-[#111827]"
+              className="w-full max-w-xs:text-sm bg-white px-3 py-2 border border-gray-300 rounded-md dark:bg-[#111827]"
             />
           </div>
           <div className="mb-4">
@@ -200,7 +200,7 @@ export const EditModal = ({ slide, onClose, onSave }) => {
               type="number"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-[#111827]"
+              className="w-full  max-w-xs:text-sm bg-white px-3 py-2 border border-gray-300 rounded-md dark:bg-[#111827]"
             />
           </div>
           <div className="mb-4">
@@ -210,7 +210,7 @@ export const EditModal = ({ slide, onClose, onSave }) => {
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-[#111827] h-[150px]"
+              className="w-full  max-w-xs:text-sm bg-white px-3 py-2 border border-gray-300 rounded-md dark:bg-[#111827] h-[150px]"
             />
           </div>
           <div className="grid grid-cols-2 gap-6">
@@ -226,12 +226,12 @@ export const EditModal = ({ slide, onClose, onSave }) => {
                 name="category"
                 value={category && category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-4 py-2 border dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full max-w-xs:text-sm bg-white px-4 py-2 border dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
               >
-                <option value="">Select Category</option>
-                {categories.map((cat, i) => (
+                <option>Select Category</option>
+                {CategoryList?.map((cat, i) => (
                   <option key={i} value={cat}>
-                    {cat}
+                    {cat.category}
                   </option>
                 ))}
               </select>
@@ -248,7 +248,7 @@ export const EditModal = ({ slide, onClose, onSave }) => {
                 name="stock"
                 value={stock}
                 onChange={(e) => setStock(e.target.value)}
-                className="w-full px-4 py-2 border dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full max-w-xs:text-sm bg-white  px-4 py-2 border dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
               >
                 <option value="">Select stock</option>
                 <option value="In stock">In stock</option>
@@ -269,7 +269,7 @@ export const EditModal = ({ slide, onClose, onSave }) => {
               name="discount"
               value={discount && discount}
               onChange={(e) => setDiscount(e.target.value)}
-              className="w-full px-4 py-2 border dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full max-w-xs:text-sm bg-white px-4 py-2 border dark:bg-gray-800 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
               placeholder="Enter discount percentage"
               min="0"
               max="100"
@@ -279,7 +279,7 @@ export const EditModal = ({ slide, onClose, onSave }) => {
           <div>
             <label
               htmlFor="gst"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block max-w-xs:text-sm bg-white text-sm font-medium text-gray-700 mb-1"
             >
               GST (%)
             </label>
@@ -289,7 +289,7 @@ export const EditModal = ({ slide, onClose, onSave }) => {
               id="gst"
               value={gst}
               onChange={(e) => setGst(e.target.value)}
-              className="w-full px-4 py-2 dark:bg-gray-800 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full max-w-xs:text-sm bg-white px-4 py-2 dark:bg-gray-800 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
               placeholder="Enter Gst percentage "
               min="0"
               max="100"

@@ -49,7 +49,7 @@ export const EditModal = ({ slide, onClose, onSave }) => {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-[#111827]"
+              className="w-full bg-white px-3 py-2 border border-gray-300 rounded-md dark:bg-[#111827]"
             />
           </div>
           <div className="mb-4">
@@ -60,7 +60,7 @@ export const EditModal = ({ slide, onClose, onSave }) => {
               type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md dark:bg-[#111827]"
+              className="w-full bg-white px-3 py-2 border border-gray-300 rounded-md dark:bg-[#111827]"
             />
           </div>
 

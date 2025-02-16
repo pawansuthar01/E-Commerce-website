@@ -3,7 +3,6 @@ import Layout from "../layout/layout";
 import ProductCard from "../Components/productCard";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProduct } from "../Redux/Slice/ProductSlice";
-import { celebrities } from "../constants/Homecarousellist";
 import CarouselSlide from "../Components/CarouselSlice";
 import LoginPrompt from "../Components/loginProment";
 import FeedbackForm from "../Components/feedbackfrom";
@@ -24,11 +23,7 @@ function HomePage() {
   const [topProduct, setTopProduct] = useState([]);
   const Carousel = useSelector((state) => state.carousel.Carousel);
   useEffect(() => {
-    if (Carousel.length === 0) {
-      SetCarousel(celebrities);
-    } else {
-      SetCarousel(Carousel);
-    }
+    SetCarousel(Carousel);
   }, [Carousel]);
   useEffect(() => {
     if (product.length == 0 || topProduct.length == 0) {
@@ -38,9 +33,9 @@ function HomePage() {
   }, [product]);
   const ProductLoad = async () => {
     setLoading(true);
-    if (Carousel?.length == 0) {
-      await dispatch(getAllCarousel());
-    }
+
+    await dispatch(getAllCarousel());
+
     if (product.length == 0 || topProduct.length == 0) {
       await dispatch(getAllProduct({ page: 1, limit: 25 }));
     }
@@ -83,7 +78,7 @@ function HomePage() {
         setCurrentSlide(carousel?.length);
       }, 700);
     } else if (currentSlide === carousel?.length + 1) {
-      setTimeout(() => {
+      const interval = setTimeout(() => {
         setIsAnimating(false);
         setCurrentSlide(1);
       }, 700);
@@ -140,29 +135,25 @@ function HomePage() {
             </div>
           </div>
 
-          <div className="flex w-full justify-center gap-2 py-2 flex-wrap">
+          <div className="flex w-full justify-center gap-2 p-2 mb-2 flex-wrap">
             {carousel?.map((_, index) => (
               <button
                 key={index}
-                className={`btn btn-xs dark:bg-gray-800 bg-white dark:text-white ${
-                  currentSlide === index + 1
-                    ? "btn-active dark:bg-gray-500"
-                    : ""
+                className={`  rounded-full p-1 border border-gray-500  dark:bg-gray-800  dark:text-white ${
+                  currentSlide === index + 1 ? "bg-gray-500 " : "bg-[#dfacac]"
                 }`}
                 onClick={() => {
                   setIsAnimating(true);
                   setCurrentSlide(index + 1);
                 }}
-              >
-                {index + 1}
-              </button>
+              ></button>
             ))}
           </div>
         </div>
 
         {/* Popular Products Section */}
-        <div className="flex flex-col items-center my-10 mx-1 w-full">
-          <h2 className="text-2xl font-bold mb-4 dark:text-white text-black">
+        <div className="flex flex-col items-center max-w-xs:my-5 my-10 mx-1 w-full">
+          <h2 className="text-2xl max-w-xs:text-xl max-w-xs:mb-2 font-bold mb-4 dark:text-white text-black">
             Popular Products
           </h2>
           <div className="flex justify-evenly overflow-y-scroll hide-scrollbar  scrollbar-width-thin flex-shrink max-w-xs:gap-2 gap-6 w-full">
@@ -181,10 +172,10 @@ function HomePage() {
 
         {/* More Products Section */}
         <div className="flex flex-col items-center w-full">
-          <h2 className="text-2xl font-bold mb-4 dark:text-white text-black">
+          <h2 className="text-2xl font-bold mb-4 max-w-xs:text-xl max-w-xs:mb-2 dark:text-white text-black">
             More Products
           </h2>
-          <div className="flex flex-wrap justify-evenly  max-w-xs:gap-1  gap-6 my-6 w-full">
+          <div className="flex flex-wrap justify-evenly  max-w-xs:gap-1  gap-6 my-6 max-w-xs:my-2 w-full">
             {Array.isArray(products) &&
               products?.length > 0 &&
               products?.map((product, ind) => (
@@ -197,9 +188,9 @@ function HomePage() {
               ))}
           </div>
         </div>
-        <div className="w-full mb-10 ">
+        <div className="w-full mb-10  max-w-xs:mb-0">
           <hr className="h-1 bg-slate-200" />
-          <h1 className="text-2xl mt-10 font-bold mb-4 ml-10 max-w-xs:ml-0 max-w-xs:text-center  text-start dark:text-white text-black">
+          <h1 className="text-2xl max-w-xs:mt-2 mt-10 font-bold mb-4 ml-10 max-w-xs:ml-0 max-w-xs:text-center  text-start dark:text-white text-black">
             Feedback Section
           </h1>
           <FeedbackForm />

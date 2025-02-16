@@ -410,7 +410,7 @@ export const UpdateUserProfile = async (req, res, next) => {
 export const getAllDate = async (req, res, next) => {
   try {
     const allUser = await User.find({});
-    const allUserCount = await User.countDocuments();
+    const allUserCount = await User.countDocuments({ role: "USER" });
     const allADMINCount = await User.countDocuments({
       role: "ADMIN",
     });

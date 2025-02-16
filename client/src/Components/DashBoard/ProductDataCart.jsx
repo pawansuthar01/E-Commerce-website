@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { updateProduct } from "../../Redux/Slice/ProductSlice";
+import { formatPrice } from "../../Page/Product/format";
+import { FiEdit } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
+import { AiOutlineDelete } from "react-icons/ai";
 
 export const ProductsCart = ({
   products,
@@ -9,6 +13,7 @@ export const ProductsCart = ({
   currentPage,
 }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [productData, setProductData] = useState([]);
   const handlePageChange = (page) => {
     if (page !== currentPage) {
@@ -68,6 +73,25 @@ export const ProductsCart = ({
       })
     );
   }
+  const calculateProductDetails = (product) => {
+    const gstPercent = Number(product.gst) || 0;
+    const basePrice = product.price;
+    const gst = (basePrice * gstPercent) / 100;
+    const totalPriceWithGst = basePrice + gst;
+
+    const discountPercent = Number(product.discount) || 0;
+    const discount = (totalPriceWithGst * discountPercent) / 100;
+
+    const finalPrice = totalPriceWithGst - discount;
+
+    return {
+      gst,
+
+      discount,
+      finalPrice,
+      totalPrice: finalPrice,
+    };
+  };
   return (
     <>
       <h2 className="text-2xl font-bold mb-4">Manage Products</h2>
@@ -80,56 +104,84 @@ export const ProductsCart = ({
               <th className="p-2">Name</th>
               <th className="p-2">Stock</th>
               <th className="p-2">Price</th>
+              <th className="p-2">GST(%)</th>
+              <th className="p-2">Discount </th>
+
+              <th className="p-2">price-Discount</th>
               <th className="p-2">Actions</th>
             </tr>
           </thead>
           <tbody className="text-center">
-            {productData.map((product, index) => (
-              <tr key={product._id}>
-                <td className="p-2">#{index + 1}</td>
-                <td>
-                  <img
+            {productData.map((product, index) => {
+              const { gst, discount, finalPrice, totalPrice } =
+                calculateProductDetails(product);
+
+              return (
+                <tr key={product._id}>
+                  <td className="p-2">#{index + 1}</td>
+                  <td>
+                    <img
+                      onClick={() =>
+                        window.open(`/product/${product._id}`, "_blank")
+                      }
+                      className="p-2 w-20 h-20 rounded-xl cursor-pointer"
+                      src={
+                        product?.image?.secure_url
+                          ? product?.image?.secure_url
+                          : product?.images[0]?.secure_url
+                      }
+                      crossOrigin="anonymous"
+                      alt={product.name}
+                    />
+                  </td>
+                  <td className="p-2 line-clamp-1">{product.name}</td>
+
+                  <td
                     onClick={() =>
-                      window.open(`/product/${product._id}`, "_blank")
+                      handelChangeStock({
+                        id: product._id,
+                        stock: product?.stock,
+                      })
                     }
-                    className="p-2 w-20 h-20 rounded-xl cursor-pointer"
-                    src={
-                      product?.image?.secure_url
-                        ? product?.image?.secure_url
-                        : product?.images[0]?.secure_url
-                    }
-                    crossOrigin="anonymous"
-                    alt={product.name}
-                  />
-                </td>
-                <td className="p-2">{product.name}</td>
-                <td
-                  onClick={() =>
-                    handelChangeStock({
-                      id: product._id,
-                      stock: product?.stock,
-                    })
-                  }
-                  title="click to change stock"
-                  className={`p-2 ${
-                    product?.stock == "In stock"
-                      ? "text-green-400 hover:text-red-500"
-                      : "text-red-400 hover:text-green-500"
-                  }  cursor-pointer `}
-                >
-                  {product?.stock}
-                </td>
-                <td className="p-2">₹{product.price}</td>
-                <td className="p-2">
-                  <button
-                    className="bg-red-500 text-white px-4 py-1 rounded"
-                    onClick={() => handleDeleteProduct(product._id)}
+                    title="click to change stock"
+                    className={`p-2 ${
+                      product?.stock == "In stock"
+                        ? "text-green-400 hover:text-red-500"
+                        : "text-red-400 hover:text-green-500"
+                    }  cursor-pointer `}
                   >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
+                    {product?.stock}
+                  </td>
+                  <td className="p-2">₹{product.price}</td>
+                  <td className="text-center">{product.gst}%</td>
+                  <td className="text-center">
+                    {discount > 0
+                      ? ` ${formatPrice(discount)} (${product.discount}%)`
+                      : "-"}
+                  </td>
+                  <td className="text-center">{formatPrice(totalPrice)}</td>
+
+                  <td className="p-2 flex gap-2">
+                    <button
+                      className="bg-red-500 text-white px-4 py-1 rounded"
+                      onClick={() => handleDeleteProduct(product._id)}
+                    >
+                      <AiOutlineDelete className="w-7 h-7 max-w-xs:w-5" />
+                    </button>
+                    <button
+                      className=" bg-green-500 text-white px-4 py-1  rounded"
+                      onClick={() =>
+                        navigate("/Admin/Edit-Product", {
+                          state: { ...product },
+                        })
+                      }
+                    >
+                      <FiEdit className="w-7 h-7 max-w-xs:w-5" />
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
 

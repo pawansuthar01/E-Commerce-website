@@ -1,25 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { getAllUsers, LoadAccount } from "../../Redux/Slice/authSlice";
 import { getPaymentRecord, PaymentData } from "../../Redux/Slice/paymentSlice";
-import { AllOrder, UpdateOrder } from "../../Redux/Slice/OrderSlice";
+import { AllOrder } from "../../Redux/Slice/OrderSlice";
 import { getAllProduct } from "../../Redux/Slice/ProductSlice";
-import { FaArrowLeft, FaBoxOpen, FaEnvelope, FaMound } from "react-icons/fa6";
+import { FaBoxOpen, FaEnvelope } from "react-icons/fa6";
 import Layout from "../../layout/layout";
-import { OrderShow } from "../../Components/ShowOrder";
+
 import { FaUser, FaBox, FaCreditCard, FaThLarge } from "react-icons/fa";
 import { UsersCart } from "../../Components/DashBoard/UserDataCard";
 import { ProductsCart } from "../../Components/DashBoard/ProductDataCart";
 import { DashBoard } from "../../Components/DashBoard/DashBoardData";
 import { PaymentCart } from "../../Components/DashBoard/PaymentDataCart";
-import { LoadingCart } from "../../Components/DashBoard/Loader";
 import { OrderCart } from "../../Components/OrderDataCart";
-import { GetMessage } from "../../Redux/Slice/feedbackSlice";
 import Messages from "../../Components/DashBoard/MessageData";
 import ShopInformationForm from "../../Components/shopInfo";
 import { XCircleIcon } from "@heroicons/react/24/solid";
 import { MdMenu, MdSettings } from "react-icons/md";
-import { SettingsIcon } from "../Product/icon";
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
@@ -226,7 +223,7 @@ const AdminDashboard = () => {
         </header>
 
         {/* Dynamic Content Section */}
-        <div className="pt-[100px]">
+        <div className="pt-[100px] max-w-xs:pt-[50px]">
           {activeSection === 1 && <DashBoard stats={stats} orders={orders} />}
           {activeSection === 2 && <UsersCart users={users} />}
           {activeSection === 3 && <OrderCart order={orders} />}

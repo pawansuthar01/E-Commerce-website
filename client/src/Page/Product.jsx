@@ -76,7 +76,7 @@ function Product() {
 
   return (
     <Layout load={true}>
-      <div className="min-h-[100vh] ">
+      <div className="min-h-[100vh] max-w-xs:pt-[20px] ">
         <SearchBar
           setQueryBarTitle={searchTitle}
           onSearch={handleSearch}

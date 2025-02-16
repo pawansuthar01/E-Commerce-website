@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const basic_uri = "http://localhost:5002";
+const basic_uri = "https://e-commerce-website-production-4d08.up.railway.app";
 const axiosInstance = axios.create();
 
 axiosInstance.defaults.baseURL = basic_uri;

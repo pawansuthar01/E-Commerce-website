@@ -15,12 +15,14 @@ import FeedbackForm from "../../Components/feedbackfrom";
 import FeedbackList from "../../Components/feedbackList";
 import { IoPaperPlaneOutline } from "react-icons/io5";
 import { ProductCarouselImages } from "../../Components/CarouselProudctImage";
+import LoginPrompt from "../../Components/loginProment";
 
 function ProductDescription() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [transformOrigin, setTransformOrigin] = useState("center center");
   const [Search, setSearch] = useState([]);
   const [quantities, setQuantities] = useState(1);
@@ -32,7 +34,7 @@ function ProductDescription() {
     window.location.hostname +
     (window.location.port ? `:${window.location.port}` : "");
   const ProductId = pathname.split("/").pop();
-  const { data } = useSelector((state) => state.auth);
+  const { data, isLoggedIn } = useSelector((state) => state.auth);
   const endOfCommentsRef = useRef(null);
   const fetchOrderDetails = async () => {
     try {
@@ -71,6 +73,7 @@ function ProductDescription() {
   };
 
   const ProductAddCard = async (productId, status) => {
+    if (!isLoggedIn) return setShowLoginPrompt(true);
     if (status == "Out stock") return alert("Product Out Stock");
     setLoading(true);
     const res = await dispatch(AddProductCard(productId));
@@ -378,11 +381,13 @@ function ProductDescription() {
 
         {/* Related Products */}
         <div className="">
-          <h2 className="text-2xl font-semibold mb-4 max-w-xs:text-center">
-            Related Products
-          </h2>
+          {Array.isArray(Search) && (
+            <h2 className="text-2xl font-semibold mb-4 max-w-xs:text-center">
+              Related Products
+            </h2>
+          )}
           <div className="flex flex-wrap  justify-evenly max-w-xs:gap-2 gap-6 my-6 w-full">
-            {!Search && searchLoading && (
+            {searchLoading && (
               <div className="loader border-t-4 border-blue-500 rounded-full w-12 h-12 animate-spin"></div>
             )}
             {Array.isArray(Search) &&
@@ -404,6 +409,9 @@ function ProductDescription() {
           <FeedbackForm />
           <FeedbackList />
         </div>
+        {showLoginPrompt && (
+          <LoginPrompt show={showLoginPrompt} setShow={setShowLoginPrompt} />
+        )}
       </div>
     </Layout>
   );

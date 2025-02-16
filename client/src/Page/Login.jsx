@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { LoginAccount } from "../Redux/Slice/authSlice";
 import { useTheme } from "../Components/ThemeContext"; // Import dark mode context
 import { isEmail } from "../helper/regexMatch";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 function Login() {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [Error, setError] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const [LoginData, setLoginData] = useState({
     Email: "",
@@ -91,7 +93,7 @@ function Login() {
           >
             {showLoading && (
               <div
-                className={`flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-800 ${
+                className={`flex  flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-800 ${
                   loading ? "fixed inset-0 bg-opacity-30 z-10" : ""
                 }`}
               >
@@ -103,7 +105,9 @@ function Login() {
                 </p>
               </div>
             )}
-            <h1 className="text-center text-3xl font-semibold mb-6">LOGIN</h1>
+            <h1 className="text-center max-w-xs:text-2xl text-3xl font-semibold mb-6">
+              LOGIN
+            </h1>
             <form>
               {Error && (
                 <p id="Error" className="text-sm text-red-500 pb-5">
@@ -118,19 +122,29 @@ function Login() {
                   value={setLoginData.Email}
                   onChange={handelUserInput}
                   placeholder="Enter your Register Email"
-                  className="w-full p-3 border bg-white rounded-md dark:bg-gray-700 dark:text-gray-200"
+                  className="w-full p-3 border bg-white max-w-xs:text-sm rounded-md dark:bg-gray-700 dark:text-gray-200"
                 />
               </div>
-              <div className="mb-4">
+              <div className="mb-4 relative">
                 <input
-                  id="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   name="password"
+                  id="password"
                   value={setLoginData.password}
                   onChange={handelUserInput}
-                  placeholder="Enter your password"
-                  className="w-full p-3 border bg-white rounded-md dark:bg-gray-700 dark:text-gray-200"
+                  placeholder="Password"
+                  className="w-full p-3 border max-w-xs:text-sm bg-white rounded-md dark:bg-gray-700 dark:text-gray-200"
                 />
+                <div
+                  className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                >
+                  {showPassword ? (
+                    <EyeOffIcon className="h-5 w-5 text-gray-500" />
+                  ) : (
+                    <EyeIcon className="h-5 w-5 text-gray-500" />
+                  )}
+                </div>
               </div>
 
               <div onClick={handleLogin}>
@@ -139,21 +153,21 @@ function Login() {
                   loading={loading}
                   message={"Loading"}
                   name={"Login"}
-                  color={"bg-green-500"}
+                  color={"bg-green-500 "}
                 />
               </div>
-              <p className=" text-center my-2">
+              <p className=" max-w-xs:text-sm  text-right  my-2">
                 <Link
                   to="/ForgetPassword"
                   className="  hover:text-blue-600 pl-1"
                 >
-                  Forget Password
+                  Forget Password ?
                 </Link>
               </p>
-              <p className="mt-1 text-center">
+              <p className="mt-1 text-center max-w-sm:text-sm">
                 Do not have an account?
                 <Link to="/SignUp" className="link text-blue-600 pl-1">
-                  Create Account
+                  SignUp
                 </Link>
               </p>
             </form>

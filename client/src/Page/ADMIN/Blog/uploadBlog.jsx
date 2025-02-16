@@ -6,7 +6,6 @@ import { useDispatch } from "react-redux";
 import { FiEdit } from "react-icons/fi";
 import Layout from "../../../layout/layout";
 import LoadingButton from "../../../constants/LoadingBtn";
-import { AddNewCarousel } from "../../../Redux/Slice/CarouselSlice";
 import { UploadBlog } from "../../../Redux/Slice/ContentSlice";
 
 function BlogUpload() {
@@ -111,7 +110,7 @@ function BlogUpload() {
     <Layout>
       <div className="w-full">
         <div className="relative justify-center flex items-center">
-          <div className="bg-white dark:bg-[#111827] mt-44 mb-10 w-[400px] rounded-lg shadow-[0_0_5px_black] p-8">
+          <div className="bg-white dark:bg-[#111827] mt-44 mb-10 w-[400px] max-w-xs:w-[95%] rounded-lg shadow-[0_0_5px_black] p-8">
             {showLoading && (
               <div
                 className={`flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 ${
@@ -127,7 +126,7 @@ function BlogUpload() {
               </div>
             )}
             <>
-              <h1 className="text-center text-3xl font-semibold mb-6 text-[#9e6748]">
+              <h1 className="text-center max-w-xs:text-2xl text-3xl font-semibold mb-6 text-[#9e6748]">
                 Add Blog
               </h1>
               <form>
@@ -141,11 +140,11 @@ function BlogUpload() {
                       <img
                         src={previewImages}
                         alt="preview"
-                        className="w-full h-[150px] object-contain bg-white dark:bg-[#111827] "
+                        className="w-full h-[150px] max-w-xs:h-20 object-contain bg-white dark:bg-[#111827] "
                       />
                     </div>
                   ) : (
-                    <FiEdit className="w-full" size={"100px"} />
+                    <FiEdit className="w-full max-w-xs:h-20 h-44" />
                   )}
                 </label>
                 <input

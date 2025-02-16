@@ -49,16 +49,16 @@ function Contact() {
 
   return (
     <Layout>
-      <div className="w-full min-h-[80vh] mt-16 sm:mt-24 dark:bg-gray-900 pb-10">
+      <div className="w-full min-h-[80vh] max-w-xs:pt-[10px] mt-16 sm:mt-24 dark:bg-gray-900 pb-10">
         <div className="flex flex-col items-center w-full px-4">
-          <h3 className="text-3xl font-extrabold text-center dark:text-white text-gray-800">
+          <h3 className="text-3xl max-w-xs:text-2xl font-extrabold text-center dark:text-white text-gray-800">
             How Can We Help You?
           </h3>
           <p className="text-gray-600 dark:text-gray-300 text-lg text-center mt-2 max-w-xl">
             Feel free to reach out to us! We'll get back to you within 24 hours.
           </p>
           <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 mt-8 w-full sm:w-2/3 lg:w-1/2">
-            <header className="flex items-center justify-between mb-6">
+            <header className="flex items-center gap-10 mb-6">
               <button
                 onClick={() => navigate(-1)}
                 className="text-gray-600 dark:text-gray-300 hover:text-blue-500 transition"

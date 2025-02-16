@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 export const PaymentCart = ({ Razorpay, payments }) => {
   const navigate = useNavigate();
   const [activeButton, setActiveButton] = useState(1);
-
   const filteredPayments = payments?.filter((payment) => {
     if (activeButton === 1) {
       return payment.PaymentMethod === "cash on Delivery";
@@ -29,6 +28,7 @@ export const PaymentCart = ({ Razorpay, payments }) => {
 
     navigate(`/api/v3/user/order/${id}`);
   }
+
   return (
     <>
       <div
@@ -38,7 +38,7 @@ export const PaymentCart = ({ Razorpay, payments }) => {
         <div className="flex  space-x-4 w-full justify-evenly bg-[#EFF3EA] py-2 my-2 dark:bg-gray-800 shadow-2xl rounded-lg delay-500 transition-shadow">
           {/* Dashboard Button */}
           <button
-            className={`p-3 rounded-md transition-transform duration-300 ease-in-out flex justify-center gap-1 items-center ${
+            className={`p-3 max-w-xs:text-sm rounded-md transition-transform duration-300 ease-in-out flex justify-center gap-1 items-center ${
               activeButton === 1
                 ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg scale-105"
                 : "bg-gray-200 text-gray-700 hover:scale-105 hover:shadow-md"
@@ -50,7 +50,7 @@ export const PaymentCart = ({ Razorpay, payments }) => {
           </button>
 
           <button
-            className={`p-3 rounded-md transition-transform duration-300 ease-in-out flex gap-1 items-center ${
+            className={`p-3 max-w-xs:text-sm rounded-md transition-transform duration-300 ease-in-out flex gap-1 items-center ${
               activeButton === 2
                 ? "bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-lg scale-105"
                 : "bg-gray-200 text-gray-700 hover:scale-105 hover:shadow-md"

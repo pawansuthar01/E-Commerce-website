@@ -18,7 +18,7 @@ import { EyeIcon, EyeOffIcon } from "lucide-react";
 function SignUp() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [checkPrivacyPolicy, setCheckPrivacyPolicy] = useState(false);
+
   const { email } = useSelector((state) => state?.ShopInfo);
   const [previewImage, setPreviewImage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -84,15 +84,10 @@ function SignUp() {
     }
   };
 
-  const togglePasswordVisibility = () => {};
   const handleCreate = async (event) => {
     event.preventDefault();
     setLoading(true);
-    if (!checkPrivacyPolicy) {
-      document.getElementById("PrivacyPolicyCheckbox").style.color = "red";
-      setLoading(false);
-      return;
-    }
+
     if (!SignUpData.avatar) {
       setLoading(false);
       document.getElementById("Image_icon").nextElementSibling.style.color =
@@ -192,7 +187,7 @@ function SignUp() {
           </div>
         )}
         <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
-          <h1 className="text-2xl font-bold text-center text-gray-700 dark:text-gray-200 mb-6">
+          <h1 className=" max-w-xs:text-xl text-2xl font-bold text-center text-gray-700 dark:text-gray-200 mb-6">
             Sign Up
           </h1>
           <form onSubmit={handleCreate}>
@@ -208,16 +203,16 @@ function SignUp() {
               {previewImage ? (
                 <img
                   src={previewImage}
-                  className="w-24 h-24 rounded-full mx-auto"
+                  className="w-24 h-24 max-w-xs:w-20 max-w-xs:h-20 rounded-full mx-auto"
                   alt="Profile"
                 />
               ) : (
                 <BsPersonCircle
                   id="Image_icon"
-                  className="w-24  border  rounded-full h-24  mx-auto text-gray-500 dark:text-gray-300"
+                  className="w-24  border max-w-xs:w-20 max-w-xs:h-20  rounded-full h-24  mx-auto text-gray-500 dark:text-gray-300"
                 />
               )}
-              <span className="block  text-gray-500 dark:text-gray-300 mt-2">
+              <span className="block  max-w-xs:text-sm text-gray-500 dark:text-gray-300 mt-2">
                 Upload Image
               </span>
             </label>
@@ -238,7 +233,7 @@ function SignUp() {
                   value={setSignUpData[field]}
                   onChange={handelUserInput}
                   placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-                  className="w-full p-3 border bg-white rounded-md dark:bg-gray-700 dark:text-gray-200"
+                  className="w-full p-3 border bg-white max-w-xs:text-sm rounded-md dark:bg-gray-700 dark:text-gray-200"
                 />
               </div>
             ))}
@@ -251,7 +246,7 @@ function SignUp() {
                 value={setSignUpData.password}
                 onChange={handelUserInput}
                 placeholder="Password"
-                className="w-full p-3 border bg-white rounded-md dark:bg-gray-700 dark:text-gray-200"
+                className="w-full p-3 border max-w-xs:text-sm bg-white rounded-md dark:bg-gray-700 dark:text-gray-200"
               />
               <div
                 className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
@@ -272,7 +267,7 @@ function SignUp() {
                 value={setSignUpData.ConfirmPassword}
                 onChange={handelUserInput}
                 placeholder="Confirm Password"
-                className="w-full p-3 border bg-white rounded-md dark:bg-gray-700 dark:text-gray-200 pr-10"
+                className="w-full p-3 border max-w-xs:text-sm bg-white rounded-md dark:bg-gray-700 dark:text-gray-200 pr-10"
               />
               <div
                 className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
@@ -294,28 +289,7 @@ function SignUp() {
               color={"bg-green-500 hover:bg-green-600 "}
             />
 
-            <div className="my-2 flex gap-1">
-              <input
-                type="checkbox"
-                value={checkPrivacyPolicy}
-                onChange={() => (
-                  setCheckPrivacyPolicy(!checkPrivacyPolicy),
-                  (document.getElementById(
-                    "PrivacyPolicyCheckbox"
-                  ).style.color = "")
-                )}
-                className="cursor-pointer bg-white"
-              />
-              <p
-                onClick={() => window.open("/App/privacy-policy", "_blank")}
-                id="PrivacyPolicyCheckbox"
-                name="PrivacyPolicyCheckbox"
-                className="hover:underline hover:text-blue-500 text-sm cursor-pointer "
-              >
-                Privacy Policy
-              </p>
-            </div>
-            <p className="text-center text-gray-600 dark:text-gray-300 mt-4">
+            <p className="text-center max-w-xs:text-sm text-gray-600 dark:text-gray-300 mt-4">
               Already have an account?{" "}
               <Link to="/login" className="text-blue-500 hover:underline">
                 Login
