@@ -39,7 +39,7 @@ const ThankYou = () => {
                 <p className="font-medium">{formatPrice(data.totalAmount)}/-</p>
               </div>
               <div className="text-gray-700 dark:text-white">
-                <strong>Payment Method:</strong> {PaymentMethod}
+                <strong>Payment Method:</strong> {data.PaymentMethod}
               </div>
             </div>
           </div>
