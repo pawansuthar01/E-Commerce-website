@@ -3,7 +3,10 @@ import axiosInstance from "../../helper/axiosInstance";
 import toast from "react-hot-toast";
 
 const initialState = {
-  Carousel: [],
+  Carousel:
+    localStorage.getItem("Carousel") == null
+      ? []
+      : JSON.parse(localStorage.getItem("Carousel")),
 };
 export const getAllCarousel = createAsyncThunk(
   "/carousel/getallCarousel",
@@ -132,7 +135,8 @@ const CarouselRedux = createSlice({
   extraReducers: (builder) => {
     builder.addCase(getAllCarousel.fulfilled, (state, action) => {
       if (action?.payload?.success) {
-        state.Carousel = action?.payload?.data;
+        state.Carousel = action.payload?.data;
+        localStorage.setItem("Carousel", JSON.stringify(action.payload?.data));
       }
     });
   },

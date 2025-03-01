@@ -26,16 +26,15 @@ function NotificationCart({ data, onUpdate, handleReadNotification }) {
   };
 
   return (
-    <div className="w-full  flex items-center gap-10    font-medium">
-      <p onClick={() => handelClick(data._id)}>{data.message}</p>
+    <div className="w-full  flex items-center gap-10 max-w-xs:gap-10 font-medium">
+      <p onClick={() => handelClick(data._id)} className="max-w-xs:text-sm">
+        {data.message}
+      </p>
       <button
         onClick={() => handelClickBtn(data._id)}
-        className=" text-red-500 text-lg font-bold cursor-pointer text-end"
+        className=" text-red-500 text-2xl max-w-xs:text-xl font-bold cursor-pointer text-end"
       >
-        <IoCloseCircleOutline
-          onClick={() => handelClickBtn(data._id)}
-          size={26}
-        />
+        <IoCloseCircleOutline onClick={() => handelClickBtn(data._id)} />
       </button>
     </div>
   );

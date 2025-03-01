@@ -157,7 +157,7 @@ function Layout({ children, load }) {
         connection &&
         slowConnectionTypes.includes(connection.effectiveType)
       ) {
-        navigate("/App/Slow-Network");
+        // navigate("/App/Slow-Network");
       }
     };
 
@@ -398,11 +398,11 @@ function Layout({ children, load }) {
         <div
           role="dialog"
           aria-label="Notification Panel"
-          className={`fixed top-0 right-0 h-full dark:bg-[#111827] bg-white shadow-lg max-sm:w-[90%] w-[40%] z-20 transition-transform duration-500 ease-in-out ${
+          className={`fixed  right-0 h-full dark:bg-[#111827] bg-white shadow-lg max-sm:w-[90%] w-[40%] z-50 transition-transform duration-500 ease-in-out ${
             NotificationShow ? "translate-x-0" : "translate-x-full"
           }`}
         >
-          <div className="flex justify-between items-center dark:bg-[#111827]  bg-gray-100 p-4 border-b border-gray-300 ">
+          <div className="flex  justify-between items-center dark:bg-[#111827]  bg-gray-100 p-4 border-b border-gray-300 ">
             <h2 className="text-xl font-bold dark:text-white text-gray-800">
               Notifications
             </h2>

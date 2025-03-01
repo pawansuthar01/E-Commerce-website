@@ -279,7 +279,7 @@ export const EditModal = ({ slide, onClose, onSave }) => {
           <div>
             <label
               htmlFor="gst"
-              className="block max-w-xs:text-sm bg-white text-sm font-medium text-gray-700 mb-1"
+              className="block max-w-xs:text-sm  text-sm font-medium text-gray-700 mb-1"
             >
               GST (%)
             </label>

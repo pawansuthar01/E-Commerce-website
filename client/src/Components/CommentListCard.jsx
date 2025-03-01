@@ -10,7 +10,7 @@ import {
   removeReplayToComment,
 } from "../Redux/Slice/ContentSlice";
 
-function CommentCard({ data, onAddComment }) {
+function CommentCard({ data, onAddComment, onUpdate }) {
   const dispatch = useDispatch();
   const [BlogId, setBlogId] = useState(data?._id);
   const { userName, role } = useSelector((state) => state?.auth);
@@ -112,9 +112,16 @@ function CommentCard({ data, onAddComment }) {
       endOfCommentsRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [data.comments]);
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      await dispatch(getPost(data._id));
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <div className="p-4">
+    <div className="p-4 max-w-xs:px-0 ">
       {data.comments?.numberOfComment === 0 ? (
         <div className="flex justify-center">
           <p className="text-black text-xl text-center">No Comments...</p>
@@ -137,7 +144,7 @@ function CommentCard({ data, onAddComment }) {
                   }
                 font-semibold text-sm`}
                 >
-                  {comment.userName === userName ? "you" : comment.userName}
+                  {comment.userName === userName ? "You" : comment.userName}
                 </p>
                 <div
                   className={`p-3 rounded-lg shadow-md max-w-md ${
@@ -158,7 +165,7 @@ function CommentCard({ data, onAddComment }) {
                       />
                       <button
                         onClick={() => handleEditSubmit(comment._id)}
-                        className="mt-1 px-4 py-1 bg-green-500 text-white rounded-md"
+                        className="mt-1 px-4 py-1 bg-green-500 text-white rounded-md max-w-xs:text-sm"
                       >
                         Save
                       </button>
@@ -167,7 +174,7 @@ function CommentCard({ data, onAddComment }) {
                           setEditingCommentId(null);
                           setEditedComment("");
                         }}
-                        className="ml-2 mt-1 px-4 py-1 bg-red-500  rounded-md"
+                        className="ml-2 mt-1  max-w-xs:text-sm px-4 py-1 bg-red-500  rounded-md"
                       >
                         Cancel
                       </button>
@@ -183,7 +190,7 @@ function CommentCard({ data, onAddComment }) {
                       onClick={() => setReplyingTo(comment._id)}
                       className={`${
                         comment.userName === userName && `hidden`
-                      } cursor-pointer text-blue-600`}
+                      } cursor-pointer  max-w-xs:text-sm text-blue-600`}
                     >
                       Reply
                     </p>
@@ -195,7 +202,7 @@ function CommentCard({ data, onAddComment }) {
                           role === "AUTHOR"
                             ? `flex`
                             : `hidden`
-                        } justify-between text-blue-600 cursor-pointer hover:underline`}
+                        } justify-between  max-w-xs:text-sm text-blue-600 cursor-pointer hover:underline`}
                         onClick={() =>
                           DeleteComment(comment._id, comment.userName)
                         }
@@ -207,7 +214,7 @@ function CommentCard({ data, onAddComment }) {
                           comment.userName === userName ? `flex` : `hidden`
                         } ${
                           editingCommentId === comment._id && `hidden`
-                        } text-blue-600 cursor-pointer hover:underline`}
+                        } text-blue-600  max-w-xs:text-sm cursor-pointer hover:underline`}
                         onClick={() => {
                           setEditingCommentId(comment._id);
                           setEditedComment(comment.comment);
@@ -235,7 +242,7 @@ function CommentCard({ data, onAddComment }) {
                                   role === "AUTHOR"
                                     ? `flex`
                                     : `hidden`
-                                } justify-between text-blue-600 cursor-pointer hover:underline`}
+                                } justify-between  max-w-xs:text-sm text-blue-600 cursor-pointer hover:underline`}
                                 onClick={() =>
                                   DeleteReplay(reply._id, comment._id)
                                 }
@@ -243,7 +250,7 @@ function CommentCard({ data, onAddComment }) {
                                 Delete
                               </p>
                             </div>
-                            <span className="text-gray-500 text-xs">
+                            <span className="text-gray-500  max-w-xs:text-sm text-xs">
                               {new Date(reply.createdAt).toLocaleString()}
                             </span>
                           </div>
@@ -264,7 +271,7 @@ function CommentCard({ data, onAddComment }) {
         className="mt-4 flex sticky bottom-4 "
       >
         {replyingTo !== null && (
-          <div className="flex  absolute top-[-32px] justify-between  w-full rounded-t-lg p-1  shadow-sm dark:bg-gray-800 bg-slate-100">
+          <div className="flex  max-w-xs:text-sm  absolute top-[-32px] justify-between  w-full rounded-t-lg p-1  shadow-sm dark:bg-gray-800 bg-slate-100">
             <p>replay To message </p>
             <span
               className="hover:text-red-500 cursor-pointer"
@@ -282,11 +289,11 @@ function CommentCard({ data, onAddComment }) {
           }
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
-          className="flex-1 p-2 border border-gray-300 bg-white dark:bg-[#18212F] rounded-md focus:outline-none"
+          className="flex-1  max-w-xs:text-sm p-2 border border-gray-300 bg-white dark:bg-[#18212F] rounded-md focus:outline-none"
         />
         <button
           type="submit"
-          className="ml-2 px-4 py-2 bg-blue-500 text-white  rounded-md"
+          className="ml-2 px-4 py-2  max-w-xs:text-sm bg-blue-500 text-white  rounded-md"
         >
           Send
         </button>

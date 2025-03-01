@@ -53,6 +53,20 @@ export const LogoutAccount = createAsyncThunk("/auth/logout", async () => {
   }
 });
 
+//  Keep Render Backend Active Every 5 Minutes
+setInterval(() => {
+  async function healthCheck() {
+    try {
+      await axiosInstance.get("/ping");
+      console.log("✅ Backend kept alive");
+    } catch (error) {
+      console.error("❌ Backend ping failed:", error?.message || error);
+    }
+  }
+
+  healthCheck();
+}, 30000); //1mint.
+
 export const UpdateAccount = createAsyncThunk("/auth/update", async (data) => {
   try {
     const token = localStorage.getItem("Authenticator");

@@ -27,7 +27,7 @@ export const OrderShow = ({
     return progressWidth[status] || "10%";
   };
 
-  // Component to render each order
+ 
   return Orders?.map((order, index) => (
     <div
       key={index}

@@ -37,8 +37,12 @@ app.use((req, res, next) => {
   );
   next();
 });
-
-
+app.get("/ping", async (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "pong...",
+  });
+});
 app.use("/api/v3/user", UserRouter);
 app.use("/api/v3/User/Notification", NotificationRouter);
 app.use("/api/v3/Content", ContentRouter);
