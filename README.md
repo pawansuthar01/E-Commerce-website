@@ -1,7 +1,7 @@
 # E-Commerce Website
 vist this link ->
 ```
- https://animated-muffin-63e64a.netlify.app/
+[Link]https://famous-sawine-ac1312.netlify.app
 ```
 
 Welcome to the E-Commerce Website project! This project is built using modern web technologies to provide a seamless shopping experience for users and robust management features for admins.
@@ -33,7 +33,7 @@ Welcome to the E-Commerce Website project! This project is built using modern we
 - **Frontend:** React, Tailwind CSS
 - **Backend:** Node.js, Express.js
 - **Database:** MongoDB
-- **Hosting:** Netlify (Frontend), Render (Backend)
+- **Hosting:** Netlify (Frontend), Railway (Backend)
 
 ---
 
