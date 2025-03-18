@@ -13,6 +13,7 @@ import CardRouter from "./routers/Card.Router.js";
 import OrderRouter from "./routers/Order.rouder.js";
 import NotificationRouter from "./routers/Notification.router.js";
 import dataBaseConnection from "./config/dbConncetion.js";
+import axios from "axios";
 
 const app = express();
 
@@ -37,6 +38,14 @@ app.use((req, res, next) => {
   );
   next();
 });
+// handel server ping to 30s to up//
+setInterval(async () => {
+  try {
+    await axios.get(`${process.env.Backend_URL}/ping`);
+  } catch (error) {
+    console.error("Error pinging server:", error.message);
+  }
+}, 10000);
 app.get("/ping", async (req, res) => {
   res.status(200).json({
     success: true,
