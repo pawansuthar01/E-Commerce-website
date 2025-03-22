@@ -117,7 +117,7 @@ function Contact() {
                   value={formData.message}
                   onChange={handleInputChange}
                   placeholder="Write your message here..."
-                  className="w-full h-36 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white resize-none"
+                  className="w-full h-36 px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white resize-none"
                 ></textarea>
               </div>
               <button

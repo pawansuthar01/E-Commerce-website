@@ -89,7 +89,7 @@ const ShopInformationForm = () => {
             name="phoneNumber"
             value={formData.phoneNumber}
             onChange={handleChange}
-            className="w-full mt-1 p-2 border rounded dark:bg-gray-900 dark:border-gray-700 dark:text-white"
+            className="w-full mt-1 p-2 border rounded bg-white dark:bg-gray-900 dark:border-gray-700 dark:text-white"
             placeholder="Enter phone number"
             required
           />
@@ -109,7 +109,7 @@ const ShopInformationForm = () => {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full mt-1 p-2 border rounded dark:bg-gray-900 dark:border-gray-700 dark:text-white"
+            className="w-full mt-1 p-2 border rounded bg-white dark:bg-gray-900 dark:border-gray-700 dark:text-white"
             placeholder="Enter email"
             required
           />
@@ -128,7 +128,7 @@ const ShopInformationForm = () => {
             name="address"
             value={formData.address}
             onChange={handleChange}
-            className="w-full mt-1 p-2 border rounded dark:bg-gray-900 dark:border-gray-700 dark:text-white"
+            className="w-full mt-1 p-2 border rounded bg-white dark:bg-gray-900 dark:border-gray-700 dark:text-white"
             placeholder="Enter address"
             rows="3"
             required
@@ -149,7 +149,7 @@ const ShopInformationForm = () => {
             name="instagram"
             value={formData.instagram}
             onChange={handleChange}
-            className="w-full mt-1 p-2 border rounded dark:bg-gray-900 dark:border-gray-700 dark:text-white"
+            className="w-full mt-1 p-2 border rounded bg-white dark:bg-gray-900 dark:border-gray-700 dark:text-white"
             placeholder="Enter Instagram link"
           />
         </div>
@@ -168,7 +168,7 @@ const ShopInformationForm = () => {
             name="facebook"
             value={formData.facebook}
             onChange={handleChange}
-            className="w-full mt-1 p-2 border rounded dark:bg-gray-900 dark:border-gray-700 dark:text-white"
+            className="w-full mt-1 p-2 border rounded bg-white dark:bg-gray-900 dark:border-gray-700 dark:text-white"
             placeholder="Enter Facebook link"
           />
         </div>
@@ -187,7 +187,7 @@ const ShopInformationForm = () => {
             name="youtube"
             value={formData.youtube}
             onChange={handleChange}
-            className="w-full mt-1 p-2 border rounded dark:bg-gray-900 dark:border-gray-700 dark:text-white"
+            className="w-full mt-1 p-2 border rounded bg-white dark:bg-gray-900 dark:border-gray-700 dark:text-white"
             placeholder="Enter YouTube link"
           />
         </div>
