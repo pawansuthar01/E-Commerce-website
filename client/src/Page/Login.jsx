@@ -74,7 +74,7 @@ function Login() {
       setLoading(false);
     }
     if (res?.payload?.success) {
-      navigate(-1);
+      navigate("/");
       setLoginData({
         email: "",
         password: "",
