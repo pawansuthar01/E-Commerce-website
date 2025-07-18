@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Logs
 logs
 *.log
@@ -26,3 +27,8 @@ dist-ssr
 
 .env
 #env
+=======
+
+.env
+#.env
+>>>>>>> abb5b8265de491a2852477c55ebbb7eebf4fa41d
